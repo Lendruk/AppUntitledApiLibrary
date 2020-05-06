@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import e from 'express';
 import fs from 'fs';
 // Import Controllers
-import { RouteType } from '../decorators/routeType';
+import { RouteType } from '../lib/decorators/routeType';
 import { BaseController } from './BaseController';
 
 export class RouteAggregator {

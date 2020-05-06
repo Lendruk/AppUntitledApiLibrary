@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
-    "dev": "ts-node-dev --watch ./app/utils,./app/decorators,./app/models,./app/controllers,./app/types --respawn --transpileOnly ./app/app.ts ",
+    "dev": "ts-node-dev --watch ./app/utils,./app/lib,./app/models,./app/controllers --respawn --transpileOnly ./app/app.ts ",
     "prod": "tsc && node ./build/app.js"
   },
   "keywords": [],

@@ -1,18 +1,25 @@
 import { mongoose } from '../utils/database';
+import { Property, getModelFromClass } from '../lib/decorators/model';
+import { ObjectId } from '../lib/ObjectId';
 
 // Application Model
-export interface IUser extends mongoose.Document {
-    name : string,
-    role : string,
+export class UserModel extends mongoose.Document {
+    @Property({ type: String, required: true, default: "bob" })
+    name : string;
+
+    @Property({ type: String, required: true, default: "user" })
+    role : string;
+
+    house : ObjectId;
+
+    constructor(name : string, role : string, house : ObjectId) {
+        super();
+        this.name = name;
+        this.role = role;
+        this.house = house;
+    }
 
 };
-
-// Database Model
-export const UserSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    role: { type: String, required: true },
-});
-
-const User = mongoose.model<IUser>('User', UserSchema);
+const User = getModelFromClass<UserModel>(UserModel);
 
 export default User;
