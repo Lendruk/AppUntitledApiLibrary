@@ -19,10 +19,12 @@ export const Property = (modelProperty : ModelProperty) : PropertyDecorator => {
         if (!Reflect.hasMetadata("properties", target.constructor)) {
             Reflect.defineMetadata("properties", [], target.constructor);
         }
+
         const properties = Reflect.getMetadata("properties", target.constructor);
         properties.push({
             ...modelProperty,
             propertyKey,
+            type: Reflect.getMetadata("design:type", target, propertyKey as string),
         });
     }
 }
@@ -36,12 +38,14 @@ export const getModelFromClass = <T extends mongoose.Document>(target : Function
     for(const property of Reflect.getMetadata("properties", target)) {
         const key = property.propertyKey;
         delete property.propertyKey;
-        schemaProperties[key] = { ...property }
+        schemaProperties[key] = { ...property, type: property.type.name !== 'Array' ? property.type : [property.type] };
     }
+
+    console.log("props", schemaProperties);
 
     const schema = new mongoose.Schema({
 
-    }, { timestamps: { createdAt: '_created', updatedAt: '_modified' } } )
+    }, { timestamps: { createdAt: '_created', updatedAt: '_modified' } } );
 
     return mongoose.model<T>(target.name.replace(/(Model)+/g, ""), schema);
 }

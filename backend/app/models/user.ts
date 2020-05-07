@@ -4,21 +4,31 @@ import { ObjectId } from '../lib/ObjectId';
 
 // Application Model
 export class UserModel extends mongoose.Document {
-    @Property({ type: String, required: true, default: "bob" })
+    @Property({ required: true })
     name : string;
 
-    @Property({ type: String, required: true, default: "user" })
+    @Property({ required: true })
     role : string;
 
+    @Property({ ref: "House", default: null })
     house : ObjectId;
+
+    @Property({ default: null })
+    billing : {
+        money : number
+    }
+    
+    @Property({ default: null })
+    test : String[]
 
     constructor(name : string, role : string, house : ObjectId) {
         super();
         this.name = name;
         this.role = role;
         this.house = house;
+        this.billing = { money: 0 };
+        this.test = [];
     }
-
 };
 const User = getModelFromClass<UserModel>(UserModel);
 
