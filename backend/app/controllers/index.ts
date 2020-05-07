@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import e from 'express';
 import fs from 'fs';
 // Import Controllers
-import { RouteType } from '../lib/decorators/routeType';
+import { RouteType, MiddyPair, MiddyFunction } from '../lib/decorators/routeType';
 import { BaseController } from './BaseController';
 
 export class RouteAggregator {
@@ -22,9 +22,17 @@ export class RouteAggregator {
                 const prefix = Reflect.getMetadata("prefix", controller);
     
                 const routes : Array<RouteType> = Reflect.getMetadata("routes", controller);
-    
+                
+                const middlewares : Array<MiddyPair> = Reflect.getMetadata("middleware", controller);
                 for(const route of routes) {
-                    this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, (req : Request, res : Response ) => {
+                    const routeMiddleware = middlewares.find(middy => middy.method === route.methodName);
+
+                    let functions = new Array<MiddyFunction>();
+                    if(routeMiddleware != null) {
+                        functions = routeMiddleware.functions;
+                    }
+                    
+                    this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req : Request, res : Response ) => {
                         let result = instance[route.methodName as string](req, res);
                         
                         if(result instanceof Promise) {

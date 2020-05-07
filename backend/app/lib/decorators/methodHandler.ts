@@ -16,6 +16,7 @@ export const MethodHandler = (method : "get" | "put" | "post" | "patch" | "delet
             requestMethod: method,
             path,
             methodName: propertyKey,
+            propertyKey,
         });
 
         Reflect.defineMetadata("routes", routes, target.constructor);
