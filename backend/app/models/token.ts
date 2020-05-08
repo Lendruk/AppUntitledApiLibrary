@@ -1,6 +1,6 @@
 import { mongoose } from "../utils/database";
 import { ObjectId } from "../lib/ObjectId";
-import { Property, ModelOptions, getModelFromClass } from "../lib/decorators/model";
+import { Property, ModelOptions, getModelFromClass } from "../lib/decorators/Model";
 import { Expiry } from "../lib/classes/Expiry";
 
 @ModelOptions({ expireAfter: new Expiry({ days: 90 })})

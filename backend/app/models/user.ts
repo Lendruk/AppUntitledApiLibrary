@@ -1,5 +1,5 @@
 import { mongoose } from '../utils/database';
-import { Property, getModelFromClass } from '../lib/decorators/model';
+import { Property, getModelFromClass } from '../lib/decorators/Model';
 import { ObjectId } from '../lib/ObjectId';
 
 // Application Model

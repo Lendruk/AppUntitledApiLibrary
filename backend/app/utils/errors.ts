@@ -1,4 +1,4 @@
-import { ErrorType } from "../lib/types/error";
+import { ErrorType } from "../lib/types/ErrorType";
 import { Request, Response, NextFunction } from "express";
 
 export const errors = {

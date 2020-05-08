@@ -1,4 +1,4 @@
-import { RouteType } from "./routeType";
+import { RouteType } from "./RouteType";
 
 export const MethodHandler = (method : "get" | "put" | "post" | "patch" | "delete") => {
  return (path : string) : MethodDecorator => {

@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { errors } from '../utils/errors';
-import { Controller } from '../lib/decorators/controller';
-import { Get } from '../lib/decorators/verbs';
+import { Controller } from '../lib/decorators/Controller';
+import { Get } from '../lib/decorators/Verbs';
 import { BaseController } from './BaseController';
 import User from '../models/user';
-import { Middleware } from '../lib/decorators/middleware';
+import { Middleware } from '../lib/decorators/Middleware';
 
 
 @Controller("/users")

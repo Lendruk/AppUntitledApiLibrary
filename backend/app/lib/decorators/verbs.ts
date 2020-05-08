@@ -1,5 +1,5 @@
-import { RouteType } from "./routeType";
-import { MethodHandler } from "./methodHandler";
+import { RouteType } from "./RouteType";
+import { MethodHandler } from "./MethodHandler";
 
 export const Get = MethodHandler("get");
 export const Post = MethodHandler("post");

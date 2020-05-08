@@ -1,4 +1,4 @@
-import { MiddyPair, MiddyFunctions } from './routeType';
+import { MiddyPair, MiddyFunctions } from './RouteType';
 
 export const Middleware = (...middlewares : MiddyFunctions) : MethodDecorator => {
     return (target : any, propertyKey : string | symbol) => {

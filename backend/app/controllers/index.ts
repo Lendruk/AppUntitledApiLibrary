@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import e from 'express';
 import fs from 'fs';
 // Import Controllers
-import { RouteType, MiddyPair, MiddyFunction } from '../lib/decorators/routeType';
+import { RouteType, MiddyPair, MiddyFunction } from '../lib/decorators/RouteType';
 import { BaseController } from './BaseController';
 
 export class RouteAggregator {
@@ -25,7 +25,7 @@ export class RouteAggregator {
                 
                 const middlewares : Array<MiddyPair> = Reflect.getMetadata("middleware", controller);
                 for(const route of routes) {
-                    const routeMiddleware = middlewares.find(middy => middy.method === route.methodName);
+                    const routeMiddleware = middlewares && middlewares.find(middy => middy.method === route.methodName);
 
                     let functions = new Array<MiddyFunction>();
                     if(routeMiddleware != null) {
