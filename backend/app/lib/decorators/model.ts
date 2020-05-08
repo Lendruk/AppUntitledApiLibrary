@@ -1,14 +1,17 @@
-import { ModelProperty } from '../types/modelProperty';
+import { ModelProperty } from '../types/ModelProperty';
 import { mongoose } from '../../utils/database';
 import { Model as MongooseModel } from 'mongoose';
 import { errors } from '../../utils/errors';
+import { ModelProperties } from '../types/ModelProperties';
 
-export const Model = () : ClassDecorator => {
+export const ModelOptions = (modelProperties : ModelProperties ) : ClassDecorator => {
     return (target : any) => {
         if(typeof target === "function") {
             if(!Reflect.hasMetadata("properties", target)) {
                 Reflect.defineMetadata("properties", [], target);
             }
+
+            Reflect.defineMetadata("ModelOptions", modelProperties ,target);
 
         }
     }
@@ -46,6 +49,14 @@ export const getModelFromClass = <T extends mongoose.Document>(target : Function
     const schema = new mongoose.Schema({
 
     }, { timestamps: { createdAt: '_created', updatedAt: '_modified' } } );
+
+    if(Reflect.hasMetadata("ModelOptions", target)) {
+        const modelOptions = Reflect.getMetadata("ModelOptions", target) as ModelProperties;
+
+        if(modelOptions.expireAfter) {
+            schema.index({ _created: 1 }, { expireAfterSeconds: modelOptions.expireAfter.getSeconds() });
+        }
+    }
 
     return mongoose.model<T>(target.name.replace(/(Model)+/g, ""), schema);
 }

@@ -11,7 +11,7 @@ import { Middleware } from '../lib/decorators/middleware';
 export class UserController extends BaseController {
 
     @Get("/")
-    @Middleware(test(4), test(3), test(2))
+    @Middleware(test(4))
     public async getUsers(req : Request, res : Response) {
         // const user = await User.findOne({ _id : "un" });
 
