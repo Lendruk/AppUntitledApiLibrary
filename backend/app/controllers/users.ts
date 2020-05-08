@@ -28,7 +28,6 @@ export class UserController extends BaseController {
 }
 
 function test(num : number) {
-    console.log(num);
     
     return (req : Request, res : Response, next : NextFunction) => {
         req.body = "middy test";

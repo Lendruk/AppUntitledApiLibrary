@@ -44,8 +44,6 @@ export const getModelFromClass = <T extends mongoose.Document>(target : Function
         schemaProperties[key] = { ...property, type: property.type.name !== 'Array' ? property.type : [property.type] };
     }
 
-    console.log("props", schemaProperties);
-
     const schema = new mongoose.Schema({
 
     }, { timestamps: { createdAt: '_created', updatedAt: '_modified' } } );
