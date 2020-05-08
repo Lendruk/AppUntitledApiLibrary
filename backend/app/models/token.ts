@@ -1,10 +1,10 @@
 import { mongoose } from "../utils/database";
 import { ObjectId } from "../lib/ObjectId";
-import { Property, ModelOptions } from "../lib/decorators/model";
+import { Property, ModelOptions, getModelFromClass } from "../lib/decorators/model";
 import { Expiry } from "../lib/classes/Expiry";
 
 @ModelOptions({ expireAfter: new Expiry({ days: 90 })})
-export class Token extends mongoose.Document {
+export class TokenModel extends mongoose.Document {
     @Property({ required: true, ref: "User" })
     user : ObjectId;
 
@@ -21,3 +21,6 @@ export class Token extends mongoose.Document {
         this.expiryDate = expiryDate;
     }
 }
+
+const Token = getModelFromClass<TokenModel>(TokenModel);
+export default Token;
