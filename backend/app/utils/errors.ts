@@ -10,6 +10,10 @@ export const errors = {
         status: 400,
         code: "REQUIRED_FIELDS_EMPTY",
     },
+    INVALID_CREDENTIALS: {
+        status: 400,
+        code: 'INVALID_CREDENTIALS',
+    },
     NOT_FOUND: {
         status: 404,
         code: "NOT_FOUND",

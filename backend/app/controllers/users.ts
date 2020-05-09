@@ -1,37 +1,34 @@
 import { Request, Response, NextFunction } from 'express';
 import { errors } from '../utils/errors';
 import { Controller } from '../lib/decorators/Controller';
-import { Get } from '../lib/decorators/Verbs';
-import { BaseController } from './BaseController';
-import User from '../models/user';
+import { Get, Post } from '../lib/decorators/Verbs';
+import { BaseController } from '../lib/classes/BaseController';
+import User from '../models/User';
 import { Middleware } from '../lib/decorators/Middleware';
+import { Inject } from '../lib/decorators/Inject';
+import { LoginService } from '../services/LoginService';
 
 
 @Controller("/users")
 export class UserController extends BaseController {
 
+    @Inject()
+    _loginService! : LoginService;
+
     @Get("/")
-    @Middleware(test(4))
     public async getUsers(req : Request, res : Response) {
-        // const user = await User.findOne({ _id : "un" });
 
         console.log("body", req.body);
         const t = new User({ name: "test", role: "test" });
-
         return { good: "Boost" };
     }
 
-    @Get("/test")
-    public getTest(req : Request, res : Response) { 
-        return { bad: "Boost" };
-    }
-}
+    @Post("/register")
+    public async registerUser(req : Request, res : Response) {
+        const { body: { name, password, email }} = req;
 
-function test(num : number) {
-    
-    return (req : Request, res : Response, next : NextFunction) => {
-        req.body = "middy test";
+        const newUser = await new User({ name, password, email }).save();
 
-        next();
+        return { code: 201, status: "USER_REGISTERED", ...await this._loginService.login(newUser.email, newUser.password)}
     }
 }

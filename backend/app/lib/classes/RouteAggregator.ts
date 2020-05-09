@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import e from 'express';
 import fs from 'fs';
 // Import Controllers
-import { RouteType, MiddyPair, MiddyFunction } from '../lib/decorators/RouteType';
+import { RouteType, MiddyPair, MiddyFunction } from '../decorators/RouteType';
 import { BaseController } from './BaseController';
 
 export class RouteAggregator {
@@ -13,7 +13,7 @@ export class RouteAggregator {
         this.router = express.Router();
         this.app = app;
         
-        const files = fs.readdirSync(`${__dirname}`);
+        const files = fs.readdirSync(`${__dirname}/../../controllers`);
         this.extractControllers(files).forEach(controller => {
             if(typeof controller === 'function') {
                 const instance = new controller();
@@ -66,7 +66,7 @@ export class RouteAggregator {
         const controllers : BaseController[] = [];
         for(const file of files) {
             if(!file.includes('index') && !file.includes('BaseController')) {
-                const controller = require(`./${file}`);
+                const controller = require(`../../controllers/${file}`);
                 controllers.push(Object.values(controller)[0] as BaseController);
             }
         }

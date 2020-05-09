@@ -11,14 +11,10 @@ export class TokenModel extends mongoose.Document {
     @Property({ required: true })
     authToken : string;
 
-    @Property({ required: true })
-    expiryDate : string;
-
-    constructor(user : ObjectId, authToken : string, expiryDate : string ) {
+    constructor(user : ObjectId, authToken : string) {
         super();
         this.user = user;
         this.authToken = authToken;
-        this.expiryDate = expiryDate;
     }
 }
 
