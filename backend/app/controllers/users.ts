@@ -1,19 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { errors } from '../utils/errors';
 import { Controller } from '../lib/decorators/Controller';
 import { Get, Post } from '../lib/decorators/Verbs';
 import { BaseController } from '../lib/classes/BaseController';
 import User from '../models/User';
-import { Middleware } from '../lib/decorators/Middleware';
-import { Inject } from '../lib/decorators/Inject';
-import { LoginService } from '../services/LoginService';
-
+import bcrypt from 'bcrypt';
 
 @Controller("/users")
 export class UserController extends BaseController {
-
-    @Inject()
-    _loginService! : LoginService;
 
     @Get("/")
     public async getUsers(req : Request, res : Response) {
@@ -23,12 +17,36 @@ export class UserController extends BaseController {
         return { good: "Boost" };
     }
 
+    @Get("/:id")
+    public async getUser(req : Request, res : Response) {
+        const { params: { id }} = req;
+
+        let user;
+        try {
+            user = await User.findOne({_id: id });
+        } catch (err) {
+            throw errors.NOT_FOUND;
+        }
+
+        return { user };
+    }
+
     @Post("/register")
     public async registerUser(req : Request, res : Response) {
         const { body: { name, password, email }} = req;
 
-        const newUser = await new User({ name, password, email }).save();
+        if(User.findOne({ email: email }))
+            return errors.RESOURCE_ALREADY_EXISTS;
 
-        return { code: 201, status: "USER_REGISTERED", ...await this._loginService.login(newUser.email, newUser.password)}
+        const newUser = await new User({ name, password: await this.hashPassword(password), email }).save();
+
+        return { code: 201, status: "USER_REGISTERED", user: newUser.getPublicInformation() };
+    }
+
+    private async hashPassword(password : string) : Promise<string> {
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+
+        return hash;
     }
 }

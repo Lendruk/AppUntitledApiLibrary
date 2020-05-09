@@ -18,6 +18,10 @@ export const errors = {
         status: 404,
         code: "NOT_FOUND",
     },
+    RESOURCE_ALREADY_EXISTS: {
+        status: 409,
+        code: "STATUS_ALREADY_EXISTS",
+    },
     SERVER_ERROR: {
         status: 500,
         code: "SERVER_ERROR",
