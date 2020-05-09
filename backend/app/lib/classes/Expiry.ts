@@ -5,7 +5,7 @@ export class Expiry {
     days? : number;
     months? : number;
 
-    constructor(options : { seconds? : number, minutes? : number, hours? : number, days? : number, months? : number }) {
+    constructor(options: { seconds? : number; minutes? : number; hours? : number; days? : number; months? : number }) {
         this.seconds = options.seconds;
         this.minutes = options.minutes;
         this.hours = options.minutes;
@@ -13,7 +13,7 @@ export class Expiry {
         this.months = options.months;
     }
 
-    getSeconds() : number {
+    getSeconds(): number {
         let total = 0;
 
         if(this.seconds != null)

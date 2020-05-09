@@ -1,6 +1,6 @@
 export class Injector {
-    static instance : Injector;
-    private serviceMap : Map<any, Array<any>>;
+    static instance: Injector;
+    private serviceMap: Map<any, Array<any>>;
 
     constructor() {
         this.serviceMap = new Map();
@@ -12,7 +12,7 @@ export class Injector {
         }
     }
 
-    private hasService(service : any) : boolean {
+    private hasService(service: any): boolean {
         const keys = this.serviceMap.keys();
         let key = keys.next();
         while(!key.done) {
@@ -23,7 +23,7 @@ export class Injector {
         return false;
     }
 
-    private retrieveService(service : any ) {
+    private retrieveService(service: any ) {
         const keys = this.serviceMap.keys();
         let key = keys.next();
         while(key) {
@@ -35,13 +35,13 @@ export class Injector {
         return null;
     }
 
-    registerService(service : any) {
+    registerService(service: any) {
         if(!this.hasService(service)) {
             this.serviceMap.set(new service(), new Array<any>());
         }
     }
 
-    registerConsumer(service : any, consumer : any) {
+    registerConsumer(service: any, consumer: any) {
         if(!this.hasService(service)) {
             this.registerService(service);
         }
@@ -53,7 +53,7 @@ export class Injector {
         return servicePair?.service;
     }
 
-    injectService(service : any) {
+    injectService(service: any) {
         if(this.serviceMap.has(service)) {
            
         }
