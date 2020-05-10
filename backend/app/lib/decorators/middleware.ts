@@ -8,6 +8,5 @@ export const Middleware = (...middlewares : MiddyFunctions) : MethodDecorator =>
 
         const methodsMiddlewares = Reflect.getMetadata("middleware", target.constructor) as Array<MiddyPair>;
         methodsMiddlewares.push({ method: propertyKey, functions: middlewares });
-
     };
 }

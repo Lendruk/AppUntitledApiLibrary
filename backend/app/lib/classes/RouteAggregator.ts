@@ -38,7 +38,7 @@ export class RouteAggregator {
                     }
                     
                     if (route.routeOptions)
-                        functions = functions.concat(this.buildRestrictionFunctions(route.routeOptions));
+                        functions = functions.concat(this.mapRequiredFields(route.routeOptions));
 
                     this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req : Request, res : Response ) => {
                         let result = instance[route.methodName as string](req, res);
@@ -55,7 +55,7 @@ export class RouteAggregator {
         
     }
 
-    private buildRestrictionFunctions(options : RouteOptions) : MiddyFunction[] {
+    private mapRequiredFields(options : RouteOptions) : MiddyFunction[] {
         const functions = new Array<MiddyFunction>();
         for(const key in options) {
             functions.push((req : Request, res: Response, next: NextFunction) => {

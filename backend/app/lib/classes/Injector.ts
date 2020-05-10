@@ -26,7 +26,7 @@ export class Injector {
     private retrieveService(service: any ) {
         const keys = this.serviceMap.keys();
         let key = keys.next();
-        while(key) {
+        while(!key.done) {
             if(key.value instanceof service) 
                 return { service: key.value, consumers: this.serviceMap.get(key.value) };
             key = keys.next();

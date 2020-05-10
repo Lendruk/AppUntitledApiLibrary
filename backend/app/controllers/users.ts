@@ -31,7 +31,7 @@ export class UserController extends BaseController {
         return { user };
     }
 
-    @Post("/register")
+    @Post("/register", { body: { required: ["password", "email", "name"] }})
     public async registerUser(req : Request, res : Response) {
         const { body: { name, password, email }} = req;
 
@@ -41,12 +41,6 @@ export class UserController extends BaseController {
         const newUser = await new User({ name, password: await this.hashPassword(password), email }).save();
 
         return { code: 201, status: "USER_REGISTERED", user: newUser.getPublicInformation() };
-    }
-
-    @Post("/test", { body: { required: ["test1", "test2" ]}})
-    public async test(req : Request, res : Response) {
-
-        return { code: 200, test: "23" };
     }
 
     private async hashPassword(password : string) : Promise<string> {

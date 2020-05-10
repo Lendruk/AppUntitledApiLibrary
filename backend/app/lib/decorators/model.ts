@@ -1,4 +1,4 @@
-import { ModelProperty } from '../types/ModelProperty';
+import { PropertyOptions } from '../types/PropertyOptions';
 import { mongoose } from '../../utils/database';
 import { Model as MongooseModel } from 'mongoose';
 import { errors } from '../../utils/errors';
@@ -12,12 +12,11 @@ export const ModelOptions = (modelProperties : ModelProperties ) : ClassDecorato
             }
 
             Reflect.defineMetadata("ModelOptions", modelProperties ,target);
-
         }
     }
 }
 
-export const Property = (modelProperty : ModelProperty) : PropertyDecorator => {
+export const Property = (modelProperty : PropertyOptions) : PropertyDecorator => {
     return (target : any, propertyKey : String | Symbol) => {
         if (!Reflect.hasMetadata("properties", target.constructor)) {
             Reflect.defineMetadata("properties", [], target.constructor);
