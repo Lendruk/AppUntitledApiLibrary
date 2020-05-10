@@ -1,10 +1,15 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import e from 'express';
 import fs from 'fs';
 // Import Controllers
 import { RouteType, MiddyPair, MiddyFunction } from '../decorators/RouteType';
 import { BaseController } from './BaseController';
+import { RouteOptions } from '../types/RouteOptions';
+import { errors } from '../../utils/errors';
 
+/**
+ * Refactor this class completely
+ */
 export class RouteAggregator {
     private router : e.Router;
     private app : e.Express;
@@ -32,6 +37,9 @@ export class RouteAggregator {
                         functions = routeMiddleware.functions;
                     }
                     
+                    if (route.routeOptions)
+                        functions = functions.concat(this.buildRestrictionFunctions(route.routeOptions));
+
                     this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req : Request, res : Response ) => {
                         let result = instance[route.methodName as string](req, res);
                         
@@ -45,6 +53,24 @@ export class RouteAggregator {
             }
         });
         
+    }
+
+    private buildRestrictionFunctions(options : RouteOptions) : MiddyFunction[] {
+        const functions = new Array<MiddyFunction>();
+        for(const key in options) {
+            functions.push((req : Request, res: Response, next: NextFunction) => {
+                const reqProp = Object.getOwnPropertyDescriptor(req, key);
+                
+                if(reqProp != null && reqProp.value) {
+                    for(const field of options[key].required) {
+                        if(reqProp.value[field] == null) throw errors.REQUIRED_FIELDS_EMPTY;
+                    }
+                }
+                next();
+            });
+        }
+
+        return functions;
     }
 
     private formatResponse(data : any, res : Response)  {

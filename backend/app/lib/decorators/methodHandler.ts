@@ -1,7 +1,8 @@
 import { RouteType } from "./RouteType";
+import { RouteOptions } from "../types/RouteOptions";
 
 export const MethodHandler = (method : "get" | "put" | "post" | "patch" | "delete") => {
- return (path : string) : MethodDecorator => {
+ return (path : string, routeOptions?: RouteOptions) : MethodDecorator => {
     // target = class
     // propertyKey = decorated Method
     return (target, propertyKey : string | symbol) : void => {
@@ -17,6 +18,7 @@ export const MethodHandler = (method : "get" | "put" | "post" | "patch" | "delet
             path,
             methodName: propertyKey,
             propertyKey,
+            routeOptions,
         });
 
         Reflect.defineMetadata("routes", routes, target.constructor);

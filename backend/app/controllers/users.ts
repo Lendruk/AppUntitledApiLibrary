@@ -43,6 +43,12 @@ export class UserController extends BaseController {
         return { code: 201, status: "USER_REGISTERED", user: newUser.getPublicInformation() };
     }
 
+    @Post("/test", { body: { required: ["test1", "test2" ]}})
+    public async test(req : Request, res : Response) {
+
+        return { code: 200, test: "23" };
+    }
+
     private async hashPassword(password : string) : Promise<string> {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);

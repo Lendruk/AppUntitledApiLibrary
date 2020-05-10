@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { RouteOptions } from "../types/RouteOptions";
 
 export interface RouteType {
     path : string;
@@ -10,6 +11,8 @@ export interface RouteType {
     middleware? : Function[];
 
     propertyKey? : string | symbol;
+
+    routeOptions? : RouteOptions;
 }
 
 export interface MiddyPair {
