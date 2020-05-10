@@ -63,7 +63,7 @@ export class RouteAggregator {
                 
                 if(reqProp != null && reqProp.value) {
                     for(const field of options[key].required) {
-                        if(reqProp.value[field] == null) throw errors.REQUIRED_FIELDS_EMPTY;
+                        if(reqProp.value[field] == null) throw errors.FIELDS_EMPTY(field);
                     }
                 }
                 next();

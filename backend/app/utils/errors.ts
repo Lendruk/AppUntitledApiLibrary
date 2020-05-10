@@ -26,6 +26,13 @@ export const errors = {
         status: 500,
         code: "SERVER_ERROR",
     },
+    FIELDS_EMPTY: (field : string) => {
+        return {
+            status: 400,
+            code: "REQUIRED_FIELDS_EMPTY",
+            field,
+        };
+    },
 }
 
 
