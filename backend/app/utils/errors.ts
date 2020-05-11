@@ -26,10 +26,11 @@ export const errors = {
         status: 500,
         code: "SERVER_ERROR",
     },
-    FIELDS_EMPTY: (missingFields : Array<string>) => {
+    FIELDS_EMPTY: (parameter : string, missingFields : Array<string>) => {
         return {
             status: 400,
             code: "REQUIRED_FIELDS_EMPTY",
+            parameter,
             missingFields,
         };
     },

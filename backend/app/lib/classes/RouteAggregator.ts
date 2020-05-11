@@ -81,7 +81,7 @@ export class RouteAggregator {
                 }
 
                 if(this.debug && missingFields.length > 0) 
-                    throw errors.FIELDS_EMPTY(missingFields);
+                    throw errors.FIELDS_EMPTY(key, missingFields);
 
                 next();
             });
