@@ -26,11 +26,11 @@ export const errors = {
         status: 500,
         code: "SERVER_ERROR",
     },
-    FIELDS_EMPTY: (field : string) => {
+    FIELDS_EMPTY: (missingFields : Array<string>) => {
         return {
             status: 400,
             code: "REQUIRED_FIELDS_EMPTY",
-            field,
+            missingFields,
         };
     },
 }
@@ -49,6 +49,7 @@ export class ErrorManager {
         res.status(err.status).json({
             code: err.code,
             results: null,
+            ...err,
         });
 
     }

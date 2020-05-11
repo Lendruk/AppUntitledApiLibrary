@@ -13,10 +13,17 @@ import { errors } from '../../utils/errors';
 export class RouteAggregator {
     private router : e.Router;
     private app : e.Express;
+    private debug : boolean;
 
-    constructor(app : e.Express) {
+    /**
+     * 
+     * @param app Express App
+     * @param debug Debug flag currently used to send missing fields to front-end on calls
+     */
+    constructor(app : e.Express, debug? : boolean) {
         this.router = express.Router();
         this.app = app;
+        this.debug = Boolean(debug);
         
         const files = fs.readdirSync(`${__dirname}/../../controllers`);
         this.extractControllers(files).forEach(controller => {
@@ -60,12 +67,22 @@ export class RouteAggregator {
         for(const key in options) {
             functions.push((req : Request, res: Response, next: NextFunction) => {
                 const reqProp = Object.getOwnPropertyDescriptor(req, key);
-                
+                const missingFields = new Array<string>();
+                    
                 if(reqProp != null && reqProp.value) {
                     for(const field of options[key].required) {
-                        if(reqProp.value[field] == null) throw errors.FIELDS_EMPTY(field);
+                        if(reqProp.value[field] == null) {
+                            if(this.debug) 
+                                missingFields.push(field);
+                            else
+                                throw errors.REQUIRED_FIELDS_EMPTY;
+                        }
                     }
                 }
+
+                if(this.debug && missingFields.length > 0) 
+                    throw errors.FIELDS_EMPTY(missingFields);
+
                 next();
             });
         }

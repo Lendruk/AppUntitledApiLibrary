@@ -18,10 +18,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Connect DB
 dbConnection().then(() => console.log("Database Connected..."));
 
-// Initialize our dependecy injection 
+// Initialize the dependecy injection 
 new Injector();
 
-const mainRouter = new RouteAggregator(app);
+// Aggregate all the controllers
+new RouteAggregator(app, true);
 
 //Not Found Handler
 app.use((req, res, next) => next(errors.NOT_FOUND));
@@ -31,5 +32,3 @@ app.use(ErrorManager.handleError)
 
 
 app.listen(3000, () => console.log("Server Listening on port 3000 "));
-
-export { mainRouter };
