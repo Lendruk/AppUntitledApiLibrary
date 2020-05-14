@@ -38,7 +38,6 @@ export class RouteAggregator {
                 const middlewares : Array<MiddyPair> = Reflect.getMetadata("middleware", controller);
                 for(const route of routes) {
                     const routeMiddleware = middlewares && middlewares.find(middy => middy.method === route.methodName);
-
                     let functions = new Array<MiddyFunction>();
                     if(routeMiddleware != null) {
                         functions = routeMiddleware.functions;
@@ -58,8 +57,7 @@ export class RouteAggregator {
                     });
                 }
             }
-        });
-        
+        });   
     }
 
     private mapRequiredFields(options : RouteOptions) : MiddyFunction[] {

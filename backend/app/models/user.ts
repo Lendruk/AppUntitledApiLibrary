@@ -3,29 +3,34 @@ import { Property, getModelFromClass } from '../lib/decorators/Model';
 import bycrypt from 'bcrypt';
 import { ObjectId } from '../lib/ObjectId';
 import { IActivatable } from '../lib/interfaces/IActivatable';
+import Role from './Role';
+
+// abstract class UserRole {
+//     @Property({ items: Role, ref: "Role" })
+//     role!: typeof Role[];
+// }
 
 // Application Model
 export class UserModel extends mongoose.Document implements IActivatable {
     
     @Property({ default: true })
-    isActive : boolean;
+    isActive: boolean;
 
     @Property({ required: true })
-    name : string;
+    name: string;
 
     @Property({ required: true })
-    email : string;
+    email: string;
 
     @Property({ required: true })
-    password : string;
+    password: string;
 
-    @Property({ required: true })
-    role : string;
+    @Property({ items: Role })
+    roles!: typeof Role[];
 
-    constructor(name : string, role : string, email: string, password : string) {
+    constructor(name : string, email: string, password : string) {
         super();
         this.name = name;
-        this.role = role;
         this.password = password;
         this.email = email;
         this.isActive = true;
@@ -38,7 +43,7 @@ export class UserModel extends mongoose.Document implements IActivatable {
     getPublicInformation() {
         return {
             name: this.name,
-            role: this.role,
+            // role: this.role,
             email: this.email,
             isActive: this.isActive
         };
