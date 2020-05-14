@@ -3,12 +3,7 @@ import { Property, getModelFromClass } from '../lib/decorators/Model';
 import bycrypt from 'bcrypt';
 import { ObjectId } from '../lib/ObjectId';
 import { IActivatable } from '../lib/interfaces/IActivatable';
-import Role from './Role';
-
-// abstract class UserRole {
-//     @Property({ items: Role, ref: "Role" })
-//     role!: typeof Role[];
-// }
+import Role, { RoleModel } from './Role';
 
 // Application Model
 export class UserModel extends mongoose.Document implements IActivatable {
@@ -26,7 +21,7 @@ export class UserModel extends mongoose.Document implements IActivatable {
     password: string;
 
     @Property({ items: Role })
-    roles!: typeof Role[];
+    roles!: RoleModel[];
 
     constructor(name : string, email: string, password : string) {
         super();
