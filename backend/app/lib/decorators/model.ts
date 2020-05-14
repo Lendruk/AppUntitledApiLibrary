@@ -31,6 +31,7 @@ export const Property = (modelProperty : PropertyOptions) : PropertyDecorator =>
     }
 }
 
+// Refactor this completely
 export const getModelFromClass = <T extends mongoose.Document>(target : Function) : MongooseModel<T> => {
     if(!Reflect.hasMetadata("properties", target)) {
         Reflect.defineMetadata("properties", [], target);
@@ -40,11 +41,21 @@ export const getModelFromClass = <T extends mongoose.Document>(target : Function
     for(const property of Reflect.getMetadata("properties", target)) {
         const key = property.propertyKey;
         delete property.propertyKey;
-        schemaProperties[key] = { ...property, type: property.type.name !== 'Array' ? property.type : [property.type] };
+
+        if(property.items) {
+            console.log("has array")
+            schemaProperties[key] = [ {...property,
+            type: extractArray(property.items)} ];
+        } else {
+            schemaProperties[key] = { ...property,
+            type: extractType(property.type) };
+        }
     }
 
-    const schema = new mongoose.Schema({
+    console.log("schema", JSON.stringify(schemaProperties, null, 4));
 
+    const schema = new mongoose.Schema({
+        ...schemaProperties
     }, { timestamps: { createdAt: '_created', updatedAt: '_modified' } } );
 
     if(Reflect.hasMetadata("ModelOptions", target)) {
@@ -57,4 +68,47 @@ export const getModelFromClass = <T extends mongoose.Document>(target : Function
 
     return mongoose.model<T>(target.name.replace(/(Model)+/g, ""), schema);
 }
+
+// Refactor this completely
+const BASE_TYPES = ["String", "Number", "Date", "Boolean", "Array", "ObjectId"];
+function extractType(type : Function) : any {
+    if(!type) return {};
+    // console.log("test", type);
+    if(BASE_TYPES.includes(type.name)) {
+        return type;
+    } else {
+        let builtType = {};
+        
+        // console.log("---", Reflect.getMetadata("properties", type));
+        if(Reflect.hasMetadata("properties", type)) {
+            for(const prop of Reflect.getMetadata("properties", type)) {
+                const key = prop.propertyKey;
+                delete prop.propertyKey;
+                // delete prop.items;
+                builtType = { ...builtType, [key]: { ...prop, type: extractType(prop.type)} }
+            }
+        }
+
+        // console.log("builtType", builtType);
+        return builtType;
+    }
+}
+
+function extractArray(type: Function) {
+    console.log("type of array",type);
+    if(Reflect.hasMetadata("properties", type)) {
+        let builtType = {};
+        console.log("test");
+        for(const prop of Reflect.getMetadata("properties", type)) {
+            const key = prop.propertyKey;
+            console.log("array prop", prop);
+            builtType = { ...builtType, [key]: { ...prop, type: extractType(prop.type)}}
+        }
+
+        return builtType;
+    }
+
+    return type;
+}
+
 

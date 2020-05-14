@@ -4,4 +4,8 @@ export type PropertyOptions = {
     ref? : string;
     min? : number;
     max? : number;
+    items? : Function;
+
+    //Quick fix move this
+    type?: Function;
 };
