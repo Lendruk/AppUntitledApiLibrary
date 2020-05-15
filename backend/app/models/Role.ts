@@ -2,7 +2,7 @@ import { mongoose } from "../utils/database";
 import { IActivatable } from "../lib/interfaces/IActivatable";
 import { Property, getModelFromClass } from "../lib/decorators/Model";
 import Permission from './Permission';
-import Workspace from "./Workspace";
+import { ObjectId } from "../lib/ObjectId";
 
 export class RoleModel extends mongoose.Document implements IActivatable {
 
@@ -12,11 +12,11 @@ export class RoleModel extends mongoose.Document implements IActivatable {
     @Property({ required: true })
     name: string;
 
-    @Property({ ref: "Permission" })
+    @Property({ items: Permission })
     permissions!: typeof Permission[];
 
     @Property({ ref: "Workspace" })
-    workspace?: typeof Workspace;
+    workspace!: ObjectId;
 
     constructor(name: string, isActive: boolean) {
         super();
