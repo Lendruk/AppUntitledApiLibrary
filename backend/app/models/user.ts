@@ -1,7 +1,6 @@
 import { mongoose } from '../utils/database';
 import { Property, getModelFromClass } from '../lib/decorators/Model';
 import bycrypt from 'bcrypt';
-import { ObjectId } from '../lib/ObjectId';
 import { IActivatable } from '../lib/interfaces/IActivatable';
 import Role, { RoleModel } from './Role';
 
