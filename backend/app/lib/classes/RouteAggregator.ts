@@ -6,6 +6,7 @@ import { RouteType, MiddyPair, MiddyFunction } from '../decorators/RouteType';
 import { BaseController } from './BaseController';
 import { RouteOptions } from '../types/RouteOptions';
 import { errors } from '../../utils/errors';
+import { checkToken } from '../../utils/checkToken';
 
 /**
  * Refactor this class completely
@@ -45,6 +46,10 @@ export class RouteAggregator {
                     
                     if (route.routeOptions)
                         functions = functions.concat(this.mapRequiredFields(route.routeOptions));
+
+                    if (route.routeOptions?.requireToken) {
+                        functions = functions.concat(checkToken);
+                    }
 
                     this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req : Request, res : Response ) => {
                         let result = instance[route.methodName as string](req, res);

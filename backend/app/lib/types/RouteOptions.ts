@@ -4,4 +4,6 @@ export type RouteOptions = {
     body?: { required: Array<String> },
     params?: { required: Array<String> },
     headers?: { required: Array<String> },
+
+    requireToken?: boolean,
 }

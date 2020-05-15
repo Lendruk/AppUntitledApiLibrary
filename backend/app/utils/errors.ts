@@ -14,6 +14,14 @@ export const errors = {
         status: 400,
         code: 'INVALID_CREDENTIALS',
     },
+    NO_TOKEN: {
+        status: 401,
+        code: "NO_TOKEN",
+    },
+    INVALID_TOKEN: {
+        status: 401,
+        code: "INVALID_TOKEN",
+    },
     NOT_FOUND: {
         status: 404,
         code: "NOT_FOUND",
