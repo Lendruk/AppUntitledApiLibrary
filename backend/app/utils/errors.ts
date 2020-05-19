@@ -34,6 +34,10 @@ export const errors = {
         status: 500,
         code: "SERVER_ERROR",
     },
+    DB_FAILED_UPDATE: {
+        status: 500,
+        code: "DB_FAILED_UPDATE",
+    },
     FIELDS_EMPTY: (parameter : string, missingFields : Array<string>) => {
         return {
             status: 400,
