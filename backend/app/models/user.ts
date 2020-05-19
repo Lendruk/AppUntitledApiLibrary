@@ -8,7 +8,7 @@ import Role, { RoleModel } from './Role';
 export class UserModel extends mongoose.Document implements IActivatable {
     
     @Property({ default: true })
-    isActive: boolean;
+    _active: boolean;
 
     @Property({ required: true })
     name: string;
@@ -27,7 +27,7 @@ export class UserModel extends mongoose.Document implements IActivatable {
         this.name = name;
         this.password = password;
         this.email = email;
-        this.isActive = true;
+        this._active = true;
     }
 
     comparePassword(candidatePassword : string) : boolean {
@@ -39,7 +39,7 @@ export class UserModel extends mongoose.Document implements IActivatable {
             name: this.name,
             // role: this.role,
             email: this.email,
-            isActive: this.isActive
+            _active: this._active
         };
     }
 };

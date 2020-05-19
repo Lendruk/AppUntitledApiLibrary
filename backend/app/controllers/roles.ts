@@ -48,12 +48,12 @@ export class RoleController extends BaseController {
 
     }
 
-    @Patch("/:id", { body: { required: ["isActive"] }, params: { required: ["id"]}})
+    @Patch("/:id", { body: { required: ["_active"] }, params: { required: ["id"]}})
     public async patchRole(req: Request, res: Response) {
-        const { params: { id }, body: { isActive } } = req;
+        const { params: { id }, body: { _active } } = req;
 
         try {
-            await Role.findOneAndUpdate({ _id: id }, { isActive });
+            await Role.findOneAndUpdate({ _id: id }, { _active });
         } catch {
             throw errors.DB_FAILED_UPDATE;
         }

@@ -5,16 +5,16 @@ import { Property, getModelFromClass } from "../lib/decorators/Model";
 class PermissionModel extends mongoose.Document implements IActivatable {
 
     @Property({ default: true })
-    isActive: boolean;
+    _active: boolean;
 
     @Property({ required: true })
     name: string;
 
 
-    constructor(name: string, isActive: boolean) {
+    constructor(name: string, _active: boolean) {
         super();
         this.name = name;
-        this.isActive = isActive;
+        this._active = _active;
     }
 }
 

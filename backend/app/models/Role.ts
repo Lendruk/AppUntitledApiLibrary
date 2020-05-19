@@ -7,7 +7,7 @@ import { ObjectId } from "../lib/ObjectId";
 export class RoleModel extends mongoose.Document implements IActivatable {
 
     @Property({ default: true })
-    isActive: boolean;
+    _active: boolean;
 
     @Property({ required: true })
     name: string;
@@ -18,10 +18,10 @@ export class RoleModel extends mongoose.Document implements IActivatable {
     @Property({ ref: "Workspace" })
     workspace!: ObjectId;
 
-    constructor(name: string, isActive: boolean) {
+    constructor(name: string, _active: boolean) {
         super();
         this.name = name;
-        this.isActive = isActive;
+        this._active = _active;
     }
 }
 
