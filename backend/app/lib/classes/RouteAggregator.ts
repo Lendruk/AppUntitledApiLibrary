@@ -97,11 +97,13 @@ export class RouteAggregator {
         let status = 200;
         let results : { [key: string]: any[] } = {};
 
-        for(const key in data) {
-            if(key === "code") {
-                status = data[key];
-            } else {
-                results[key] = data[key];
+        if(data) {
+            for(const key in data) {
+                if(key === "code") {
+                    status = data[key];
+                } else {
+                    results[key] = data[key];
+                }
             }
         }
 

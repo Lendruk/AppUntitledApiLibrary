@@ -7,7 +7,7 @@ class PermissionModel extends mongoose.Document implements IActivatable {
     @Property({ default: true })
     _active: boolean;
 
-    @Property({ required: true })
+    @Property({ required: true, unique: true })
     name: string;
 
 
