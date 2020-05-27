@@ -7,7 +7,7 @@ import Permission from '../models/Permission';
 import { errors } from '../utils/errors';
 
 @Controller("/permissions")
-class PermissionController extends BaseController {
+export class PermissionController extends BaseController {
 
     @Get("/")
     public async getPermissions(req : Request, res : Response) {
@@ -15,13 +15,13 @@ class PermissionController extends BaseController {
         return { permissions: await Permission.find({}) };
     }
 
-    @Post("/", { body: { required: ["name", "_active"]} })
+    @Post("/", { body: { required: ["name", "_active", "endpoint", "controller"]} })
     public async postPermission(req : Request, res : Response) {
-        const { body: { name, _active } } = req;
+        const { body: { name, _active, endpoint, controller } } = req;
 
         let newPermission;
         try {
-            newPermission = await new Permission({ name, _active }).save();
+            newPermission = await new Permission({ name, _active, endpoint, controller }).save();
         } catch {
             throw errors.RESOURCE_ALREADY_EXISTS;
         }

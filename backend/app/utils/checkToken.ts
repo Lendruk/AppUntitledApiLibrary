@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { errors } from "./errors";
 import Token from "../models/Token";
+import User from "../models/User";
 
-export const checkToken = async (req : Request, res : Response, next : NextFunction) => {
+export const checkToken = async (req : any, res : Response, next : NextFunction) => {
     const { authorization } = req.headers;
 
     if(!authorization) throw errors.NO_TOKEN;
@@ -14,6 +15,11 @@ export const checkToken = async (req : Request, res : Response, next : NextFunct
     const tbToken = await Token.findOne({ authToken: authorization }).lean();
 
     if(!tbToken) throw errors.INVALID_TOKEN;
+
+    // Assign user to the request
+    const user = await User.findOne({ _id: tbToken.user }).populate(" roles ");
+    
+    req.user = user;
 
     next();
 }
