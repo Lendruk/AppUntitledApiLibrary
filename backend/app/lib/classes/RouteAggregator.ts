@@ -51,11 +51,13 @@ export class RouteAggregator {
                         functions = functions.concat(checkToken);
                     }
 
-                    this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req : Request, res : Response ) => {
+                    this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req : Request, res : Response, next: NextFunction ) => {
                         let result = instance[route.methodName as string](req, res);
                         
                         if(result instanceof Promise) {
-                            result.then(promiseValues => this.formatResponse(promiseValues, res));
+                            result
+                            .then(promiseValues => this.formatResponse(promiseValues, res))
+                            .catch(err => next(err));
                         } else {
                             this.formatResponse(result, res);
                         }

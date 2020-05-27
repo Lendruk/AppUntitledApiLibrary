@@ -28,7 +28,7 @@ export const errors = {
     },
     RESOURCE_ALREADY_EXISTS: {
         status: 409,
-        code: "STATUS_ALREADY_EXISTS",
+        code: "RESOURCE_ALREADY_EXISTS",
     },
     SERVER_ERROR: {
         status: 500,
