@@ -52,6 +52,14 @@ export const getModelFromClass = <T extends mongoose.Document>(target : Function
         ...schemaProperties
     }, { timestamps: { createdAt: '_created', updatedAt: '_modified' } } );
 
+    // Add Functions
+    for(const protoKey of Object.getOwnPropertyNames(target.prototype)) {
+        if(protoKey !== 'constructor') {
+            const protoFunction = target.prototype[protoKey];
+            schema.methods[protoKey] = protoFunction;
+        }
+    }
+
     if(Reflect.hasMetadata("ModelOptions", target)) {
         const modelOptions = Reflect.getMetadata("ModelOptions", target) as ModelProperties;
 
