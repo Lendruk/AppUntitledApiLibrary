@@ -35,8 +35,9 @@ export class UserController extends BaseController {
     public async registerUser(req : Request, res : Response) {
         const { body: { name, password, email }} = req;
 
-        if(User.findOne({ email: email }))
-            return errors.RESOURCE_ALREADY_EXISTS;
+        if(await User.findOne({ email: email })) {
+            throw errors.RESOURCE_ALREADY_EXISTS;
+        }
 
         const newUser = await new User({ name, password: await this.hashPassword(password), email }).save();
 

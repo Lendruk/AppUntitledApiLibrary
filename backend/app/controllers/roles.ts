@@ -22,7 +22,7 @@ export class RoleController extends BaseController {
         body: { required: ["name", "permissions"]},
         headers: { required: ["workspace"] } 
     })
-    public async createRole(req : Request, res : Response) {
+    public async postRole(req : Request, res : Response) {
         const { headers: { workspace }, body } = req;
 
         //TODO: Validations
