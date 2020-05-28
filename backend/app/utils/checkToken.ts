@@ -16,7 +16,6 @@ export const checkToken = async (req : Request, res : Response, next : NextFunct
     
         const tbToken = await Token.findOne({ authToken: splitToken[1] }).lean();
     
-        console.log(tbToken);
         if(!tbToken) throw errors.INVALID_TOKEN;
         // Assign user to the request
         const user = await User.findOne({ _id: tbToken.user }).populate(" roles ").lean();

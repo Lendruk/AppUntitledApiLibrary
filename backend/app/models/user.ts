@@ -2,7 +2,7 @@ import { mongoose } from '../utils/database';
 import { Property, getModelFromClass } from '../lib/decorators/Model';
 import bycrypt from 'bcrypt';
 import { IActivatable } from '../lib/interfaces/IActivatable';
-import Role, { RoleModel } from './Role';
+import Role from './Role';
 
 // Application Model
 export class UserModel extends mongoose.Document implements IActivatable {
@@ -20,7 +20,7 @@ export class UserModel extends mongoose.Document implements IActivatable {
     password: string;
 
     @Property({ items: Role })
-    roles!: RoleModel[];
+    roles!: typeof Role[];
 
     constructor(name : string, email: string, password : string) {
         super();
@@ -37,7 +37,7 @@ export class UserModel extends mongoose.Document implements IActivatable {
     getPublicInformation() {
         return {
             name: this.name,
-            // role: this.role,
+            roles: this.roles,
             email: this.email,
             _active: this._active
         };

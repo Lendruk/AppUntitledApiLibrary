@@ -20,14 +20,13 @@ export class RoleController extends BaseController {
 
     @Post("/", { requireToken: true,
         body: { required: ["name", "permissions"]},
-        headers: { required: ["workspace"] } 
+        // headers: { required: ["workspace"] } 
     })
     public async postRole(req : Request, res : Response) {
         const { headers: { workspace }, body } = req;
 
         //TODO: Validations
-
-        const newRole = await new Role({...body, workspace }).save();
+        const newRole = await new Role({ ...body }).save();
 
         return { code: 201, role: newRole };
     }

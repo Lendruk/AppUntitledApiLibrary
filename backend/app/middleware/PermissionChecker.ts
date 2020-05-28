@@ -1,6 +1,6 @@
 import Permission from "../models/Permission";
 import { UserModel } from "../models/User";
-import { Request, Response, NextFunction } from "express";
+import { NextFunction } from "express";
 import { errors } from "../utils/errors";
 
 export class PermissionChecker {

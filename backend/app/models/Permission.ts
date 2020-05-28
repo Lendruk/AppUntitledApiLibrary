@@ -2,7 +2,7 @@ import { mongoose } from "../utils/database";
 import { IActivatable } from "../lib/interfaces/IActivatable";
 import { Property, getModelFromClass } from "../lib/decorators/Model";
 
-class PermissionModel extends mongoose.Document implements IActivatable {
+export class PermissionModel extends mongoose.Document implements IActivatable {
 
     @Property({ default: true })
     _active: boolean;

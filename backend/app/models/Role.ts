@@ -18,6 +18,9 @@ export class RoleModel extends mongoose.Document implements IActivatable {
     @Property({ ref: "Workspace" })
     workspace!: ObjectId;
 
+    @Property({ default: false })
+    global!: boolean;
+
     constructor(name: string, _active: boolean) {
         super();
         this.name = name;

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { errors } from '../utils/errors';
 import { Controller } from '../lib/decorators/Controller';
-import { Get, Post } from '../lib/decorators/Verbs';
+import { Get, Post, Put } from '../lib/decorators/Verbs';
 import { BaseController } from '../lib/classes/BaseController';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
@@ -27,7 +27,20 @@ export class UserController extends BaseController {
             throw errors.NOT_FOUND;
         }
 
-        return { user };
+        return { user: user?.getPublicInformation() };
+    }
+
+    @Put("/:id", { requireToken: true })
+    public async putUser(req : Request) {
+        const { body, params: { id } } = req;
+        let user;
+        try { 
+            user = await User.findOneAndUpdate({ _id: id }, body, { new: true });
+        } catch {
+            throw errors.BAD_REQUEST;
+        }
+
+        return { user: user?.getPublicInformation() };
     }
 
     @Post("/register", { body: { required: ["password", "email", "name"] }})
