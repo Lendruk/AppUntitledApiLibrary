@@ -17,10 +17,9 @@ export class UserController extends BaseController {
         return { good: "Boost" };
     }
 
-    @Get("/:id")
+    @Get("/:id", { requireToken: true })
     public async getUser(req : Request, res : Response) {
         const { params: { id }} = req;
-
         let user;
         try {
             user = await User.findOne({_id: id });

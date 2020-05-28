@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Response, NextFunction } from 'express';
 import e from 'express';
 import fs from 'fs';
 // Import Controllers
@@ -7,6 +7,9 @@ import { BaseController } from './BaseController';
 import { RouteOptions } from '../types/RouteOptions';
 import { errors } from '../../utils/errors';
 import { checkToken } from '../../utils/checkToken';
+import { PermissionChecker } from '../../middleware/PermissionChecker';
+import { Request } from '../types/Request';
+import { UserModel } from '../../models/User';
 
 /**
  * Refactor this class completely
@@ -49,6 +52,8 @@ export class RouteAggregator {
 
                     if (route.routeOptions?.requireToken) {
                         functions = functions.concat(checkToken);
+                        functions = functions
+                        .concat((req : Request, res : Response, next : NextFunction ) => PermissionChecker.verifyPermission(prefix.replace("/",""), route.methodName as string, next, req.user as UserModel ));
                     }
 
                     this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req : Request, res : Response, next: NextFunction ) => {

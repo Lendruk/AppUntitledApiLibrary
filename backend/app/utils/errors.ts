@@ -22,6 +22,10 @@ export const errors = {
         status: 401,
         code: "INVALID_TOKEN",
     },
+    NO_PERMISSION: {
+        status: 403,
+        code: "NO_PERMISSION",
+    },
     NOT_FOUND: {
         status: 404,
         code: "NOT_FOUND",
