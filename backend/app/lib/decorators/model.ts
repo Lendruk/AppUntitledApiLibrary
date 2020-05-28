@@ -3,6 +3,7 @@ import { mongoose } from '../../utils/database';
 import { Model as MongooseModel } from 'mongoose';
 import { errors } from '../../utils/errors';
 import { ModelProperties } from '../types/ModelProperties';
+import { ObjectId } from '../ObjectId';
 
 export const ModelOptions = (modelProperties : ModelProperties ) : ClassDecorator => {
     return (target : any) => {
@@ -51,7 +52,6 @@ export const getModelFromClass = <T extends mongoose.Document>(target : Function
     const schema = new mongoose.Schema({
         ...schemaProperties
     }, { timestamps: { createdAt: '_created', updatedAt: '_modified' } } );
-
     // Add Functions
     for(const protoKey of Object.getOwnPropertyNames(target.prototype)) {
         if(protoKey !== 'constructor') {
@@ -106,7 +106,8 @@ function extractArray(type: any) {
         }
         return [{...builtType}];
     }
-    return [type.schema];
+
+    return [{ type: ObjectId, ref: type.modelName }];
 }
 
 
