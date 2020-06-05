@@ -19,7 +19,7 @@ export class PermissionChecker {
                 if(workspaceObj) {
                     const permission = await Permission.findOne({ controller, endpoint }).lean();
                     if(permission && user) {
-                        if (Boolean(workspaceObj.users.find(elem => elem.user._id === user._id &&
+                        if (Boolean(workspaceObj.users.find(elem => elem.user === user._id &&
                             Boolean(elem.roles.find(role => role.hasPermission(permission as PermissionModel)))))) {
                             next();
                         } else {
