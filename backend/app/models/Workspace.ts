@@ -1,14 +1,13 @@
 import { mongoose } from "../utils/database";
 import { IActivatable } from "../lib/interfaces/IActivatable";
 import { Property, getModelFromClass } from "../lib/decorators/Model";
-import User from "./User";
-import Project from "./Project";
-import Role from "./Role";
+import Project, { ProjectModel } from "./Project";
+import Role, { RoleModel } from "./Role";
 import { ObjectId } from "../lib/ObjectId";
 
-class WorkspaceUser {
+export class WorkspaceUser {
     @Property({ items: Role })
-    roles : typeof Role[] = [];
+    roles : RoleModel[] = [];
 
     @Property({ ref: "User" })
     user!: ObjectId;
@@ -27,7 +26,7 @@ export class WorkspaceModel extends mongoose.Document implements IActivatable {
     users: WorkspaceUser[] = [];
 
     @Property({ items: Project })
-    projects!: typeof Project[];
+    projects?: ProjectModel[] = [];
 
     constructor(name: string, _active: boolean) {
         super();

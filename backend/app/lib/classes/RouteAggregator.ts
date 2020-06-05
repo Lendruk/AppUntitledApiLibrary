@@ -53,7 +53,7 @@ export class RouteAggregator {
                     if (route.routeOptions?.requireToken) {
                         functions = functions.concat(checkToken);
                         functions = functions
-                        .concat((req : Request, res : Response, next : NextFunction ) => PermissionChecker.verifyPermission(prefix.replace("/",""), route.methodName as string, next, req.user as UserModel ));
+                        .concat((req : Request, res : Response, next : NextFunction ) => PermissionChecker.verifyPermission(prefix.replace("/",""), route.methodName as string, next, req ));
                     }
 
                     this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req : Request, res : Response, next: NextFunction ) => {

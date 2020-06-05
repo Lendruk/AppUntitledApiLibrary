@@ -3,14 +3,24 @@ import { BaseController } from "../lib/classes/BaseController";
 import { Get, Post } from "../lib/decorators/Verbs";
 import { Request } from "../lib/types/Request";
 import Workspace from "../models/Workspace";
+import { errors } from "../utils/errors";
+import Role from "../models/Role";
 
 @Controller("/workspaces")
 export class WorkspaceController extends BaseController {
 
     @Post("/", { requireToken: true, body: { required: ["name"] } })
     public async postWorkspace(req: Request) {
-        const { body: { name } } = req;
+        const { body: { name }, user } = req;
 
-        await new Workspace({ name, projects: [] }).save();
+        if(Boolean(await Workspace.findOne({ "users.user": user?._id }))) {
+            throw errors.BAD_REQUEST;
+        }
+
+        const ownerRole = await new Role({ name: "owner", isOwner: true, permissions: [] }).save();
+
+        const workspace = await new Workspace({ name, projects: [], users: [{ user, role: ownerRole } ] }).save();
+
+        return { code: 201, workspace };
     }
 }
