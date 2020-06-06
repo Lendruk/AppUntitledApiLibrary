@@ -1,6 +1,6 @@
 import { BaseController } from "../lib/classes/BaseController";
 import { Controller } from "../lib/decorators/Controller";
-import { Post, Delete } from "../lib/decorators/Verbs";
+import { Post, Delete, Put } from "../lib/decorators/Verbs";
 import { Column } from "../models/Project";
 import { Request } from "express";
 import { errors } from "../utils/errors";
@@ -24,6 +24,23 @@ export class ColumnController extends BaseController {
         }
 
         return { column: project?.columns.shift() };
+    }
+
+    @Put("/:id", { requireToken: true,
+        body: { required: ["name", "projectId"] },
+        params: { required: ["id"]}
+    })
+    public async putColumn(req: Request) {
+        const { params: { id }, body: { name, projectId } } = req;
+
+        let project = null;
+        try  {
+            project = await Project.findOneAndUpdate({ _id: projectId, "columns._id": new ObjectId(id) }, { name },  {new: true });
+        } catch {
+            throw errors.DB_FAILED_UPDATE;
+        }
+        
+        return { columns: project?.columns };
     }
 
     @Delete("/:id", { requireToken: true, params: { required: ["id" ]}})

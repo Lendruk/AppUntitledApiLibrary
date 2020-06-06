@@ -10,7 +10,6 @@ import { errors } from "../utils/errors";
 @Controller("/projects")
 export class ProjectController extends BaseController {
 
-
     @Get("/", { requireToken: true, headers: { required: ["workspace"] } })
     public async getProjects(req: Request) {
         const { headers: { workspace } } = req;
