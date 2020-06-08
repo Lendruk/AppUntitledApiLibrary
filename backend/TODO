@@ -1,1 +1,12 @@
 - Create default roles when a workspace is created
+- CRUD tasks
+- Add modifiers to tasks. (due date, time spent, etc)
+- Emails
+- CDN (maybe)
+- comments on tasks
+- setup websockets
+- refresh board automatically using websockets
+- Login QR code
+- Add formdata support to api structure
+- Pull requests on task (integration with gitlab)
+- Add sorting to columns and tasks
