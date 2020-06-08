@@ -1,24 +1,24 @@
 import { mongoose } from "../utils/database";
 import { ObjectId } from "../lib/ObjectId";
-import { Property, getModelFromClass } from "../lib/decorators/Model";
+import { Property, getModelFromClass } from "../lib/decorators/model";
 
 type Session = {
-    date : string;
-    device : string;
-    os : string;
-    systemVersion : string;
-    appVersion : string;
+    date: string;
+    device: string;
+    os: string;
+    systemVersion: string;
+    appVersion: string;
 }
 
 export class SessionsModel extends mongoose.Document {
 
     @Property({ required: true, ref: "User" })
-    user : ObjectId;
+    user: ObjectId;
 
     @Property({ default: [] })
-    logins : Session[];
+    logins: Session[];
 
-    constructor(user : ObjectId, logins : Session[] ) {
+    constructor(user: ObjectId, logins: Session[]) {
         super();
         this.user = user;
         this.logins = logins;

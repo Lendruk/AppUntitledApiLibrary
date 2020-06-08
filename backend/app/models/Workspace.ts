@@ -1,13 +1,13 @@
 import { mongoose } from "../utils/database";
 import { IActivatable } from "../lib/interfaces/IActivatable";
-import { Property, getModelFromClass } from "../lib/decorators/Model";
+import { Property, getModelFromClass } from "../lib/decorators/model";
 import Project, { ProjectModel } from "./Project";
 import Role, { RoleModel } from "./Role";
 import { ObjectId } from "../lib/ObjectId";
 
 export class WorkspaceUser {
     @Property({ items: Role })
-    roles : RoleModel[] = [];
+    roles: RoleModel[] = [];
 
     @Property({ ref: "User" })
     user!: ObjectId;

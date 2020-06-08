@@ -1,6 +1,6 @@
 import { BaseController } from "../lib/classes/BaseController";
-import { Controller } from "../lib/decorators/Controller";
-import { Post, Get } from "../lib/decorators/Verbs";
+import { Controller } from "../lib/decorators/controller";
+import { Post, Get } from "../lib/decorators/verbs";
 import { Request, Response } from "express";
 import User from "../models/User";
 import { errors } from "../utils/errors";
@@ -11,13 +11,13 @@ import { Inject } from "../lib/decorators/Inject";
 export class AuthController extends BaseController {
 
     @Inject()
-    _loginService! : LoginService;
+    _loginService!: LoginService;
 
     @Post("/login")
-    public async loginUser(req : Request, res : Response) {
-        const { body: { email, password }} = req;
+    public async loginUser(req: Request, res: Response) {
+        const { body: { email, password } } = req;
 
-        if(!email || !password) throw errors.REQUIRED_FIELDS_EMPTY;
+        if (!email || !password) throw errors.REQUIRED_FIELDS_EMPTY;
 
         return { status: 'LOGIN_SUCCESSFULL', ...await this._loginService.login(email, password) };
     }

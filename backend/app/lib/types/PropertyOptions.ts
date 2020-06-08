@@ -1,11 +1,11 @@
 export type PropertyOptions = {
-    required? : boolean;
-    default? : any;
-    ref? : string;
-    min? : number;
-    max? : number;
+    required?: boolean;
+    default?: any;
+    ref?: string;
+    min?: number;
+    max?: number;
     unique?: boolean;
-    items? : Function;
+    items?: Function;
 
     //Quick fix move this
     type?: Function;

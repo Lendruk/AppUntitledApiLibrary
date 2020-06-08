@@ -2,24 +2,24 @@ import { Request, Response, NextFunction } from "express";
 import { RouteOptions } from "../types/RouteOptions";
 
 export interface RouteType {
-    path : string;
+    path: string;
 
     requestMethod: "get" | "post" | "put" | "patch" | "delete";
 
-    methodName : string | symbol;
+    methodName: string | symbol;
 
-    middleware? : Function[];
+    middleware?: Function[];
 
-    propertyKey? : string | symbol;
+    propertyKey?: string | symbol;
 
-    routeOptions? : RouteOptions;
+    routeOptions?: RouteOptions;
 }
 
 export interface MiddyPair {
-    functions : MiddyFunctions;
-    method : string | symbol;
+    functions: MiddyFunctions;
+    method: string | symbol;
 }
 
 export type MiddyFunctions = Array<MiddyFunction>;
 
-export type MiddyFunction = (req : Request, res: Response, next: NextFunction) => void;
+export type MiddyFunction = (req: Request, res: Response, next: NextFunction) => void;

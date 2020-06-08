@@ -42,7 +42,7 @@ export const errors = {
         status: 500,
         code: "DB_FAILED_UPDATE",
     },
-    FIELDS_EMPTY: (parameter : string, missingFields : Array<string>) => {
+    FIELDS_EMPTY: (parameter: string, missingFields: Array<string>) => {
         return {
             status: 400,
             code: "REQUIRED_FIELDS_EMPTY",
@@ -54,10 +54,10 @@ export const errors = {
 
 
 export class ErrorManager {
-    static async handleError(err : ErrorType, req : Request, res : Response, next : NextFunction) {
+    static async handleError(err: ErrorType, req: Request, res: Response, next: NextFunction) {
         // const message = JSON.parse(err.message || "");
 
-        if(!err) {
+        if (!err) {
             err = errors.SERVER_ERROR;
         }
 

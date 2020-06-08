@@ -1,13 +1,13 @@
 import { mongoose } from "../utils/database";
 import { IActivatable } from "../lib/interfaces/IActivatable";
-import { Property, getModelFromClass } from "../lib/decorators/Model";
+import { Property, getModelFromClass } from "../lib/decorators/model";
 import Role, { RoleModel } from "./Role";
 import { ObjectId } from "../lib/ObjectId";
 import Task, { TaskModel } from "./Task";
 
 class ProjectUser {
     @Property({ items: Role })
-    roles : RoleModel[] = [];
+    roles: RoleModel[] = [];
 
     @Property({ ref: "User" })
     user!: ObjectId;
@@ -31,7 +31,7 @@ export class ProjectModel extends mongoose.Document implements IActivatable {
     _active!: boolean;
 
     @Property({ required: true })
-    title!: string; 
+    title!: string;
 
     @Property({ items: ProjectUser })
     users: ProjectUser[] = [];

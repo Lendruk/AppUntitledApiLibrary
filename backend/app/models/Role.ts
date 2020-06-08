@@ -1,6 +1,6 @@
 import { mongoose } from "../utils/database";
 import { IActivatable } from "../lib/interfaces/IActivatable";
-import { Property, getModelFromClass } from "../lib/decorators/Model";
+import { Property, getModelFromClass } from "../lib/decorators/model";
 import Permission, { PermissionModel } from './Permission';
 import { ObjectId } from "../lib/ObjectId";
 
@@ -30,13 +30,13 @@ export class RoleModel extends mongoose.Document implements IActivatable {
         this._active = _active;
     }
 
-    hasPermission(permission : PermissionModel) : boolean {
+    hasPermission(permission: PermissionModel): boolean {
 
         this.permissions.find(perm =>
-             perm.controller === permission.controller && 
-             perm.endpoint === permission.endpoint &&
-             perm._active
-             );
+            perm.controller === permission.controller &&
+            perm.endpoint === permission.endpoint &&
+            perm._active
+        );
 
         return false;
     }

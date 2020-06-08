@@ -1,6 +1,6 @@
 import { mongoose } from "../utils/database";
 import { ObjectId } from "../lib/ObjectId";
-import { Property, getModelFromClass } from "../lib/decorators/Model";
+import { Property, getModelFromClass } from "../lib/decorators/model";
 
 export class InviteModel extends mongoose.Document {
 

@@ -1,12 +1,12 @@
 import { mongoose } from '../utils/database';
-import { Property, getModelFromClass } from '../lib/decorators/Model';
+import { Property, getModelFromClass } from '../lib/decorators/model';
 import bycrypt from 'bcrypt';
 import { IActivatable } from '../lib/interfaces/IActivatable';
 import Role from './Role';
 
 // Application Model
 export class UserModel extends mongoose.Document implements IActivatable {
-    
+
     @Property({ default: true })
     _active: boolean;
 
@@ -22,7 +22,7 @@ export class UserModel extends mongoose.Document implements IActivatable {
     @Property({ items: Role })
     roles!: typeof Role[];
 
-    constructor(name : string, email: string, password : string) {
+    constructor(name: string, email: string, password: string) {
         super();
         this.name = name;
         this.password = password;
@@ -30,7 +30,7 @@ export class UserModel extends mongoose.Document implements IActivatable {
         this._active = true;
     }
 
-    comparePassword(candidatePassword : string) : boolean {
+    comparePassword(candidatePassword: string): boolean {
         return this.password ? bycrypt.compareSync(candidatePassword, this.password) : false;
     }
 

@@ -1,6 +1,6 @@
 import { mongoose } from "../utils/database";
 import { IActivatable } from "../lib/interfaces/IActivatable";
-import { Property, getModelFromClass } from "../lib/decorators/Model";
+import { Property, getModelFromClass } from "../lib/decorators/model";
 
 export class PermissionModel extends mongoose.Document implements IActivatable {
 
