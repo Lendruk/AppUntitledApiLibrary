@@ -10,3 +10,5 @@
 - Add formdata support to api structure
 - Pull requests on task (integration with gitlab)
 - Add sorting to columns and tasks
+- Add tags for Tasks with CRUDS
+- Add task type(Bug, story, etc)

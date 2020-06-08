@@ -16,10 +16,10 @@ export class WorkspaceUser {
 export class WorkspaceModel extends mongoose.Document implements IActivatable {
 
     @Property({ default: true })
-    _active: boolean;
+    _active!: boolean;
 
     @Property({ required: true })
-    name: string;
+    name!: string;
 
     // Workspace level users
     @Property({ items: WorkspaceUser })
@@ -27,12 +27,6 @@ export class WorkspaceModel extends mongoose.Document implements IActivatable {
 
     @Property({ items: Project })
     projects?: ProjectModel[] = [];
-
-    constructor(name: string, _active: boolean) {
-        super();
-        this.name = name;
-        this._active = _active;
-    }
 }
 
 const Workspace = getModelFromClass<WorkspaceModel>(WorkspaceModel);

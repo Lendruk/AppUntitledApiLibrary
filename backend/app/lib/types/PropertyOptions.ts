@@ -6,7 +6,7 @@ export type PropertyOptions = {
     max?: number;
     unique?: boolean;
     items?: Function;
-
+    enum?: Array<string>;
     //Quick fix move this
     type?: Function;
 };

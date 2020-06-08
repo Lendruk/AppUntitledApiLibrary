@@ -2,7 +2,7 @@ import { BaseController } from "../lib/classes/BaseController";
 import { Controller } from "../lib/decorators/controller";
 import { Get, Post, Delete } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
-import Project from "../models/Project";
+import Project, { Tag, ProjectModel } from "../models/Project";
 import Workspace from "../models/Workspace";
 import { ObjectId } from "../lib/ObjectId";
 import { errors } from "../utils/errors";
@@ -44,6 +44,42 @@ export class ProjectController extends BaseController {
         return { project };
     }
 
+    @Get("/:id/tags", { requireToken: true, params: { required: ["id"] } })
+    public async getProjectTags(req: Request) {
+        const { params: { id } } = req;
+
+        let tags = null;
+        try {
+            tags = await Project.findOne({ _id: id }, 'tags').lean();
+        } catch (err) {
+            throw errors.NOT_FOUND;
+        }
+        return { tags };
+    }
+
+    @Post("/:id/tags", {
+        requireToken: true,
+        params: { required: ["id"] }
+    })
+    public async postProjectTags(req: Request) {
+        const {
+            params: { id },
+            body: { name, colour }
+        } = req;
+
+
+        let updatedWorkSpace = await Project.findOneAndUpdate(
+            { _id: id },
+            {
+                $push: { "tags": new Tag(name, colour) }
+            },
+            {
+                new: true
+            });
+
+        return { code: 201, tags: updatedWorkSpace?.tags };
+    }
+
     @Post("/", {
         requireToken: true,
         headers: { required: ["workspace"] },
@@ -54,7 +90,7 @@ export class ProjectController extends BaseController {
 
         const project = await new Project({ title }).save();
 
-        await Workspace.findOneAndUpdate({ _id: new ObjectId(workspace as string) }, { $push: { projects: project } });
+        await Workspace.findOneAndUpdate({ _id: workspace }, { $push: { projects: project } });
 
         return { code: 201, project };
     }

@@ -9,7 +9,7 @@ import { errors } from '../../utils/errors';
 import { checkToken } from '../../utils/checkToken';
 import { PermissionChecker } from '../../middleware/PermissionChecker';
 import { Request } from '../types/Request';
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/user';
 
 /**
  * Refactor this class completely

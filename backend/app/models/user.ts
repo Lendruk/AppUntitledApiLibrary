@@ -8,27 +8,19 @@ import Role from './Role';
 export class UserModel extends mongoose.Document implements IActivatable {
 
     @Property({ default: true })
-    _active: boolean;
+    _active!: boolean;
 
     @Property({ required: true })
-    name: string;
+    name!: string;
 
     @Property({ required: true })
-    email: string;
+    email!: string;
 
     @Property({ required: true })
-    password: string;
+    password!: string;
 
     @Property({ items: Role })
     roles!: typeof Role[];
-
-    constructor(name: string, email: string, password: string) {
-        super();
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this._active = true;
-    }
 
     comparePassword(candidatePassword: string): boolean {
         return this.password ? bycrypt.compareSync(candidatePassword, this.password) : false;

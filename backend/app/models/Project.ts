@@ -25,6 +25,19 @@ export class Column {
     }
 }
 
+export class Tag {
+    @Property({ required: true })
+    name!: string;
+
+    @Property({ required: true })
+    colour!: string;
+
+    constructor(name: string, colour: string) {
+        this.name = name;
+        this.colour = colour;
+    }
+}
+
 export class ProjectModel extends mongoose.Document implements IActivatable {
 
     @Property({ default: true })
@@ -38,6 +51,9 @@ export class ProjectModel extends mongoose.Document implements IActivatable {
 
     @Property({ items: Column, default: [] })
     columns!: Column[];
+
+    @Property({ items: Tag, default: [] })
+    tags!: Tag[];
 
 }
 

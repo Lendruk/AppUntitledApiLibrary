@@ -5,25 +5,16 @@ import { Property, getModelFromClass } from "../lib/decorators/model";
 export class PermissionModel extends mongoose.Document implements IActivatable {
 
     @Property({ default: true })
-    _active: boolean;
+    _active!: boolean;
 
     @Property({ required: true })
-    controller: string;
+    controller!: string;
 
     @Property({ required: true })
-    endpoint: string;
+    endpoint!: string;
 
     @Property({ required: true })
-    name: string;
-
-
-    constructor(name: string, _active: boolean, endpoint: string, controller: string) {
-        super();
-        this.name = name;
-        this._active = _active;
-        this.endpoint = endpoint;
-        this.controller = controller;
-    }
+    name!: string;
 }
 
 const Permission = getModelFromClass<PermissionModel>(PermissionModel);
