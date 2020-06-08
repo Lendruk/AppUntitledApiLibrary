@@ -6,16 +6,10 @@ import { Expiry } from "../lib/classes/Expiry";
 @ModelOptions({ expireAfter: new Expiry({ days: 90 }) })
 export class TokenModel extends mongoose.Document {
     @Property({ required: true, ref: "User" })
-    user: ObjectId;
+    user!: ObjectId;
 
     @Property({ required: true })
-    authToken: string;
-
-    constructor(user: ObjectId, authToken: string) {
-        super();
-        this.user = user;
-        this.authToken = authToken;
-    }
+    authToken!: string;
 }
 
 const Token = getModelFromClass<TokenModel>(TokenModel);

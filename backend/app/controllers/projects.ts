@@ -2,7 +2,7 @@ import { BaseController } from "../lib/classes/BaseController";
 import { Controller } from "../lib/decorators/controller";
 import { Get, Post, Delete } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
-import Project from "../models/Project";
+import Project, { Tag, ProjectModel } from "../models/Project";
 import Workspace from "../models/Workspace";
 import { ObjectId } from "../lib/ObjectId";
 import { errors } from "../utils/errors";
@@ -42,6 +42,46 @@ export class ProjectController extends BaseController {
         }
 
         return { project };
+    }
+
+    @Get("/:id/tags", { requireToken: true, params: { required: ["id"] } })
+    public async getProjectTags(req: Request) {
+        const { params: { id } } = req;
+
+        let tags = null;
+        try {
+            tags = await Project.findOne({ _id: id }, 'tags').lean();
+        } catch (err) {
+            throw errors.NOT_FOUND;
+        }
+        return { tags };
+    }
+
+    @Post("/:id/tags", {
+        requireToken: true,
+        headers: { required: ["workspace"] },
+        params: { required: ["id"] }
+    })
+    public async postProjectTags(req: Request) {
+        const {
+            headers: { workspace },
+            params: { id },
+            body: { name, colour }
+        } = req;
+
+        let updatedWorkSpace = await Workspace.findOneAndUpdate(
+            { _id: new ObjectId(workspace as string) },
+            {
+                $push: { "projects.$[project].tags": new Tag(name, colour) }
+            },
+            {
+                arrayFilters: [{
+                    'project._id': id,
+                }],
+                new: true
+            });
+
+        return { code: 201 };
     }
 
     @Post("/", {
