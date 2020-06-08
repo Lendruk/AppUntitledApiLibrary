@@ -59,29 +59,25 @@ export class ProjectController extends BaseController {
 
     @Post("/:id/tags", {
         requireToken: true,
-        headers: { required: ["workspace"] },
         params: { required: ["id"] }
     })
     public async postProjectTags(req: Request) {
         const {
-            headers: { workspace },
             params: { id },
             body: { name, colour }
         } = req;
 
-        let updatedWorkSpace = await Workspace.findOneAndUpdate(
-            { _id: new ObjectId(workspace as string) },
+
+        let updatedWorkSpace = await Project.findOneAndUpdate(
+            { _id: id },
             {
-                $push: { "projects.$[project].tags": new Tag(name, colour) }
+                $push: { "tags": new Tag(name, colour) }
             },
             {
-                arrayFilters: [{
-                    'project._id': id,
-                }],
                 new: true
             });
 
-        return { code: 201 };
+        return { code: 201, tags: updatedWorkSpace?.tags };
     }
 
     @Post("/", {
@@ -94,7 +90,7 @@ export class ProjectController extends BaseController {
 
         const project = await new Project({ title }).save();
 
-        await Workspace.findOneAndUpdate({ _id: new ObjectId(workspace as string) }, { $push: { projects: project } });
+        await Workspace.findOneAndUpdate({ _id: workspace }, { $push: { projects: project } });
 
         return { code: 201, project };
     }

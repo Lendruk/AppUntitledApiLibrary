@@ -19,7 +19,7 @@ export class WorkspaceController extends BaseController {
 
         const ownerRole = await new Role({ name: "owner", isOwner: true });
 
-        const workspace = await new Workspace({ name, projects: [], users: [{ user, role: ownerRole }] }).save();
+        const workspace = await new Workspace({ name, projects: [], users: [{ user, roles: [ownerRole] }] }).save();
 
         ownerRole.workspace = workspace._id;
 

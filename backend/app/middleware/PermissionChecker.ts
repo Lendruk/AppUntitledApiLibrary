@@ -13,7 +13,7 @@ export class PermissionChecker {
         try {
             let workspaceObj = null;
             const permission = await Permission.findOne({ controller, endpoint }).lean();
-            
+
             if (workspace) {
                 workspaceObj = await Workspace.findOne({ _id: workspace }).lean();
             }
@@ -28,7 +28,6 @@ export class PermissionChecker {
                     }
                 }
             }
-            console.log("test");
             next();
         } catch (err) {
             next(err);
