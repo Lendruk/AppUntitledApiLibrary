@@ -1,6 +1,6 @@
 
 export class BaseController {
-    [index: string ]: any;
+    [index: string]: any;
 
     constructor() {
 

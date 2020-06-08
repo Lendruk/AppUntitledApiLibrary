@@ -1,6 +1,6 @@
-import { Controller } from "../lib/decorators/Controller";
+import { Controller } from "../lib/decorators/controller";
 import { BaseController } from "../lib/classes/BaseController";
-import { Get, Post } from "../lib/decorators/Verbs";
+import { Get, Post } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
 import Workspace from "../models/Workspace";
 import { errors } from "../utils/errors";
@@ -13,13 +13,13 @@ export class WorkspaceController extends BaseController {
     public async postWorkspace(req: Request) {
         const { body: { name }, user } = req;
 
-        if(Boolean(await Workspace.findOne({ "users.user": user?._id }))) {
+        if (Boolean(await Workspace.findOne({ "users.user": user?._id }))) {
             throw errors.BAD_REQUEST;
         }
 
         const ownerRole = await new Role({ name: "owner", isOwner: true, permissions: [] }).save();
 
-        const workspace = await new Workspace({ name, projects: [], users: [{ user, role: ownerRole } ] }).save();
+        const workspace = await new Workspace({ name, projects: [], users: [{ user, role: ownerRole }] }).save();
 
         return { code: 201, workspace };
     }

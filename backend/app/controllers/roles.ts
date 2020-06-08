@@ -1,6 +1,6 @@
-import { Controller } from "../lib/decorators/Controller";
+import { Controller } from "../lib/decorators/controller";
 import { BaseController } from "../lib/classes/BaseController";
-import { Get, Post, Delete, Put, Patch } from "../lib/decorators/Verbs";
+import { Get, Post, Delete, Put, Patch } from "../lib/decorators/verbs";
 import { Request, Response } from "express";
 import Role from "../models/Role";
 import { ObjectId } from "../lib/ObjectId";
@@ -10,7 +10,7 @@ import { errors } from "../utils/errors";
 export class RoleController extends BaseController {
 
     @Get("/", { requireToken: true, headers: { required: ["workspace"] } })
-    public async getRoles(req : Request, res : Response) {
+    public async getRoles(req: Request, res: Response) {
         const { headers: { workspace } } = req;
 
         const roles = await Role.find({ workspace: new ObjectId(workspace as string) });
@@ -18,11 +18,12 @@ export class RoleController extends BaseController {
         return { roles };
     }
 
-    @Post("/", { requireToken: true,
-        body: { required: ["name", "permissions"]},
+    @Post("/", {
+        requireToken: true,
+        body: { required: ["name", "permissions"] },
         // headers: { required: ["workspace"] } 
     })
-    public async postRole(req : Request, res : Response) {
+    public async postRole(req: Request, res: Response) {
         const { headers: { workspace }, body } = req;
 
         //TODO: Validations
@@ -36,9 +37,9 @@ export class RoleController extends BaseController {
         const { params: { id }, body } = req;
 
         let role = null;
-        
+
         try {
-            role = await Role.findOneAndUpdate({ _id: id}, body, { new: true, runValidators: true });
+            role = await Role.findOneAndUpdate({ _id: id }, body, { new: true, runValidators: true });
         } catch {
             throw errors.DB_FAILED_UPDATE;
         }
@@ -47,7 +48,7 @@ export class RoleController extends BaseController {
 
     }
 
-    @Patch("/:id", { body: { required: ["_active"] }, params: { required: ["id"]}})
+    @Patch("/:id", { body: { required: ["_active"] }, params: { required: ["id"] } })
     public async patchRole(req: Request, res: Response) {
         const { params: { id }, body: { _active } } = req;
 
@@ -60,8 +61,8 @@ export class RoleController extends BaseController {
         return { code: 200 };
     }
 
-    @Delete("/:id",{ params: { required: ["id"] } })
-    public async deleteRole(req : Request, res : Response) {   
+    @Delete("/:id", { params: { required: ["id"] } })
+    public async deleteRole(req: Request, res: Response) {
         const { params: { id } } = req;
 
         //TODO: Remove Role from all users;

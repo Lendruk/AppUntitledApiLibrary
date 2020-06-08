@@ -1,7 +1,7 @@
 import { mongoose } from '../utils/database';
 import { BaseController } from '../lib/classes/BaseController';
-import { Controller } from '../lib/decorators/Controller';
-import { Get, Post, Delete, Put } from '../lib/decorators/Verbs';
+import { Controller } from '../lib/decorators/controller';
+import { Get, Post, Delete, Put } from '../lib/decorators/verbs';
 import { Request, Response } from 'express';
 import Permission from '../models/Permission';
 import { errors } from '../utils/errors';
@@ -10,13 +10,13 @@ import { errors } from '../utils/errors';
 export class PermissionController extends BaseController {
 
     @Get("/")
-    public async getPermissions(req : Request, res : Response) {
-        
+    public async getPermissions(req: Request, res: Response) {
+
         return { permissions: await Permission.find({}) };
     }
 
-    @Post("/", { body: { required: ["name", "_active", "endpoint", "controller"]} })
-    public async postPermission(req : Request, res : Response) {
+    @Post("/", { body: { required: ["name", "_active", "endpoint", "controller"] } })
+    public async postPermission(req: Request, res: Response) {
         const { body: { name, _active, endpoint, controller } } = req;
 
         let newPermission;
@@ -29,10 +29,10 @@ export class PermissionController extends BaseController {
         return { permission: newPermission, code: 201 };
     }
 
-    @Put("/:id",{ params: { required: ["id"] }})
+    @Put("/:id", { params: { required: ["id"] } })
     public async putPermission(req: Request, res: Response) {
         const { body, params: { id } } = req;
-        
+
         let updatedPermission;
         try {
             updatedPermission = await Permission.findOneAndUpdate({ _id: id }, body, { new: true });
@@ -43,9 +43,9 @@ export class PermissionController extends BaseController {
         return { permission: updatedPermission };
     }
 
-    @Delete("/:id", { params: { required: [ "id" ] } })
-    public async deletePermission(req : Request, res : Response) {
-        const { params: { id} } = req;
+    @Delete("/:id", { params: { required: ["id"] } })
+    public async deletePermission(req: Request, res: Response) {
+        const { params: { id } } = req;
 
         await Permission.deleteOne({ _id: id });
     }

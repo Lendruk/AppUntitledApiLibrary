@@ -7,7 +7,7 @@ export class Injector {
 
         // If the singleton hasn't been created yet
         // assign it
-        if(!Injector.instance) {
+        if (!Injector.instance) {
             Injector.instance = this;
         }
     }
@@ -15,19 +15,19 @@ export class Injector {
     private hasService(service: any): boolean {
         const keys = this.serviceMap.keys();
         let key = keys.next();
-        while(!key.done) {
-            if(key.value instanceof service) 
+        while (!key.done) {
+            if (key.value instanceof service)
                 return true;
             key = keys.next();
         }
         return false;
     }
 
-    private retrieveService(service: any ) {
+    private retrieveService(service: any) {
         const keys = this.serviceMap.keys();
         let key = keys.next();
-        while(!key.done) {
-            if(key.value instanceof service) 
+        while (!key.done) {
+            if (key.value instanceof service)
                 return { service: key.value, consumers: this.serviceMap.get(key.value) };
             key = keys.next();
         }
@@ -36,13 +36,13 @@ export class Injector {
     }
 
     registerService(service: any) {
-        if(!this.hasService(service)) {
+        if (!this.hasService(service)) {
             this.serviceMap.set(new service(), new Array<any>());
         }
     }
 
     registerConsumer(service: any, consumer: any) {
-        if(!this.hasService(service)) {
+        if (!this.hasService(service)) {
             this.registerService(service);
         }
         const servicePair = this.retrieveService(service);
@@ -54,8 +54,8 @@ export class Injector {
     }
 
     injectService(service: any) {
-        if(this.serviceMap.has(service)) {
-           
+        if (this.serviceMap.has(service)) {
+
         }
     }
 

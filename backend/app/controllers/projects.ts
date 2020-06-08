@@ -1,6 +1,6 @@
 import { BaseController } from "../lib/classes/BaseController";
-import { Controller } from "../lib/decorators/Controller";
-import { Get, Post, Delete } from "../lib/decorators/Verbs";
+import { Controller } from "../lib/decorators/controller";
+import { Get, Post, Delete } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
 import Project from "../models/Project";
 import Workspace from "../models/Workspace";
@@ -44,8 +44,9 @@ export class ProjectController extends BaseController {
         return { project };
     }
 
-    @Post("/", { requireToken: true,
-        headers: { required: ["workspace"]},
+    @Post("/", {
+        requireToken: true,
+        headers: { required: ["workspace"] },
         body: { required: ["title"] }
     })
     public async postProject(req: Request) {
@@ -72,14 +73,14 @@ export class ProjectController extends BaseController {
                     as: "users.role",
                 },
             },
-            { $match: { $and: [ { "users.user": user?._id }, { "users.role.isOwner": true }]}}
+            { $match: { $and: [{ "users.user": user?._id }, { "users.role.isOwner": true }] } }
         ]);
 
-        if(!workspaceObj) throw errors.NO_PERMISSION;
+        if (!workspaceObj) throw errors.NO_PERMISSION;
 
         try {
             await Project.findOneAndDelete({ _id: new ObjectId(id) });
-        } catch(err) {
+        } catch (err) {
             throw errors.BAD_REQUEST;
         }
     }
