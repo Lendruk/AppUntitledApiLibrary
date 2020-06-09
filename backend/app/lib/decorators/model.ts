@@ -1,6 +1,6 @@
 import { PropertyOptions } from '../types/PropertyOptions';
 import { mongoose } from '../../utils/database';
-import { Model as MongooseModel } from 'mongoose';
+import { Model as MongooseModel, SchemaOptions } from 'mongoose';
 import { ModelProperties } from '../types/ModelProperties';
 import { ObjectId } from '../ObjectId';
 
@@ -36,6 +36,16 @@ export const getModelFromClass = <T extends mongoose.Document>(target: Function)
     if (!Reflect.hasMetadata("properties", target)) {
         Reflect.defineMetadata("properties", [], target);
     }
+
+    let modelOptions : ModelProperties = {};
+    let schemaOptions : SchemaOptions = {};
+    if (Reflect.hasMetadata("ModelOptions", target)) {
+        modelOptions = Reflect.getMetadata("ModelOptions", target) as ModelProperties;
+        if (modelOptions.noId) {
+            schemaOptions._id = false;
+        }
+    }
+
     const schemaProperties = extractTypes(Reflect.getMetadata("properties", target));
     const schema = new mongoose.Schema({
         ...schemaProperties
@@ -49,13 +59,10 @@ export const getModelFromClass = <T extends mongoose.Document>(target: Function)
         }
     }
 
-    if (Reflect.hasMetadata("ModelOptions", target)) {
-        const modelOptions = Reflect.getMetadata("ModelOptions", target) as ModelProperties;
-
-        if (modelOptions.expireAfter) {
-            schema.index({ _created: 1 }, { expireAfterSeconds: modelOptions.expireAfter.getSeconds() });
-        }
+    if (modelOptions?.expireAfter) {
+        schema.index({ _created: 1 }, { expireAfterSeconds: modelOptions.expireAfter.getSeconds() });
     }
+
     return mongoose.model<T>(target.name.replace(/(Model)+/g, ""), schema);
 }
 
