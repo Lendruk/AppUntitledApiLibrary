@@ -1,7 +1,6 @@
 import { PropertyOptions } from '../types/PropertyOptions';
 import { mongoose } from '../../utils/database';
 import { Model as MongooseModel } from 'mongoose';
-import { errors } from '../../utils/errors';
 import { ModelProperties } from '../types/ModelProperties';
 import { ObjectId } from '../ObjectId';
 
@@ -37,23 +36,11 @@ export const getModelFromClass = <T extends mongoose.Document>(target: Function)
     if (!Reflect.hasMetadata("properties", target)) {
         Reflect.defineMetadata("properties", [], target);
     }
-    const schemaProperties: { [index: string]: any } = {};
-    for (const property of Reflect.getMetadata("properties", target)) {
-        const key = property.propertyKey;
-        delete property.propertyKey;
-
-        if (property.items) {
-            schemaProperties[key] = extractArray(property.items);
-        } else {
-            schemaProperties[key] = {
-                ...property,
-                type: extractType(property.type)
-            };
-        }
-    }
+    const schemaProperties = extractTypes(Reflect.getMetadata("properties", target));
     const schema = new mongoose.Schema({
         ...schemaProperties
     }, { timestamps: { createdAt: '_created', updatedAt: '_modified' } });
+
     // Add Functions
     for (const protoKey of Object.getOwnPropertyNames(target.prototype)) {
         if (protoKey !== 'constructor') {
@@ -72,44 +59,36 @@ export const getModelFromClass = <T extends mongoose.Document>(target: Function)
     return mongoose.model<T>(target.name.replace(/(Model)+/g, ""), schema);
 }
 
-// Refactor this completely
-const BASE_TYPES = ["String", "Number", "Date", "Boolean", "Array", "ObjectId"];
-function extractType(type: Function): any {
-    if (!type) return {};
-    if (BASE_TYPES.includes(type.name)) {
-        return type;
+function extractTypes(properties : any) {
+    const schemaProperties: { [index: string]: any } = {};
+    for (const property of properties) {
+        const key = property.propertyKey;
+        delete property.propertyKey;
+
+        schemaProperties[key] = extractType(property, property.items);
+    }
+
+    return schemaProperties;
+}
+
+function extractType(propOptions : any, items? : any) {
+    const type = propOptions.type as Function;
+    if(!type) return {};
+
+    if(items) {
+        if (Reflect.hasMetadata("properties", items) && !items.modelName) {
+            delete propOptions.items;
+            delete propOptions.type;
+            return [{ ...propOptions, ...extractTypes(Reflect.getMetadata("properties", items)) }];
+        } else {
+            return [{ type: ObjectId, ref: items.modelName || items.name }];
+        }
     } else {
-        let builtType = {};
         if (Reflect.hasMetadata("properties", type)) {
-            for (const prop of Reflect.getMetadata("properties", type)) {
-                const key = prop.propertyKey;
-                delete prop.propertyKey;
-                if (BASE_TYPES.includes(prop.type.name)) {
-                    builtType = { ...builtType, [key]: { ...prop, type: extractType(prop.type) } };
-                } else {
-                    builtType = { ...builtType, [key]: { ...prop, ...extractType(prop.type) } };
-                }
-
-            }
+            return { ...propOptions, type: extractTypes(Reflect.getMetadata("properties", type)) };
+        } else {
+            return { ...propOptions };
         }
-        return builtType;
     }
 }
-
-function extractArray(type: any) {
-    if (Reflect.hasMetadata("properties", type)) {
-        let builtType = {};
-        for (const prop of Reflect.getMetadata("properties", type)) {
-            const key = prop.propertyKey;
-            const propType = extractType(prop.type);
-            delete prop.propertyKey;
-            if (!BASE_TYPES.includes(prop.type.name)) delete prop.type;
-            builtType = { ...builtType, [key]: { ...prop, ...propType } };
-        }
-        return [{ ...builtType }];
-    }
-
-    return [{ type: ObjectId, ref: type.modelName }];
-}
-
 
