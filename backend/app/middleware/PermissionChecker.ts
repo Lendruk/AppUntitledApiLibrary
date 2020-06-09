@@ -4,6 +4,7 @@ import { NextFunction } from "express";
 import { errors } from "../utils/errors";
 import { Request } from "../lib/types/Request";
 import Workspace, { WorkspaceModel } from "../models/Workspace";
+import { ObjectId } from "../lib/ObjectId";
 
 export class PermissionChecker {
 
@@ -15,12 +16,12 @@ export class PermissionChecker {
             const permission = await Permission.findOne({ controller, endpoint }).lean();
 
             if (workspace) {
-                workspaceObj = await Workspace.findOne({ _id: workspace }).lean();
+                workspaceObj = await Workspace.findOne({ _id: workspace as string }).lean();
             }
 
             if (workspaceObj) {
                 if (permission && user) {
-                    if (Boolean(workspaceObj.users.find(elem => elem.user === user._id &&
+                    if (Boolean(workspaceObj.users.find(elem => elem.user === new ObjectId(user._id) &&
                         Boolean(elem.roles.find(role => role.hasPermission(permission as PermissionModel)))))) {
                         next();
                     } else {

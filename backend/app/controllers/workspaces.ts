@@ -5,6 +5,7 @@ import { Request } from "../lib/types/Request";
 import Workspace from "../models/Workspace";
 import { errors } from "../utils/errors";
 import Role from "../models/Role";
+import { ObjectId } from "../lib/ObjectId";
 
 @Controller("/workspaces")
 export class WorkspaceController extends BaseController {
@@ -21,7 +22,7 @@ export class WorkspaceController extends BaseController {
 
         const workspace = await new Workspace({ name, projects: [], users: [{ user, roles: [ownerRole] }] }).save();
 
-        ownerRole.workspace = workspace._id;
+        ownerRole.workspace = new ObjectId(workspace._id);
 
         ownerRole.save();
 
