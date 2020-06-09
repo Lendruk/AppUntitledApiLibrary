@@ -3,6 +3,7 @@ import { mongoose } from '../../utils/database';
 import { Model as MongooseModel, SchemaOptions } from 'mongoose';
 import { ModelProperties } from '../types/ModelProperties';
 import { ObjectId } from '../ObjectId';
+import { BaseModel } from '../classes/BaseModel';
 
 export const ModelOptions = (modelProperties: ModelProperties): ClassDecorator => {
     return (target: any) => {
@@ -32,7 +33,7 @@ export const Property = (modelProperty: PropertyOptions): PropertyDecorator => {
 }
 
 // Refactor this completely
-export const getModelFromClass = <T extends mongoose.Document>(target: Function): MongooseModel<T> => {
+export const getModelFromClass = <T extends BaseModel>(target: Function): MongooseModel<T> => {
     if (!Reflect.hasMetadata("properties", target)) {
         Reflect.defineMetadata("properties", [], target);
     }

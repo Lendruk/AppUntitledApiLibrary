@@ -1,8 +1,9 @@
 import { mongoose } from "../utils/database";
 import { ObjectId } from "../lib/ObjectId";
 import { Property, getModelFromClass } from "../lib/decorators/model";
+import { BaseModel } from "../lib/classes/BaseModel";
 
-export class InviteModel extends mongoose.Document {
+export class InviteModel extends BaseModel {
 
     @Property({ ref: "User", required: true })
     invitee!: ObjectId;

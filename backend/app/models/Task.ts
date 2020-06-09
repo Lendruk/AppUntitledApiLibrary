@@ -2,8 +2,9 @@ import { mongoose } from "../utils/database";
 import { IActivatable } from "../lib/interfaces/IActivatable";
 import { Property, getModelFromClass } from "../lib/decorators/model";
 import { ObjectId } from "../lib/ObjectId";
+import { BaseModel } from "../lib/classes/BaseModel";
 
-export class TaskModel extends mongoose.Document implements IActivatable {
+export class TaskModel extends BaseModel implements IActivatable {
 
     @Property({ default: true })
     _active!: boolean;
