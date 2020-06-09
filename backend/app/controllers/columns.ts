@@ -49,6 +49,6 @@ export class ColumnController extends BaseController {
     public async deleteColumn(req: Request) {
         const { params: { id }, query: { projectId } } = req;
 
-        await Project.findOneAndUpdate({ _id: projectId }, { $pull: { "columns._id": new ObjectId(id) } }).lean();
+        await Project.findOneAndUpdate({ _id: projectId as string }, { $pull: { "columns._id": new ObjectId(id) } });
     }
 }

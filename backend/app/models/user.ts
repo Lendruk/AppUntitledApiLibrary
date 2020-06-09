@@ -3,9 +3,10 @@ import { Property, getModelFromClass } from '../lib/decorators/model';
 import bycrypt from 'bcrypt';
 import { IActivatable } from '../lib/interfaces/IActivatable';
 import Role from './Role';
+import { BaseModel } from '../lib/classes/BaseModel';
 
 // Application Model
-export class UserModel extends mongoose.Document implements IActivatable {
+export class UserModel extends BaseModel implements IActivatable {
 
     @Property({ default: true })
     _active!: boolean;

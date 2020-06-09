@@ -89,7 +89,7 @@ export class ProjectController extends BaseController {
 
         const project = await new Project({ title }).save();
 
-        await Workspace.findOneAndUpdate({ _id: workspace }, { $push: { projects: project } });
+        await Workspace.findOneAndUpdate({ _id: workspace as string }, { $push: { projects: project } });
 
         return { code: 201, project };
     }
@@ -139,7 +139,7 @@ export class ProjectController extends BaseController {
         let updatedWorkSpace = await Project.findOneAndUpdate(
             { _id: id },
             {
-                $pull: { "tags": { "_id": tagId } }
+                $pull: { "tags": { _id: tagId } }
             },
             {
                 new: true
@@ -168,7 +168,7 @@ export class ProjectController extends BaseController {
         if (!workspaceObj) throw errors.NO_PERMISSION;
 
         try {
-            await Project.findOneAndDelete({ _id: new ObjectId(id) });
+            await Project.findOneAndDelete({ _id: id });
         } catch (err) {
             throw errors.BAD_REQUEST;
         }
