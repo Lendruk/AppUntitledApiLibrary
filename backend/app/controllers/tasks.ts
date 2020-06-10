@@ -28,7 +28,6 @@ export class TaskController extends BaseController {
 
     @Get("/:id", {
         requireToken: true,
-        headers: { required: ["workspace"] },
         params: { required: ["id"] },
     })
     public async getTaskById(req: Request) {
@@ -48,6 +47,7 @@ export class TaskController extends BaseController {
     @Get("/project/:projectId", {
         requireToken: true,
         params: { required: ["projectId"] },
+        body: { required: ["columnId"] }
     })
     public async getTasksFromColumn(req: Request) {
         const {
@@ -115,5 +115,54 @@ export class TaskController extends BaseController {
         }
 
         return { task }
+    }
+
+    @Put("/:id", {
+        requireToken: true,
+        params: { required: ["id"] },
+    })
+    public async putTasks(req: Request) {
+        const {
+            params: { id },
+            body,
+        } = req;
+
+        let updatedTask = null;
+        try {
+            updatedTask = await Task.findOneAndUpdate({ _id: id }, body, { new: true }).lean();
+        } catch (err) {
+            throw errors.NOT_FOUND;
+        }
+        return { task: updatedTask };
+    }
+
+    @Delete("/project/:projectId", {
+        requireToken: true,
+        params: { required: ["projectId"] },
+    })
+    public async deleteTasks(req: Request) {
+        const {
+            params: { projectId },
+            body: { columnId, taskId },
+        } = req;
+
+        try {
+            await Task.findOneAndDelete({ _id: taskId });
+
+            await Project.findOneAndUpdate(
+                {
+                    _id: projectId,
+                    columns: { $elemMatch: { _id: columnId } }
+                },
+                {
+                    $pull: { "columns.$.tasks": taskId }
+                },
+                {
+                    new: true
+                }
+            ).lean();
+        } catch (err) {
+            throw errors.BAD_REQUEST;
+        }
     }
 }
