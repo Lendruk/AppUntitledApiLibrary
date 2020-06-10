@@ -15,7 +15,7 @@ export class TaskModel extends BaseModel implements IActivatable {
     @Property({})
     description?: string;
 
-    @Property({ ref: "Task" })
+    @Property({ ref: "Task", default: null })
     parent?: ObjectId;
 
     @Property({})
@@ -31,7 +31,7 @@ export class TaskModel extends BaseModel implements IActivatable {
     @Property({})
     timeSpent?: Number;
 
-    @Property({ items: ObjectId })
+    @Property({ items: ObjectId, default: [] })
     tags!: ObjectId[];
 }
 
