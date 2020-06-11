@@ -9,11 +9,15 @@ export class Sidebar extends React.Component {
             options: [
                 {
                     icon: "moon-users",
-                    title: "test",
+                    title: "Members",
                 },
                 {
-                    icon: "moon-users",
-                    title: "test2",
+                    icon: "moon-cogs",
+                    title: "Project Settings",
+                },
+                {
+                    icon: "moon-cogs",
+                    title: "Workspace Settings",
                 },
             ]
         }

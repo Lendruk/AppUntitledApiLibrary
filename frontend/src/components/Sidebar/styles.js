@@ -18,6 +18,9 @@ export const SidebarOption = styled.div`
     align-items: center;
     width: 100%;
     user-select: none;
+    cursor: pointer;
+    color: white;
+    height: 40px;
 
     div {
         padding: 0px 20px;
@@ -29,5 +32,6 @@ export const SidebarOption = styled.div`
 
     &:hover {
         background: #D7CEB2;
+        color: #4C5760;
     }
 `;

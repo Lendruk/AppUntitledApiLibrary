@@ -15,9 +15,9 @@ export class ContentContainer extends React.Component {
                     <Sidebar>
 
                     </Sidebar>
-                <div>
+                <div style={{ flex: 1}}>
                 {this.props.children} 
-                    </div>
+                </div>
                 </Styles.Container>
             </>
         )
