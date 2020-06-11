@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Styles from './styles';
-import { Input } from '../Input';
+import { Input } from '../../components/Input';
 export class Homepage extends React.Component {
 
     constructor(props) {
