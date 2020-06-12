@@ -165,4 +165,14 @@ export class TaskController extends BaseController {
             throw errors.BAD_REQUEST;
         }
     }
+
+    //Test file upload
+    //TODO investigate file extension being removed
+    @Post("/file", {
+        uploadFiles: true,
+        requireToken: true
+    })
+    public async uploadFile(req: Request, res: Response) {
+        console.log(req.files);
+    }
 }
