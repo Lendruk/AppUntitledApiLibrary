@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-    background: #4C5760;
+    background: #044862;
     min-width: 13%;
     display: flex;
     align-items: center;
@@ -31,7 +31,7 @@ export const SidebarOption = styled.div`
     }
 
     &:hover {
-        background: #D7CEB2;
+        background: #EFF6E0;
         color: #4C5760;
     }
 `;

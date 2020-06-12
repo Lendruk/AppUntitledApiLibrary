@@ -9,6 +9,10 @@ export class Sidebar extends React.Component {
             options: [
                 {
                     icon: "moon-users",
+                    title: "Board",
+                },
+                {
+                    icon: "moon-users",
                     title: "Members",
                 },
                 {
