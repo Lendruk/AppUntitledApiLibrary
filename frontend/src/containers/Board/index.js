@@ -1,12 +1,33 @@
 import React from 'react';
 import * as Styles from './styles';
+import { AppStorage } from '../../storage';
+import { Task } from '../../components/Task';
 export class Board extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            currentProject: {},
+            currentProject: {
+                columns: [
+                    {
+                        name: "col1",
+                        tasks: [
+                            {
+                                title: "test task",
+                            }
+                        ],
+                    },
+                    {
+                        name: "col2",
+                        tasks: [],
+                    },
+                    {
+                        name: "col3",
+                        tasks: [],
+                    },
+                ]
+            },
             projects: [],
         }
     }
@@ -14,22 +35,41 @@ export class Board extends React.Component {
 
     render() {
         const { projects } = this.state;
-        return projects.length > 0 ? this.renderBoard() : this.renderEmpty();
+        return this.renderBoard();
+    }
+
+    renderNoTasks() {
+        return (
+            <Styles.NoTasks>
+                No Tasks
+            </Styles.NoTasks>
+        )
     }
     
     renderBoard() {
+        const { currentProject } = this.state;
+        console.log(currentProject);
         return (
-            <div>test123</div>
-        )
-    }
+            <Styles.Board>
+                {currentProject && currentProject.columns.map(col => (
+                    <Styles.Column>
+                        <Styles.ColumnTitle>
+                            {col.name}
+                        </Styles.ColumnTitle>
+                        <Styles.Tasks>
+                            {col.tasks.length > 0 ? col.tasks.map(task => (
+                                <Task task={task} />
+                            )) : this.renderNoTasks()}
+                        </Styles.Tasks>
+                    </Styles.Column>
+                ))}
+                <Styles.AddColumn >
+                    <span className="moon-users">
+                        
+                    </span>
+                </Styles.AddColumn>
 
-    renderEmpty() {
-        return (
-            <Styles.EmptyContainer>
-                <span className="moon-users" />
-                <span className="title">No Projects Created</span>
-                <button>Create a new project</button>
-            </Styles.EmptyContainer>
+            </Styles.Board>
         )
     }
 }

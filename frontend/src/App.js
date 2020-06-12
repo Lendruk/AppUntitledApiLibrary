@@ -7,7 +7,6 @@ import { Board } from './containers/Board';
 import { NotFound } from './containers/NotFound';
 import { ContentContainer } from './containers/ContentContainer';
 
-
 const tempAuth = true;
 function App() {
 
