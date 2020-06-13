@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { errors } from '../utils/errors';
 import { Controller } from '../lib/decorators/controller';
 import { Get, Post, Put, Delete } from '../lib/decorators/verbs';
@@ -6,6 +6,9 @@ import { BaseController } from '../lib/classes/BaseController';
 import Task from '../models/Task';
 import Project from '../models/Project';
 import mongoose from 'mongoose';
+import Comment from '../models/Comment';
+import { Request } from '../lib/types/Request';
+import { ObjectId } from '../lib/ObjectId';
 
 @Controller("/tasks")
 export class TaskController extends BaseController {
@@ -164,6 +167,24 @@ export class TaskController extends BaseController {
         } catch (err) {
             throw errors.BAD_REQUEST;
         }
+    }
+
+    @Get("/:id/comments")
+    public async getComments(req: Request) {
+        const { params: { id } } = req;
+
+        const comments = await Comment.find({ task: new ObjectId(id) });
+
+        return { comments };
+    }
+
+    @Post("/:id/comments",{ body: { required: ["content"]}})
+    public async createComment(req : Request) {
+        const { body: { content }, user, params: { id } } = req;
+
+        const comment = await new Comment({ user: user, content, task: id }).save();
+
+        return { code: 201, comment };
     }
 
     //Test file upload
