@@ -20,8 +20,12 @@ export class Task extends React.Component {
                 </svg>
             </Styles.Poly>
             <Styles.TaskTitle>{task.title}</Styles.TaskTitle>    
+            <Styles.Description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vel imperdiet risus, ac tempus odio. Duis ultrices tortor sit amet risus ornare, eu efficitur leo viverra. Proin sed urna tristique, facilisis risus sed, auctor velit. Proin commodo eget massa eget faucibus. Pellentesque sed aliquam mauris. Praesent posuere eu ligula non dapibus. Curabitur dui lectus, iaculis vel viverra in, pellentesque a tellus. Phasellus maximus, odio sit amet efficitur ultricies, tellus felis suscipit arcu, id ullamcorper quam magna id urna. Suspendisse et consequat orci, et pulvinar ante.
+            </Styles.Description>
             <Styles.Tags>
                 <Styles.Tag>test</Styles.Tag>
+                <Styles.Tag>test2</Styles.Tag>
             </Styles.Tags>
         </Styles.Task>
         )
