@@ -2,7 +2,7 @@ import { BaseController } from "../lib/classes/BaseController";
 import { Controller } from "../lib/decorators/controller";
 import { Post, Get } from "../lib/decorators/verbs";
 import { Request, Response } from "express";
-import User from "../models/User";
+import User from "../models/user";
 import { errors } from "../utils/errors";
 import { LoginService } from "../services/LoginService";
 import { Inject } from "../lib/decorators/Inject";

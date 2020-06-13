@@ -9,7 +9,8 @@ import { errors } from '../../utils/errors';
 import { checkToken } from '../../utils/checkToken';
 import { PermissionChecker } from '../../middleware/PermissionChecker';
 import { Request } from '../types/Request';
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/user';
+import { parser } from '../../utils/upload';
 
 /**
  * Refactor this class completely
@@ -52,6 +53,7 @@ export class RouteAggregator {
 
                     if (route.routeOptions?.requireToken) {
                         functions = functions.concat(checkToken);
+                        if (route.routeOptions.uploadFiles) functions = functions.concat(parser.array('photo'));
                         functions = functions
                             .concat((req: Request, res: Response, next: NextFunction) => PermissionChecker.verifyPermission(prefix.replace("/", ""), route.methodName as string, next, req));
                     }

@@ -7,6 +7,7 @@ const dbConnection = async () => await mongoose.connect("mongodb+srv://ams-sii-8
         useNewUrlParser: true,
         useCreateIndex: true,
         useUnifiedTopology: true,
+        useFindAndModify: false,
         auth: { user: process.env.DATABASE_USERNAME as string, password: process.env.DATABASE_PASSWORD as string }
     }
 );

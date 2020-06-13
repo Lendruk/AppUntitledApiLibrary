@@ -1,8 +1,8 @@
 import { BaseController } from "../lib/classes/BaseController";
 import { Controller } from "../lib/decorators/controller";
-import { Get, Post, Delete } from "../lib/decorators/verbs";
+import { Get, Post, Put, Delete } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
-import Project from "../models/Project";
+import Project, { Tag, ProjectModel } from "../models/Project";
 import Workspace from "../models/Workspace";
 import { ObjectId } from "../lib/ObjectId";
 import { errors } from "../utils/errors";
@@ -44,6 +44,41 @@ export class ProjectController extends BaseController {
         return { project };
     }
 
+    @Get("/:id/tags", { requireToken: true, params: { required: ["id"] } })
+    public async getProjectTags(req: Request) {
+        const { params: { id } } = req;
+
+        let tags = null;
+        try {
+            tags = await Project.findOne({ _id: id }, '-_id tags').lean();
+        } catch (err) {
+            throw errors.NOT_FOUND;
+        }
+        return { tags: tags?.tags };
+    }
+
+    @Post("/:id/tags", {
+        requireToken: true,
+        params: { required: ["id"] }
+    })
+    public async postProjectTags(req: Request) {
+        const {
+            params: { id },
+            body: { name, colour }
+        } = req;
+
+        let updatedWorkSpace = await Project.findOneAndUpdate(
+            { _id: id },
+            {
+                $push: { "tags": new Tag(name, colour) }
+            },
+            {
+                new: true
+            });
+
+        return { code: 201, tags: updatedWorkSpace?.tags };
+    }
+
     @Post("/", {
         requireToken: true,
         headers: { required: ["workspace"] },
@@ -54,9 +89,63 @@ export class ProjectController extends BaseController {
 
         const project = await new Project({ title }).save();
 
-        await Workspace.findOneAndUpdate({ _id: new ObjectId(workspace as string) }, { $push: { projects: project } });
+        await Workspace.findOneAndUpdate({ _id: workspace as string }, { $push: { projects: project } });
 
         return { code: 201, project };
+    }
+
+    @Put("/:id/tags", {
+        requireToken: true,
+        params: { required: ["id"] }
+    })
+    public async putProjectTags(req: Request) {
+        const {
+            params: { id },
+            body: { tagId }
+        } = req;
+
+        let query: { [index: string]: any } = {};
+        for (const key in req.body) {
+            query[`tags.$.${key}`] = req.body[key]
+        }
+
+        let updatedWorkSpace = await Project.findOneAndUpdate(
+            {
+                _id: id,
+                tags: { $elemMatch: { _id: tagId } }
+            },
+            {
+                $set: { ...query }
+            },
+            {
+                new: true,
+            });
+
+        if (!updatedWorkSpace) throw errors.NOT_FOUND;
+
+        return { code: 201, tags: updatedWorkSpace?.tags };
+    }
+
+    @Delete("/:id/tags", {
+        requireToken: true,
+        params: { required: ["id"] }
+    })
+    public async postdeleteTag(req: Request) {
+        const {
+            params: { id },
+            body: { tagId }
+        } = req;
+
+        let updatedWorkSpace = await Project.findOneAndUpdate(
+            { _id: id },
+            {
+                $pull: { "tags": { _id: tagId } }
+            },
+            {
+                new: true
+            });
+
+        return { code: 201, tags: updatedWorkSpace?.tags };
     }
 
     @Delete("/:id", { requireToken: true, headers: { required: ["workspace"] } })
@@ -79,7 +168,7 @@ export class ProjectController extends BaseController {
         if (!workspaceObj) throw errors.NO_PERMISSION;
 
         try {
-            await Project.findOneAndDelete({ _id: new ObjectId(id) });
+            await Project.findOneAndDelete({ _id: id });
         } catch (err) {
             throw errors.BAD_REQUEST;
         }

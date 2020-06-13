@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { errors } from "./errors";
-import Token from "../models/Token";
-import User from "../models/User";
+import Token from "../models/token";
+import User from "../models/user";
 import { Request } from "../lib/types/Request";
 
 export const checkToken = async (req: Request, res: Response, next: NextFunction) => {

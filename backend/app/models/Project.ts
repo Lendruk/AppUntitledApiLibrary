@@ -1,9 +1,10 @@
 import { mongoose } from "../utils/database";
 import { IActivatable } from "../lib/interfaces/IActivatable";
-import { Property, getModelFromClass } from "../lib/decorators/model";
+import { Property, getModelFromClass, ModelOptions } from "../lib/decorators/model";
 import Role, { RoleModel } from "./Role";
 import { ObjectId } from "../lib/ObjectId";
 import Task, { TaskModel } from "./Task";
+import { BaseModel } from "../lib/classes/BaseModel";
 
 class ProjectUser {
     @Property({ items: Role })
@@ -25,7 +26,22 @@ export class Column {
     }
 }
 
-export class ProjectModel extends mongoose.Document implements IActivatable {
+export class Tag {
+    _id!: string;
+
+    @Property({ required: true })
+    name!: string;
+
+    @Property({ required: true })
+    colour!: string;
+
+    constructor(name: string, colour: string) {
+        this.name = name;
+        this.colour = colour;
+    }
+}
+
+export class ProjectModel extends BaseModel implements IActivatable {
 
     @Property({ default: true })
     _active!: boolean;
@@ -38,6 +54,9 @@ export class ProjectModel extends mongoose.Document implements IActivatable {
 
     @Property({ items: Column, default: [] })
     columns!: Column[];
+
+    @Property({ items: Tag, default: [] })
+    tags!: Tag[];
 
 }
 

@@ -3,7 +3,7 @@ import { errors } from '../utils/errors';
 import { Controller } from '../lib/decorators/controller';
 import { Get, Post, Put } from '../lib/decorators/verbs';
 import { BaseController } from '../lib/classes/BaseController';
-import User from '../models/User';
+import User from '../models/user';
 import bcrypt from 'bcrypt';
 
 @Controller("/users")

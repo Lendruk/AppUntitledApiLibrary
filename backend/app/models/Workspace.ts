@@ -4,6 +4,7 @@ import { Property, getModelFromClass } from "../lib/decorators/model";
 import Project, { ProjectModel } from "./Project";
 import Role, { RoleModel } from "./Role";
 import { ObjectId } from "../lib/ObjectId";
+import { BaseModel } from "../lib/classes/BaseModel";
 
 export class WorkspaceUser {
     @Property({ items: Role })
@@ -13,13 +14,13 @@ export class WorkspaceUser {
     user!: ObjectId;
 }
 
-export class WorkspaceModel extends mongoose.Document implements IActivatable {
+export class WorkspaceModel extends BaseModel implements IActivatable {
 
     @Property({ default: true })
-    _active: boolean;
+    _active!: boolean;
 
     @Property({ required: true })
-    name: string;
+    name!: string;
 
     // Workspace level users
     @Property({ items: WorkspaceUser })
@@ -27,12 +28,6 @@ export class WorkspaceModel extends mongoose.Document implements IActivatable {
 
     @Property({ items: Project })
     projects?: ProjectModel[] = [];
-
-    constructor(name: string, _active: boolean) {
-        super();
-        this.name = name;
-        this._active = _active;
-    }
 }
 
 const Workspace = getModelFromClass<WorkspaceModel>(WorkspaceModel);

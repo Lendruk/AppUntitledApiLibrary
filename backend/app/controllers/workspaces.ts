@@ -5,6 +5,7 @@ import { Request } from "../lib/types/Request";
 import Workspace from "../models/Workspace";
 import { errors } from "../utils/errors";
 import Role from "../models/Role";
+import { ObjectId } from "../lib/ObjectId";
 
 @Controller("/workspaces")
 export class WorkspaceController extends BaseController {
@@ -17,9 +18,13 @@ export class WorkspaceController extends BaseController {
             throw errors.BAD_REQUEST;
         }
 
-        const ownerRole = await new Role({ name: "owner", isOwner: true, permissions: [] }).save();
+        const ownerRole = await new Role({ name: "owner", isOwner: true });
 
-        const workspace = await new Workspace({ name, projects: [], users: [{ user, role: ownerRole }] }).save();
+        const workspace = await new Workspace({ name, projects: [], users: [{ user, roles: [ownerRole] }] }).save();
+
+        ownerRole.workspace = new ObjectId(workspace._id);
+
+        ownerRole.save();
 
         return { code: 201, workspace };
     }

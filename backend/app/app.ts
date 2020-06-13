@@ -7,6 +7,7 @@ import { ErrorManager, errors } from './utils/errors';
 import { RouteAggregator } from './lib/classes/RouteAggregator';
 import dotenv from 'dotenv';
 import { Injector } from './lib/classes/Injector';
+import { cloudinaryConfig } from './utils/cloudinary';
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Connect DB
 dbConnection().then(() => console.log("Database Connected..."));
+
+// Setup Cloudinary Config
+app.use('*', cloudinaryConfig);
 
 // Initialize the dependecy injection 
 new Injector();

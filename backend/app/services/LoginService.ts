@@ -1,6 +1,6 @@
 import { Injectable } from "../lib/decorators/Injectable";
 import { errors } from "../utils/errors";
-import User from "../models/User";
+import User from "../models/user";
 import { buildToken } from "../utils/TokenBuilder";
 
 @Injectable()
