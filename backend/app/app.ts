@@ -8,6 +8,8 @@ import { RouteAggregator } from './lib/classes/RouteAggregator';
 import dotenv from 'dotenv';
 import { Injector } from './lib/classes/Injector';
 import { cloudinaryConfig } from './utils/cloudinary';
+import { SocketServer } from './lib/classes/SocketServer';
+import { ControllerExtractor } from './lib/classes/ControllerExtractor';
 
 dotenv.config();
 const app = express();
@@ -23,10 +25,19 @@ dbConnection().then(() => console.log("Database Connected..."));
 app.use('*', cloudinaryConfig);
 
 // Initialize the dependecy injection 
-new Injector();
+new Injector(app);
+
+const controllerExtractor = new ControllerExtractor();
 
 // Aggregate all the controllers
-new RouteAggregator(app, true);
+const aggregator = new RouteAggregator(app, true);
+controllerExtractor.addTask(aggregator.aggregateRoutes);
+
+// const socketServer = new SocketServer(app);
+// controllerExtractor.addTask(socketServer.registerSockets);
+
+controllerExtractor.executeTasks();
+
 
 //Not Found Handler
 app.use((req, res, next) => next(errors.NOT_FOUND));

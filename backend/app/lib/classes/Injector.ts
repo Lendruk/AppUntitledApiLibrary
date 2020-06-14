@@ -1,9 +1,13 @@
+import e from "express";
+
 export class Injector {
     static instance: Injector;
     private serviceMap: Map<any, Array<any>>;
+    private expressApp : e.Express;
 
-    constructor() {
+    constructor(app : e.Express) {
         this.serviceMap = new Map();
+        this.expressApp = app;
 
         // If the singleton hasn't been created yet
         // assign it
@@ -37,7 +41,7 @@ export class Injector {
 
     registerService(service: any) {
         if (!this.hasService(service)) {
-            this.serviceMap.set(new service(), new Array<any>());
+            this.serviceMap.set(new service(this.expressApp), new Array<any>());
         }
     }
 

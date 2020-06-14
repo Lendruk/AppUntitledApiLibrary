@@ -9,6 +9,8 @@ import mongoose from 'mongoose';
 import Comment from '../models/Comment';
 import { Request } from '../lib/types/Request';
 import { ObjectId } from '../lib/ObjectId';
+import { SocketEvent } from '../lib/classes/SocketServer';
+import { Server, Socket } from 'socket.io';
 
 @Controller("/tasks")
 export class TaskController extends BaseController {
@@ -187,6 +189,13 @@ export class TaskController extends BaseController {
         return { code: 201, comment };
     }
 
+    @Delete("/:taskId/comments/:commentId") 
+    public async deleteComment(req : Request) {
+        const { params: { taskId, commentId } } = req;
+
+        await Comment.findOneAndDelete({ _id: commentId, task: new ObjectId(taskId) });
+    }
+
     //Test file upload
     //TODO investigate file extension being removed
     @Post("/file", {
@@ -195,5 +204,10 @@ export class TaskController extends BaseController {
     })
     public async uploadFile(req: Request, res: Response) {
         console.log(req.files);
+    }
+
+    @SocketEvent("test")
+    public async testSocket(socketServer: Server, socket: Socket) {
+
     }
 }
