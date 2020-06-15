@@ -59,7 +59,7 @@ class Login extends React.Component {
 
                 if (result.status >= 200 && result.status < 400) {
                     const { token, user } = result.data;
-                    showToast("SUCCESS", Strings.auth.loginSuccessful);
+                    showToast("SUCCESS", result.data.message);
                     dispatch(loginSuccess({ token, user }));
                 }
             } catch (err) {

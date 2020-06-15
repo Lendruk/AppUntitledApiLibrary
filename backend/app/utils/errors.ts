@@ -42,6 +42,11 @@ export const errors = {
         message: "Resource already exists",
         code: "RESOURCE_ALREADY_EXISTS",
     },
+    EMAIL_ALREADY_IN_USE: {
+        status: 409,
+        message: "Email already in use",
+        code: "EMAIL_ALREADY_IN_USE",
+    },
     SERVER_ERROR: {
         status: 500,
         message: "Server Error",

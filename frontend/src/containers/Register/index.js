@@ -46,7 +46,7 @@ class Register extends React.Component {
             const result = await post(uriRegisterUser, body);
 
             if (result.status >= 200 && result.status < 400) {
-                showToast("SUCCESS", Strings.auth.registerSuccessful);
+                showToast("SUCCESS", result.data.message);
                 this.props.changeAuthMode(true, email);
             }
         }

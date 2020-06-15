@@ -19,6 +19,6 @@ export class AuthController extends BaseController {
 
         if (!email || !password) throw errors.REQUIRED_FIELDS_EMPTY;
 
-        return { status: 'LOGIN_SUCCESSFULL', message: "Login Successfully", ...await this._loginService.login(email, password) };
+        return { status: 'LOGIN_SUCCESSFULL', message: "Login Successful", ...await this._loginService.login(email, password) };
     }
 }

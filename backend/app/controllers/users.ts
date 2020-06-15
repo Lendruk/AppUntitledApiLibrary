@@ -48,12 +48,12 @@ export class UserController extends BaseController {
         const { body: { name, password, email } } = req;
 
         if (await User.findOne({ email: email })) {
-            throw errors.RESOURCE_ALREADY_EXISTS;
+            throw errors.EMAIL_ALREADY_IN_USE;
         }
 
         const newUser = await new User({ name, password: await this.hashPassword(password), email }).save();
 
-        return { code: 201, status: "USER_REGISTERED", user: newUser.getPublicInformation() };
+        return { code: 201, status: "USER_REGISTERED", message: "Account successfully created", user: newUser.getPublicInformation() };
     }
 
     private async hashPassword(password: string): Promise<string> {
