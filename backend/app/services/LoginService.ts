@@ -9,7 +9,7 @@ export class LoginService {
 
         let user = await User.findOne({ email: email });
 
-        if (!user) throw errors.NOT_FOUND;
+        if (!user) throw errors.INVALID_CREDENTIALS;
         if (!user.comparePassword(password) || !user._active) throw errors.INVALID_CREDENTIALS;
 
         const token = await buildToken(user._id);

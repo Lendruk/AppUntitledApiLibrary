@@ -1,6 +1,5 @@
 import React from 'react';
 import * as Styles from './styles';
-import { AppStorage } from '../../storage';
 import { Task } from '../../components/Task';
 export class Board extends React.Component {
 
@@ -34,7 +33,6 @@ export class Board extends React.Component {
 
 
     render() {
-        const { projects } = this.state;
         return this.renderBoard();
     }
 
@@ -45,7 +43,7 @@ export class Board extends React.Component {
             </Styles.NoTasks>
         )
     }
-    
+
     renderBoard() {
         const { currentProject } = this.state;
         console.log(currentProject);
@@ -65,7 +63,7 @@ export class Board extends React.Component {
                 ))}
                 <Styles.AddColumn >
                     <span className="moon-users">
-                        
+
                     </span>
                 </Styles.AddColumn>
 
