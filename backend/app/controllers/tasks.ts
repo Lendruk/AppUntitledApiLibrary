@@ -207,7 +207,7 @@ export class TaskController extends BaseController {
     }
 
     @SocketEvent("test")
-    public async testSocket(socketServer: Server, socket: Socket) {
-
+    public async testSocket(socketServer: Server, socket: Socket, data? : any) {
+        
     }
 }

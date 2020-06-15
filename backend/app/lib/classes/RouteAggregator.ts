@@ -1,6 +1,5 @@
 import express, { Response, NextFunction } from 'express';
 import e from 'express';
-import fs from 'fs';
 // Import Controllers
 import { RouteType, MiddyPair, MiddyFunction } from '../decorators/routeType';
 import { BaseController } from './BaseController';
@@ -16,7 +15,6 @@ import { Constructable } from '../interfaces/Constructable';
  * Refactor this class completely
  */
 export class RouteAggregator {
-    private router: e.Router;
     private app: e.Express;
     private debug: boolean;
 
@@ -67,7 +65,6 @@ export class RouteAggregator {
      * @param debug Debug flag currently used to send missing fields to front-end on calls
      */
     constructor(app: e.Express, debug?: boolean) {
-        this.router = express.Router();
         this.app = app;
         this.debug = Boolean(debug);
 
