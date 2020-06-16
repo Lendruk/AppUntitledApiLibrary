@@ -15,7 +15,7 @@ export const AuthContainer = styled.div`
 `;
 
 export const AuthButton = styled.button`
-    background: #66635B;
+    background: #124559;
     color: white;
     border-color: #161513;
     border-radius: 4px;
@@ -25,7 +25,7 @@ export const AuthButton = styled.button`
 `;
 
 export const AuthTitle = styled.h4`
-    color: #93A8AC;
+    color: #124559;
     font-size: 24px;
 `;
 

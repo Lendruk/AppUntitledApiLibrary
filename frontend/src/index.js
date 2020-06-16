@@ -9,6 +9,7 @@ import history from './utils/history';
 
 import configureStore from './configureStore';
 
+import './index.css';
 import './App.css';
 
 const initialState = {};

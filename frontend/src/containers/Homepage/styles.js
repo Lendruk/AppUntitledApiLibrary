@@ -27,9 +27,9 @@ export const InfoContainer = styled.div`
     flex-direction: column;
     flex: 1;
     padding-left: 35px;
-    background: #4C5760;    
+    background: #124559;    
         h1 {
-            color: #EAE0D5;
+            color: #EFF6E0;
             
             font-weight: bold;
             font-size: 71px;
@@ -42,13 +42,15 @@ export const Copyright = styled.div`
 
 export const CardContainer = styled.div`
     display: flex;
+    flex-wrap: wrap;
 
 `;
 
 export const Card = styled.div`
-
-    &:nth-child(even) {
-        margin-top: 100px;
+    @media screen and (min-width: 1700px) {
+        &:nth-child(even) {
+            margin-top: 100px;
+        }
     }
 
     max-height: 400px;
@@ -94,7 +96,7 @@ export const CardIcon = styled.div`
     height: 150px;
     width: 150px;
     border-radius: 50%;
-    background: #A09B92;
+    background: #124559;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,7 +105,7 @@ export const CardIcon = styled.div`
     box-shadow: -1px 2px 30px -4px rgba(0,0,0,0.75);
     span {
         font-size: 70px;
-        color: #161314;
+        color: #EFF6E0;
     }
 `;
 
