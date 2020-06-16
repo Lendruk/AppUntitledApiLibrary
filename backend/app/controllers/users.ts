@@ -5,9 +5,14 @@ import { Get, Post, Put } from '../lib/decorators/verbs';
 import { BaseController } from '../lib/classes/BaseController';
 import User from '../models/user';
 import bcrypt from 'bcrypt';
+import { SocketServer } from '../lib/classes/SocketServer';
+import { Inject } from '../lib/decorators/Inject';
 
 @Controller("/users")
 export class UserController extends BaseController {
+
+    @Inject()
+    private _socketService!: SocketServer;
 
     @Get("/")
     public async getUsers(req: Request, res: Response) {

@@ -1,6 +1,5 @@
 import express, { Response, NextFunction } from 'express';
 import e from 'express';
-import fs from 'fs';
 // Import Controllers
 import { RouteType, MiddyPair, MiddyFunction } from '../decorators/routeType';
 import { BaseController } from './BaseController';
@@ -9,16 +8,56 @@ import { errors } from '../../utils/errors';
 import { checkToken } from '../../utils/checkToken';
 import { PermissionChecker } from '../../middleware/PermissionChecker';
 import { Request } from '../types/Request';
-import { UserModel } from '../../models/user';
 import { parser } from '../../utils/upload';
+import { Constructable } from '../interfaces/Constructable';
 
 /**
  * Refactor this class completely
  */
 export class RouteAggregator {
-    private router: e.Router;
     private app: e.Express;
     private debug: boolean;
+
+    aggregateRoutes(controllers : Array<Constructable<BaseController>>) {
+        for(const controller of controllers) {
+            const instance = new controller();
+
+            // This is the route prefix ex. "/users"
+            const prefix = Reflect.getMetadata("prefix", controller);
+            const routes: Array<RouteType> = Reflect.getMetadata("routes", controller);
+
+            const middlewares: Array<MiddyPair> = Reflect.getMetadata("middleware", controller);
+            for (const route of routes) {
+                const routeMiddleware = middlewares && middlewares.find(middy => middy.method === route.methodName);
+                let functions = new Array<MiddyFunction>();
+                if (routeMiddleware != null) {
+                    functions = routeMiddleware.functions;
+                }
+
+                if (route.routeOptions)
+                    functions = functions.concat(this.mapRequiredFields(route.routeOptions));
+
+                if (route.routeOptions?.requireToken) {
+                    functions = functions.concat(checkToken);
+                    if (route.routeOptions.uploadFiles) functions = functions.concat(parser.array('photo'));
+                    functions = functions
+                        .concat((req: Request, res: Response, next: NextFunction) => PermissionChecker.verifyPermission(prefix.replace("/", ""), route.methodName as string, next, req));
+                }
+
+                this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req: Request, res: Response, next: NextFunction) => {
+                    let result = instance[route.methodName as string](req, res);
+
+                    if (result instanceof Promise) {
+                        result
+                            .then(promiseValues => this.formatResponse(promiseValues, res))
+                            .catch(err => next(err));
+                    } else {
+                        this.formatResponse(result, res);
+                    }
+                });
+            }
+        }
+    }
 
     /**
      * 
@@ -26,52 +65,11 @@ export class RouteAggregator {
      * @param debug Debug flag currently used to send missing fields to front-end on calls
      */
     constructor(app: e.Express, debug?: boolean) {
-        this.router = express.Router();
         this.app = app;
         this.debug = Boolean(debug);
 
-        const files = fs.readdirSync(`${__dirname}/../../controllers`);
-        this.extractControllers(files).forEach(controller => {
-            if (typeof controller === 'function') {
-                const instance = new controller();
-
-                // This is the route prefix ex. "/users"
-                const prefix = Reflect.getMetadata("prefix", controller);
-
-                const routes: Array<RouteType> = Reflect.getMetadata("routes", controller);
-
-                const middlewares: Array<MiddyPair> = Reflect.getMetadata("middleware", controller);
-                for (const route of routes) {
-                    const routeMiddleware = middlewares && middlewares.find(middy => middy.method === route.methodName);
-                    let functions = new Array<MiddyFunction>();
-                    if (routeMiddleware != null) {
-                        functions = routeMiddleware.functions;
-                    }
-
-                    if (route.routeOptions)
-                        functions = functions.concat(this.mapRequiredFields(route.routeOptions));
-
-                    if (route.routeOptions?.requireToken) {
-                        functions = functions.concat(checkToken);
-                        if (route.routeOptions.uploadFiles) functions = functions.concat(parser.array('photo'));
-                        functions = functions
-                            .concat((req: Request, res: Response, next: NextFunction) => PermissionChecker.verifyPermission(prefix.replace("/", ""), route.methodName as string, next, req));
-                    }
-
-                    this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req: Request, res: Response, next: NextFunction) => {
-                        let result = instance[route.methodName as string](req, res);
-
-                        if (result instanceof Promise) {
-                            result
-                                .then(promiseValues => this.formatResponse(promiseValues, res))
-                                .catch(err => next(err));
-                        } else {
-                            this.formatResponse(result, res);
-                        }
-                    });
-                }
-            }
-        });
+        // Binding the correct prototype
+        this.aggregateRoutes = this.aggregateRoutes.bind(this);
     }
 
     private mapRequiredFields(options: RouteOptions): MiddyFunction[] {
@@ -117,20 +115,5 @@ export class RouteAggregator {
         }
 
         res.status(status).json(results)
-    }
-
-    private extractControllers(files: string[]): any[] {
-        const controllers: BaseController[] = [];
-        for (const file of files) {
-            if (!file.includes('index') && !file.includes('BaseController')) {
-                const controller = require(`../../controllers/${file}`);
-                controllers.push(Object.values(controller)[0] as BaseController);
-            }
-        }
-        return controllers;
-    }
-
-    getRouter(): e.Router {
-        return this.router;
     }
 }
