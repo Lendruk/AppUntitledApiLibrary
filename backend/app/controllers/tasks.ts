@@ -9,11 +9,15 @@ import mongoose from 'mongoose';
 import Comment from '../models/Comment';
 import { Request } from '../lib/types/Request';
 import { ObjectId } from '../lib/ObjectId';
-import { SocketEvent } from '../lib/classes/SocketServer';
+import { SocketEvent, SocketServer } from '../lib/classes/SocketServer';
 import { Server, Socket } from 'socket.io';
+import { Inject } from '../lib/decorators/Inject';
 
 @Controller("/tasks")
 export class TaskController extends BaseController {
+
+    @Inject()
+    private _socketServer!: SocketServer;
 
     @Get("/", {
         requireToken: true,

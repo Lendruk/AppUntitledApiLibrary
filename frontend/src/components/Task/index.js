@@ -9,11 +9,27 @@ export class Task extends React.Component {
         }
     }
 
+    getColorOfCard(type) {
+        switch(type) {
+            case "BUG": 
+                return "red";
+            case "STORY":
+                return "blue";
+            case "IDEA":
+                return "yellow";
+            case "IMPROVEMENT":
+                return "gray";
+            case "GENERIC":
+                return "orange";
+
+        }
+    }
+
     render() {
         const { task } = this.props;
         return (
-        <Styles.Task>
-            <Styles.Poly >
+        <Styles.Task color={this.getColorOfCard(task.type)}>
+            <Styles.Poly color={this.getColorOfCard(task.type)} >
                 <span className="moon-users" /> 
                 <svg width="50" height="50">
                     <polygon points="0,0 50,0 0,50" />

@@ -14,7 +14,12 @@ export class Board extends React.Component {
                         tasks: [
                             {
                                 title: "test task",
-                            }
+                                type: "BUG",
+                            },
+                            {
+                                title: "test task2",
+                                type: "IMPROVEMENT",
+                            },
                         ],
                     },
                     {
