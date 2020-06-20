@@ -10,7 +10,7 @@ export const Task = styled.div`
     position: relative;
     margin: 5px 0px;
 
-    cursor: pointer;
+    cursor: grab;
 `;
 
 export const Poly = styled.div`

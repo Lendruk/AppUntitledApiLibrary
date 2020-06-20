@@ -1,5 +1,6 @@
 import React from 'react';
 import * as Styles from './styles';
+import { useDrag, useDrop } from 'react-dnd';
 export class Task extends React.Component {
 
     constructor(props) {
@@ -7,6 +8,9 @@ export class Task extends React.Component {
 
         this.state = {
         }
+
+        this.onMouseTask = this.onMouseTask.bind(this);
+        this.onMouseUpTask = this.onMouseUpTask.bind(this);
     }
 
     getColorOfCard(type) {
@@ -27,8 +31,9 @@ export class Task extends React.Component {
 
     render() {
         const { task } = this.props;
+        console.log(task);
         return (
-        <Styles.Task color={this.getColorOfCard(task.type)}>
+        <Styles.Task id={`task_${task._id}`} onMouseUp={e => this.onMouseUpTask(e,task._id)} onMouseDown={e => this.onMouseTask(e,task._id)} color={this.getColorOfCard(task.type)}>
             <Styles.Poly color={this.getColorOfCard(task.type)} >
                 <span className="moon-users" /> 
                 <svg width="50" height="50">
@@ -47,4 +52,24 @@ export class Task extends React.Component {
         )
     }
 
+    onMouseTask(e, id) {
+        // e.stopPropagation();
+        const elem = document.getElementById(`task_${id}`);
+        console.log(elem);
+        if(elem) {
+            elem.style.cursor = "grabbing";
+            elem.style.userSelect = "none";
+        }
+
+        
+    }
+
+    onMouseUpTask(e, id) {
+        const elem = document.getElementById(`task_${id}`);
+
+        if(elem) {
+            elem.style.cursor = "grab";
+            elem.style.userSelect = "unset";
+        }
+    }
 }
