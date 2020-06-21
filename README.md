@@ -1,4 +1,5 @@
-# Scrummer
+# Munchellos
+Scrum team management tool
 
 The current front-end is a placeholder made in react.
 
