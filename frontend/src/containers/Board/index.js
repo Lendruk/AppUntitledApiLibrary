@@ -7,13 +7,12 @@ export class Board extends React.Component {
 
     constructor(props) {
         super(props);
-        this.onMouseTask = this.onMouseTask.bind(this);
-        this.onMouseUpTask = this.onMouseUpTask.bind(this);
         this.state = {
             currentProject: {
                 columns: [
                     {
                         name: "col1",
+                        _id: 1,
                         tasks: [
                             {
                                 title: "test task",
@@ -29,10 +28,12 @@ export class Board extends React.Component {
                     },
                     {
                         name: "col2",
+                        _id: 2,
                         tasks: [],
                     },
                     {
                         name: "col3",
+                        _id: 3,
                         tasks: [],
                     },
                 ]
@@ -54,9 +55,25 @@ export class Board extends React.Component {
         )
     }
 
+    onDropTask(id, colId) {
+       const { currentProject: { columns } } = this.state;
+        const taskId = id.split("_")[1];
+        let task;
+        for(const column of columns) {
+            const index = column.tasks.findIndex(elem => elem._id == taskId);
+            
+            if(index !== -1) {
+                task = column.tasks.splice(index, 1)[0];
+                break;
+            }
+        }
+        const col = columns.find(elem => elem._id === colId);
+        col.tasks.push(task);
+        this.setState({ columns });
+    }
+
     renderBoard() {
         const { currentProject } = this.state;
-        console.log(currentProject);
         return (
             <Styles.Board>
                 {currentProject && currentProject.columns.map(col => (
@@ -64,14 +81,14 @@ export class Board extends React.Component {
                         <Styles.ColumnTitle>
                             {col.name}
                         </Styles.ColumnTitle>
-                        <Droppable style={{ height: '100%' }} id={`col_${col.name}`}>
-                            <Styles.Tasks>
+                        <Droppable onDrop={id => this.onDropTask(id,col._id)} style={{ height: '100%' }} id={`col_${col.name}`}>
+                            
                                 {col.tasks.length > 0 ? col.tasks.map(task => (
                                     <Draggable id={`tsk_${task._id}`}>
-                                        <Task onDrag={() => {}} onMouseUp={this.onMouseUpTask} onMouseDown={this.onMouseTask} task={task} />
+                                        <Task task={task} />
                                     </Draggable>
                                 )) : this.renderNoTasks()}
-                            </Styles.Tasks>
+                           
                         </Droppable>
                        
                     </Styles.Column>

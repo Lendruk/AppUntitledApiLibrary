@@ -8,7 +8,7 @@ export const Task = styled.div`
     min-height: 120px;
     max-height: 300px;
     position: relative;
-    margin: 5px 0px;
+    margin: 5px 10px;
 
     cursor: grab;
 `;

@@ -31,7 +31,6 @@ export class Task extends React.Component {
 
     render() {
         const { task } = this.props;
-        console.log(task);
         return (
         <Styles.Task id={`task_${task._id}`} onMouseUp={e => this.onMouseUpTask(e,task._id)} onMouseDown={e => this.onMouseTask(e,task._id)} color={this.getColorOfCard(task.type)}>
             <Styles.Poly color={this.getColorOfCard(task.type)} >
@@ -55,7 +54,6 @@ export class Task extends React.Component {
     onMouseTask(e, id) {
         // e.stopPropagation();
         const elem = document.getElementById(`task_${id}`);
-        console.log(elem);
         if(elem) {
             elem.style.cursor = "grabbing";
             elem.style.userSelect = "none";
