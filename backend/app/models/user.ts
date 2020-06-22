@@ -1,6 +1,6 @@
 import { mongoose } from '../utils/database';
 import { Property, getModelFromClass } from '../lib/decorators/model';
-import bycrypt from 'bcrypt';
+import bycrypt from 'bcryptjs';
 import { IActivatable } from '../lib/interfaces/IActivatable';
 import Role from './Role';
 import { BaseModel } from '../lib/classes/BaseModel';
