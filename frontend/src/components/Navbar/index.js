@@ -5,7 +5,8 @@ import { logout } from '../../containers/Login/actions';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-import { showToast } from '../Toast';
+import { uriLogout } from '../../utils/endpoints'
+import { post } from '../../utils/api';
 import PropTypes from 'prop-types';
 
 class Navbar extends React.Component {
@@ -22,9 +23,14 @@ class Navbar extends React.Component {
 
     async logout() {
         const { dispatch } = this.props;
-        dispatch(logout());
-    }
+        let result = '';
+        result = await post(uriLogout);
 
+        if (result.status >= 200 && result.status < 400) {
+            showToast("SUCCESS", result.data.message);
+            dispatch(logout());
+        }
+    }
 
     componentDidMount() {
 
