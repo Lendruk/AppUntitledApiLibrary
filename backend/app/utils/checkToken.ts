@@ -7,7 +7,6 @@ import { Request } from "../lib/types/Request";
 export const checkToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { authorization } = req.headers;
-
         if (!authorization) throw errors.NO_TOKEN;
 
         const splitToken: string[] = authorization.split(' ');

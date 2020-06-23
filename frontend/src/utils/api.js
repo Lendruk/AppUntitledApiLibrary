@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { showToast } from '../components/Toast';
-import { AppStorage } from '../storage';
 
 // API URL
 const API_URL = "http://localhost:4000/api/"
@@ -8,9 +7,9 @@ const API_URL = "http://localhost:4000/api/"
 // Header generator
 const genRequestHeader = () => ({
 	headers: {
-		Authorization: `Bearer ${AppStorage.getItem("token")}` || '',
+		Authorization: `Bearer ${localStorage.getItem("token")}` || '',
 		source: 'web',
-		'Accept-language': AppStorage.getItem("language") || "en",
+		'Accept-language': localStorage.getItem("token") || "en",
 	},
 });
 

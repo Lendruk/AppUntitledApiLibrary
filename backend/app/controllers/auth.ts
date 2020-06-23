@@ -7,6 +7,7 @@ import { errors } from "../utils/errors";
 import { LoginService } from "../services/LoginService";
 import { Inject } from "../lib/decorators/Inject";
 import Token from "../models/token";
+import { checkToken } from "../utils/checkToken";
 
 @Controller("/auth")
 export class AuthController extends BaseController {
@@ -22,9 +23,10 @@ export class AuthController extends BaseController {
         return { status: 'LOGIN_SUCCESSFUL', message: "Login Successful", ...await this._loginService.login(email, password) };
     }
 
-    @Post("/logout")
+    @Post("/logout", { requireToken: true })
     public async logout(req: Request) {
         const { authorization } = req.headers;
+        console.log('Auth ', authorization);
         if (!authorization) throw errors.NO_TOKEN;
         const splitToken: string[] = authorization.split(' ');
         await Token.findOneAndDelete({ authToken: splitToken[1] }).lean();
