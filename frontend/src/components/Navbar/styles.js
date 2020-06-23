@@ -51,8 +51,8 @@ export const UserOptions = styled.div`
     display: flex;
     padding-right: 20px;
     color: #185C77;
-    cursor: pointer;
     .userProfile {
+        cursor: pointer;
         height: 50px;
         width: 50px;
         display: flex;
@@ -60,9 +60,15 @@ export const UserOptions = styled.div`
         align-items: center;
         border-radius: 50%;
         background: white;
-
         span {
             font-size: 28px;
+        }
+    }
+    .logOut {
+        margin: auto 20px;
+        
+        button {
+            cursor: pointer;
         }
     }
 `;
