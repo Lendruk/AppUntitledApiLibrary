@@ -19,6 +19,14 @@ export const Column = styled.div`
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 `;
 
+export const ColumnTitleInput = styled.input`
+    text-align: center;
+    height: 15px;
+    width: 80%;
+    border-radius: 4px;
+    border: 1px solid #044862;
+`;
+
 export const ColumnTitle = styled.div`
     display: flex;
     align-items: center;
@@ -32,6 +40,9 @@ export const ColumnTitle = styled.div`
     padding: 10px 0px;
     font-size: 18px;
 
+    .title-value { 
+        cursor: pointer;   
+    }
 `;
 
 export const Tasks = styled.div`

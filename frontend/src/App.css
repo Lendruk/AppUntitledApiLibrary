@@ -4,7 +4,6 @@
 	font-weight: 300;
 }
 
-
 @font-face {
   font-family: 'icomoon';
   src:  url('fonts/icomoon.eot?uh8wwh');
@@ -82,4 +81,13 @@
 }
 .moon-users:before {
   content: "\e972";
+}
+.moon-warning:before {
+  content: "\ea07";
+}
+.moon-notification:before {
+  content: "\ea08";
+}
+.moon-checkmark:before {
+  content: "\ea10";
 }

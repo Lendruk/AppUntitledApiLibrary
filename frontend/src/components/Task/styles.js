@@ -3,13 +3,14 @@ import styled from 'styled-components';
 export const Task = styled.div`
     border: 1px solid black;
     border-radius: 3px;
-    border-left: 7px solid red;
-    border-top: 7px solid red;
+    border-left: 7px solid ${props => props.color};
+    border-top: 7px solid ${props => props.color};
     min-height: 120px;
     max-height: 300px;
     position: relative;
+    margin: 5px 10px;
 
-    cursor: pointer;
+    cursor: grab;
 `;
 
 export const Poly = styled.div`
@@ -21,9 +22,9 @@ export const Poly = styled.div`
         top: 5px;
         left: 5px;
     }
-    background: red;
+    background: ${props => props.color};
     svg {
-        fill:red;
+        fill: ${props => props.color};;
     }
 `;
 

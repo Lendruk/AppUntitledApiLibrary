@@ -1,13 +1,20 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { compose } from 'redux';
 import * as Styles from './styles';
-import { Input } from '../../components/Input';
-export class Homepage extends React.Component {
+import Register from '../Register';
+import Login from '../Login';
 
+
+class Homepage extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            authMode: "signIn",
+            email: "",
+            isLogin: true,
             cards: [
                 {
                     icon: "moon-users",
@@ -34,73 +41,63 @@ export class Homepage extends React.Component {
         };
     }
 
-    renderSignIn() {
-        return (
-            <div>
-                <Styles.AuthTitle>Login</Styles.AuthTitle>
-                <Styles.InputGroup>
-                    <Input style={{marginBottom: 10 }} placeholder="Email" label="email"/>
-                    <Input type="password" placeholder="Password" label="password"/>
-                </Styles.InputGroup>
-                <Styles.AuthOptions>
-                    <Styles.AuthButton>Sign In</Styles.AuthButton>
-                    <span>or</span>
-                    <Styles.Signup onClick={() => this.setState({ authMode: "signUp"})}>Sign up</Styles.Signup>
-                </Styles.AuthOptions>
-            </div>
-        )
-    }
-
-    renderSignUp() {
-        return (
-            <div>
-                <Styles.AuthTitle>Sign Up</Styles.AuthTitle>
-                <Styles.InputGroup>
-                    <Input style={{marginBottom: 10 }} placeholder="Email" label="email"/>
-                    <Input type="password" placeholder="Password" label="password"/>
-                </Styles.InputGroup>
-                <Styles.AuthOptions>
-                    <Styles.AuthButton>Register</Styles.AuthButton>
-                    <span>or</span>
-                    <Styles.Signup onClick={() => this.setState({ authMode: "signIn" })}>Login</Styles.Signup>
-                </Styles.AuthOptions>
-            </div>
-        )
-    }
-
     render() {
-        const { cards, authMode } = this.state;
+        const { cards, isLogin, email } = this.state;
 
         return (
             <Styles.HomeContainer>
-                    <Styles.AuthContainer>
-                        {authMode === 'signIn' ? this.renderSignIn() : this.renderSignUp()}
-                        <Styles.Copyright>
-                            Copyright TT GameStudios 2020
+                <Styles.AuthContainer>
+                    {isLogin ?
+                        <Login email={email} changeAuthMode={(val) => this.setState({ isLogin: val })} /> :
+                        <Register changeAuthMode={(val, email) => this.setState({ isLogin: val, email })} />}
+                    <Styles.Copyright>
+                        Copyright TT GameStudios 2020
                         </Styles.Copyright>
-                    </Styles.AuthContainer>
-                    <Styles.InfoContainer>
-                        <h1>Scrumer</h1>
-                        <Styles.CardContainer>
-                            {cards.map(card => (
-                                 <Styles.Card key={`${card.title}-${card.icon}`}>
-                                 <Styles.CardIcon>
-                                     <span className={card.icon}></span>
-                                 </Styles.CardIcon>
-                                 <Styles.CardDescription>
-                                <span>{card.title}</span>
-                                {card.description}
+                </Styles.AuthContainer>
+                <Styles.InfoContainer>
+                    <h1>Scrumer</h1>
+                    <Styles.CardContainer>
+                        {cards.map(card => (
+                            <Styles.Card key={`${card.title}-${card.icon}`}>
+                                <Styles.CardIcon>
+                                    <span className={card.icon}></span>
+                                </Styles.CardIcon>
+                                <Styles.CardDescription>
+                                    <span>{card.title}</span>
+                                    {card.description}
                                 </Styles.CardDescription>
-                             </Styles.Card>
-                            ))}
-                        </Styles.CardContainer>
-                    </Styles.InfoContainer>
-                    <Styles.Lines>
-                        <div />
-                        <div />
-                        <div />
-                    </Styles.Lines>
+                            </Styles.Card>
+                        ))}
+                    </Styles.CardContainer>
+                </Styles.InfoContainer>
+                <Styles.Lines>
+                    <div />
+                    <div />
+                    <div />
+                </Styles.Lines>
             </Styles.HomeContainer>
         );
     }
 }
+
+Homepage.propTypes = {
+    login: PropTypes.object,
+    dispatch: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = createStructuredSelector({
+    login: state => state.login,
+});
+
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch,
+    };
+}
+
+const withConnect = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+);
+
+export default compose(withConnect)(Homepage);

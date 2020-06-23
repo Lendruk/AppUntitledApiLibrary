@@ -1,13 +1,24 @@
 import styled from 'styled-components';
 
+
 export const Container = styled.div`
-    background: #185C77;
-    height: 70px;
     display: flex;
+    width: 100%;
+    height: 70px;
+`;
+
+export const Logo = styled.div`
+    width: 320px;
+`;
+
+export const Navbar = styled.div`
+    background: #185C77;
+    display: flex;
+    flex: 1;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
     color: white;
+    box-shadow: 7px 7px 19px -8px rgba(0,0,0,0.75);
 `;
 
 export const Icon = styled.div`
@@ -41,6 +52,7 @@ export const UserOptions = styled.div`
     padding-right: 20px;
     color: #185C77;
     .userProfile {
+        cursor: pointer;
         height: 50px;
         width: 50px;
         display: flex;
@@ -48,9 +60,15 @@ export const UserOptions = styled.div`
         align-items: center;
         border-radius: 50%;
         background: white;
-
         span {
             font-size: 28px;
+        }
+    }
+    .logOut {
+        margin: auto 20px;
+        
+        button {
+            cursor: pointer;
         }
     }
 `;

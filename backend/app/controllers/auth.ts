@@ -19,8 +19,7 @@ export class AuthController extends BaseController {
         const { body: { email, password } } = req;
 
         if (!email || !password) throw errors.REQUIRED_FIELDS_EMPTY;
-
-        return { status: 'LOGIN_SUCCESSFUL', ...await this._loginService.login(email, password) };
+        return { status: 'LOGIN_SUCCESSFUL', message: "Login Successful", ...await this._loginService.login(email, password) };
     }
 
     @Post("/logout")
