@@ -17,7 +17,7 @@ export class Draggable extends React.Component {
 
     render() {
         return (
-            <div style={this.props.style} onDragEnd={() => this.props.onDragEnd(this.props.id)} id={this.props.id} draggable={true} onDragStart={this.drag} onDragOver={this.noAllowDrop}>
+            <div style={this.props.style} id={this.props.id} draggable={true} onDragStart={this.drag} onDragOver={this.noAllowDrop}>
                 {this.props.children}
             </div>
         );

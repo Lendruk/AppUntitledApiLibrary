@@ -1,13 +1,24 @@
 import styled from 'styled-components';
 
+
 export const Container = styled.div`
-    background: #185C77;
-    height: 70px;
     display: flex;
+    width: 100%;
+    height: 70px;
+`;
+
+export const Logo = styled.div`
+    width: 320px;
+`;
+
+export const Navbar = styled.div`
+    background: #185C77;
+    display: flex;
+    flex: 1;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
     color: white;
+    box-shadow: 7px 7px 19px -8px rgba(0,0,0,0.75);
 `;
 
 export const Icon = styled.div`
@@ -40,6 +51,7 @@ export const UserOptions = styled.div`
     display: flex;
     padding-right: 20px;
     color: #185C77;
+    cursor: pointer;
     .userProfile {
         height: 50px;
         width: 50px;

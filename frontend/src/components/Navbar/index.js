@@ -34,28 +34,31 @@ export class Navbar extends React.Component {
         const { openProjectPicker } = this.state;
         return (
             <Styles.Container>
-                <Styles.Breadcrumb>
-                    <Styles.Icon>
-                        <span className="moon-users" />
-                    </Styles.Icon>
-                    <span className="moon-back breadcrumb-arrow" />
-                    <div>Workspace name</div>
-                    <span className="moon-back breadcrumb-arrow" />
-                    <Styles.ProjectSelector  onClick={e => {
-                        this.setState({ openProjectPicker: true }, () =>{
-                            window.addEventListener("mousedown", this.handleProjectPickerClick);
-                        })
-                        }}>
-                        <div>Project name</div>
-                        <span className="moon-back" />
-                        {openProjectPicker && <ProjectPicker />}
-                    </Styles.ProjectSelector>
-                </Styles.Breadcrumb>
-                <Styles.UserOptions>
-                    <div className="userProfile">
-                        <span className="moon-user" />
-                    </div>
-                </Styles.UserOptions>
+                <Styles.Logo></Styles.Logo>
+                <Styles.Navbar>
+                    <Styles.Breadcrumb>
+                        <Styles.Icon>
+                            <span className="moon-users" />
+                        </Styles.Icon>
+                        <span className="moon-back breadcrumb-arrow" />
+                        <div>Workspace name</div>
+                        <span className="moon-back breadcrumb-arrow" />
+                        <Styles.ProjectSelector  onClick={e => {
+                            this.setState({ openProjectPicker: true }, () =>{
+                                window.addEventListener("mousedown", this.handleProjectPickerClick);
+                            })
+                            }}>
+                            <div>Project name</div>
+                            <span className="moon-back" />
+                            {openProjectPicker && <ProjectPicker />}
+                        </Styles.ProjectSelector>
+                    </Styles.Breadcrumb>
+                    <Styles.UserOptions>
+                        <div className="userProfile">
+                            <span className="moon-user" />
+                        </div>
+                    </Styles.UserOptions>
+                </Styles.Navbar>
             </Styles.Container>
         )
     }

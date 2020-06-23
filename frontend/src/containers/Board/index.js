@@ -38,6 +38,8 @@ export class Board extends React.Component {
                     },
                 ]
             },
+            tempColName: "",
+            colInEdit: "",
             projects: [],
         }
     }
@@ -56,7 +58,8 @@ export class Board extends React.Component {
     }
 
     onDropTask(id, colId) {
-       const { currentProject: { columns } } = this.state;
+       const { currentProject } = this.state;
+       const { columns } = currentProject;
         const taskId = id.split("_")[1];
         let task;
         for(const column of columns) {
@@ -69,17 +72,52 @@ export class Board extends React.Component {
         }
         const col = columns.find(elem => elem._id === colId);
         col.tasks.push(task);
-        this.setState({ columns });
+        this.setState({ currentProject: { ...currentProject, columns: columns } });
+    }
+
+    addColumn() {
+        const { currentProject } = this.state;
+        const { columns } = currentProject;
+        const newColumn = { name: "New Column", tasks: [], _id: "test" };
+        columns.push(newColumn);
+        this.setState({ currentProject });
+        this.editColumnTitle(newColumn._id);
+    }
+
+    editColumnTitle(colId) {
+        const { currentProject, colInEdit } = this.state;
+        const { columns } = currentProject;
+        if(colInEdit === "") {
+            const column = columns.find(elem => elem._id === colId);
+            this.setState({ colInEdit: colId, tempColName: column.name });
+        }
+    }
+
+    onEditColumnName(value) {
+        this.setState({ tempColName: value.target.value });
+    }
+
+    onEditKeyPress(event, index) {
+        const { tempColName, currentProject } = this.state; 
+        if((event.which || event.key) === 13) {
+            const { columns } = currentProject;
+            columns[index].name = tempColName;
+            this.setState({ colInEdit: "", tempColName: "", currentProject });
+        } else if(event.which === 27) {
+            this.setState({ colInEdit: "", tempColName: "", currentProject });
+        }
     }
 
     renderBoard() {
-        const { currentProject } = this.state;
+        const { currentProject, colInEdit, tempColName } = this.state;
         return (
             <Styles.Board>
-                {currentProject && currentProject.columns.map(col => (
+                {currentProject && currentProject.columns.map((col,index) => (
                     <Styles.Column>
                         <Styles.ColumnTitle>
-                            {col.name}
+                            {colInEdit == col._id ? (
+                                <Styles.ColumnTitleInput value={tempColName} onBlur={() => this.setState({ colInEdit: "", tempColName: "" })} onKeyUp={e => this.onEditKeyPress(e, index)} onChange={val => this.onEditColumnName(val)} />
+                            ) : <span onClick={() => this.editColumnTitle(col._id)} className="title-value">{col.name}</span>}
                         </Styles.ColumnTitle>
                         <Droppable onDrop={id => this.onDropTask(id,col._id)} style={{ height: '100%' }} id={`col_${col.name}`}>
                             
@@ -94,7 +132,7 @@ export class Board extends React.Component {
                     </Styles.Column>
                 ))}
                 <Styles.AddColumn >
-                    <span className="moon-users">
+                    <span onClick={() => this.addColumn()} className="moon-users">
 
                     </span>
                 </Styles.AddColumn>
