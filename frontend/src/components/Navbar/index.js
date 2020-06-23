@@ -8,6 +8,7 @@ import { compose } from 'redux';
 import { uriLogout } from '../../utils/endpoints'
 import { post } from '../../utils/api';
 import PropTypes from 'prop-types';
+import { showToast } from '../Toast';
 
 class Navbar extends React.Component {
     constructor(props) {
@@ -24,7 +25,7 @@ class Navbar extends React.Component {
     async logout() {
         const { dispatch } = this.props;
         let result = '';
-        result = await post(uriLogout);
+        result = await post(uriLogout, {});
 
         if (result.status >= 200 && result.status < 400) {
             showToast("SUCCESS", result.data.message);
