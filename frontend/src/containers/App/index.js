@@ -12,11 +12,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Board } from '../Board';
 import Homepage from '../Homepage';
 import { Sidebar } from '../../components/Sidebar';
-import { Navbar } from '../../components/Navbar';
+import Navbar from '../../components/Navbar';
 import * as Styles from '../ContentContainer/styles';
 
 class App extends React.Component {
-
     get isLoggedInUser() {
         try {
             const { user, token } = this.props.login;

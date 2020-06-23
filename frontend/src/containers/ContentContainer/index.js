@@ -2,13 +2,13 @@ import React from 'react';
 import * as Styles from './styles';
 import { Sidebar } from '../../components/Sidebar';
 import { Navbar } from '../../components/Navbar';
-import { AppStorage } from '../../storage';
-export class ContentContainer extends React.Component {
+
+export default class ContentContainer extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            
+
             projects: [],
             currentProject: {
                 columns: [
@@ -35,7 +35,6 @@ export class ContentContainer extends React.Component {
 
     render() {
         const { projects, currentProject } = this.state;
-
         return (
             <>
                 <Navbar />
@@ -43,9 +42,9 @@ export class ContentContainer extends React.Component {
                     <Sidebar>
 
                     </Sidebar>
-                <div style={{ flex: 1}}>
-                    {this.props.children} 
-                </div>
+                    <div style={{ flex: 1 }}>
+                        {this.props.children}
+                    </div>
                 </Styles.Container>
             </>
         )
