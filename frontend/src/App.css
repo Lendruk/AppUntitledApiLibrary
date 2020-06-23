@@ -31,17 +31,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.moon-back:before {
-  content: "\e9a1";
+.moon-plus:before {
+  content: "\e9b1";
 }
-.moon-stack:before {
-  content: "\e92e";
+.moon-shopping-list:before {
+  content: "\e99d";
 }
-.moon-stats-dots:before {
-  content: "\e99b";
-}
-.moon-contrast:before {
-  content: "\e9d5";
+.moon-house-outline:before {
+  content: "\e9ae";
 }
 .moon-pencil:before {
   content: "\e905";
@@ -52,11 +49,17 @@
 .moon-images:before {
   content: "\e90e";
 }
+.moon-stack:before {
+  content: "\e92e";
+}
 .moon-bubbles:before {
   content: "\e96c";
 }
 .moon-user:before {
   content: "\e971";
+}
+.moon-users:before {
+  content: "\e972";
 }
 .moon-user-plus:before {
   content: "\e973";
@@ -73,14 +76,20 @@
 .moon-cogs:before {
   content: "\e995";
 }
+.moon-stats-dots:before {
+  content: "\e99b";
+}
+.moon-back:before {
+  content: "\e9a1";
+}
 .moon-bin:before {
   content: "\e9ac";
 }
 .moon-list2:before {
   content: "\e9bb";
 }
-.moon-users:before {
-  content: "\e972";
+.moon-contrast:before {
+  content: "\e9d5";
 }
 .moon-warning:before {
   content: "\ea07";
@@ -90,4 +99,10 @@
 }
 .moon-checkmark:before {
   content: "\ea10";
+}
+.moon-home:before {
+  content: "\e900";
+}
+.moon-bell:before {
+  content: "\e951";
 }

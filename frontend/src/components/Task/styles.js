@@ -17,7 +17,7 @@ export const Poly = styled.div`
     height: 20px;
     width: 20px;
     position: relative;
-    .moon-users {
+    span{
         position: absolute;
         top: 5px;
         left: 5px;

@@ -38,7 +38,7 @@ export class Navbar extends React.Component {
                 <Styles.Navbar>
                     <Styles.Breadcrumb>
                         <Styles.Icon>
-                            <span className="moon-users" />
+                            <span className="moon-home" />
                         </Styles.Icon>
                         <span className="moon-back breadcrumb-arrow" />
                         <div>Workspace name</div>
