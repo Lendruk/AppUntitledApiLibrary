@@ -4,9 +4,6 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from 'react-dnd-html5-backend'
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Board } from '../Board';
@@ -48,7 +45,6 @@ class App extends React.Component {
         if (this.isLoggedInUser) {
             return (
                 <>
-                    <DndProvider backend={HTML5Backend}>
                         <Navbar />
                         <Styles.Container>
                             <Sidebar>
@@ -62,7 +58,6 @@ class App extends React.Component {
                                 </Switch>
                             </div>
                         </Styles.Container>
-                    </DndProvider>
                 </>
             );
         }

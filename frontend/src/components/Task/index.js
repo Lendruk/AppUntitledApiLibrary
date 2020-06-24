@@ -1,6 +1,5 @@
 import React from 'react';
 import * as Styles from './styles';
-import { useDrag, useDrop } from 'react-dnd';
 export class Task extends React.Component {
 
     constructor(props) {
