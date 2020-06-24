@@ -7,6 +7,17 @@ Test Coverage: 0% :( (Need to do tests)
 
 Note:
 This description is still a work in progress, a lot of the information present here can be wrong or out of date.
+
+## How to start
+
+### 1. Docker
+
+If you have Docker installed on your machine you can run `docker-compose up` while in the main directory. This will start a docker container network that will be mapped to your port 80. If you go to `localhost` on your browser you should see the front-end of the application.
+
+### 2. Local
+
+To start the application locally, you need to run `npm install` in both the front-end and back-end folder then open a terminal in each folder. On the back-end folder run `npm run dev` to start the api and on the front-end folder run `npm start` this will start and open the front-end.
+
 ## API Features
 
 - [`Dependecy Injection`](#Dependecy-Injection)
