@@ -1,0 +1,37 @@
+version: '3'
+services:
+    nginx:
+        container_name: nginx
+        image: nginx
+        volumes: 
+            - ./nginx.conf:/etc/nginx/nginx.conf
+            - ./mime.types:/etc/nginx/mime.types
+            - frontend-build:/var/www/html/
+        ports: 
+            - 80:80
+            - 443:443
+        depends_on:
+            - app
+            - frontend
+    frontend:
+        container_name: frontend
+        build: ./frontend
+        volumes: 
+            - frontend-build:/build/build
+    app:
+        container_name: docker-node-mongo
+        depends_on: 
+            - mongo
+        restart: always
+        build: ./backend
+        ports:
+            - 8080:4000
+        links: 
+            - mongo
+    mongo:
+        container_name: mongo
+        image: mongo
+        ports:
+            - 27017:27017
+volumes: 
+    frontend-build:

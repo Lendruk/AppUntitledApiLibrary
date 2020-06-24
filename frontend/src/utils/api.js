@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { showToast } from '../components/Toast';
-
 // API URL
-const API_URL = "http://localhost:4000/api/"
+const API_URL = `http://localhost${process.env.REACT_APP_USING_DOCKER ? "" : ":4000"}/api/`
 
 // Header generator
 const genRequestHeader = () => ({

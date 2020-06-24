@@ -11,7 +11,6 @@ import configureStore from './configureStore';
 
 import './index.css';
 import './App.css';
-
 const initialState = {};
 export const { store, persistor } = configureStore(initialState, history);
 
