@@ -29,12 +29,28 @@ export class Task extends React.Component {
         }
     }
 
+    getIconOfCard(type) {
+        switch(type) {
+            case "BUG": 
+                return "moon-warning";
+            case "STORY":
+                return "moon-users";
+            case "IDEA":
+                return "moon-list";
+            case "IMPROVEMENT":
+                return "moon-users";
+            case "GENERIC":
+                return "moon-users";
+
+        }
+    }
+
     render() {
         const { task } = this.props;
         return (
         <Styles.Task id={`task_${task._id}`} onMouseUp={e => this.onMouseUpTask(e,task._id)} onMouseDown={e => this.onMouseTask(e,task._id)} color={this.getColorOfCard(task.type)}>
             <Styles.Poly color={this.getColorOfCard(task.type)} >
-                <span className="moon-users" /> 
+                <span className={this.getIconOfCard(task.type)} /> 
                 <svg width="50" height="50">
                     <polygon points="0,0 50,0 0,50" />
                 </svg>

@@ -2,14 +2,19 @@ import mongoose from 'mongoose';
 
 mongoose.set("debug", true);
 
-const dbConnection = async () => await mongoose.connect("mongodb+srv://ams-sii-8orgd.mongodb.net/test",
-    {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-        auth: { user: process.env.DATABASE_USERNAME as string, password: process.env.DATABASE_PASSWORD as string }
-    }
+const dbOptions : { [index: string]: any } = {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false, 
+};
+
+if(!process.env.DOCKER) {
+    dbOptions.auth = { user: process.env.DATABASE_USERNAME as string, password: process.env.DATABASE_PASSWORD as string }
+}
+
+const dbConnection = async () => await mongoose.connect(process.env.DATABASE_CONNECTION_STRING as string,
+    dbOptions
 );
 
 export { mongoose };

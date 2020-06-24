@@ -108,6 +108,12 @@ export class Board extends React.Component {
         }
     }
 
+    addTask(column, colIndex) {
+        const { currentProject } = this.state;
+
+        const newTask = { title: "New Task", type: "TASK" };
+    }   
+
     renderBoard() {
         const { currentProject, colInEdit, tempColName } = this.state;
         return (
@@ -125,14 +131,17 @@ export class Board extends React.Component {
                                     <Draggable id={`tsk_${task._id}`}>
                                         <Task task={task} />
                                     </Draggable>
-                                )) : this.renderNoTasks()}
-                           
+                                )) : this.renderNoTasks()}     
+                        <Styles.AddTask onClick={() => this.addTask(col, index)}>
+                            <div />
+                            <span className="moon-plus"  />
+                            <div />
+                        </Styles.AddTask>
                         </Droppable>
-                       
                     </Styles.Column>
                 ))}
                 <Styles.AddColumn >
-                    <span onClick={() => this.addColumn()} className="moon-users">
+                    <span onClick={() => this.addColumn()} className="moon-plus">
 
                     </span>
                 </Styles.AddColumn>

@@ -27,6 +27,31 @@ export const ColumnTitleInput = styled.input`
     border: 1px solid #044862;
 `;
 
+export const AddTask = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    span {
+        cursor: pointer;
+        margin: 0 15px;
+        padding: 5px;
+        border-radius: 50%;
+        border: 1px solid #044862;
+        transition: 0.2s;
+        &:hover {
+            color: white;
+            background: #044862;
+            transition: 0.2s;
+        }
+    }
+    div {
+        padding-top: 8px;
+        height: 1px;
+        width: 120px;
+        border-bottom: 1px solid #044862;
+    }
+`;
+
 export const ColumnTitle = styled.div`
     display: flex;
     align-items: center;
