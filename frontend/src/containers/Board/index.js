@@ -3,6 +3,7 @@ import * as Styles from './styles';
 import { Task } from '../../components/Task';
 import { Draggable } from '../../components/Draggable';
 import { Droppable } from '../../components/Droppable';
+import Modal from 'react-modal';
 export class Board extends React.Component {
 
     constructor(props) {
@@ -40,6 +41,7 @@ export class Board extends React.Component {
             },
             tempColName: "",
             colInEdit: "",
+            taskInEdit: null,
             projects: [],
         }
     }
@@ -112,11 +114,22 @@ export class Board extends React.Component {
         const { currentProject } = this.state;
 
         const newTask = { title: "New Task", type: "TASK" };
-    }   
+
+        currentProject.columns[colIndex].tasks.push(newTask);
+
+        this.setState({ currentProject });
+    } 
+
+    renderTaskModal() {
+        return <div>
+            Task Here
+        </div>
+    }
 
     renderBoard() {
-        const { currentProject, colInEdit, tempColName } = this.state;
+        const { currentProject, colInEdit, tempColName, taskInEdit } = this.state;
         return (
+            <>
             <Styles.Board>
                 {currentProject && currentProject.columns.map((col,index) => (
                     <Styles.Column>
@@ -128,7 +141,7 @@ export class Board extends React.Component {
                         <Droppable onDrop={id => this.onDropTask(id,col._id)} style={{ height: '100%' }} id={`col_${col.name}`}>
                             
                                 {col.tasks.length > 0 ? col.tasks.map(task => (
-                                    <Draggable id={`tsk_${task._id}`}>
+                                    <Draggable onClick={() => this.setState({ taskInEdit: task })} id={`tsk_${task._id}`}>
                                         <Task task={task} />
                                     </Draggable>
                                 )) : this.renderNoTasks()}     
@@ -147,6 +160,32 @@ export class Board extends React.Component {
                 </Styles.AddColumn>
 
             </Styles.Board>
+            <Modal
+                isOpen={taskInEdit}
+                onRequestClose={() => { this.setState({ taskInEdit: null })}}
+                closeOnEscape
+                style={{
+					content: {
+						top: '50%',
+						left: '50%',
+						right: 'auto',
+						bottom: 'auto',
+						marginRight: '-50%',
+						transform: 'translate(-50%, -50%)',
+						padding: 0,
+						background: 'transparent',
+						border: 'none',
+						borderRadius: '8px',
+					},
+					overlay: {
+						zIndex: 998,
+						backgroundColor: 'rgba(0,0,0,0.5)',
+					},
+				}}
+            >
+                {this.renderTaskModal()}
+            </Modal>
+            </>
         )
     }
 }
