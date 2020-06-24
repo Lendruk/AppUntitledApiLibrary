@@ -44,7 +44,8 @@ export class RouteAggregator {
                         .concat((req: Request, res: Response, next: NextFunction) => PermissionChecker.verifyPermission(prefix.replace("/", ""), route.methodName as string, next, req));
                 }
 
-                this.app[route.requestMethod]((process.env.API_URL || "/api") + prefix + route.path, ...functions, (req: Request, res: Response, next: NextFunction) => {
+                console.log("API URL", process.env.API_URL);
+                this.app[route.requestMethod]((process.env.API_URL || "") + prefix + route.path, ...functions, (req: Request, res: Response, next: NextFunction) => {
                     let result = instance[route.methodName as string](req, res);
 
                     if (result instanceof Promise) {

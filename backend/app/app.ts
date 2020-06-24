@@ -1,18 +1,18 @@
 import express from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
 import 'reflect-metadata';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dbConnection from './utils/database';
 import { ErrorManager, errors } from './utils/errors';
 import { RouteAggregator } from './lib/classes/RouteAggregator';
-import dotenv from 'dotenv';
 import { Injector } from './lib/classes/Injector';
 import { cloudinaryConfig } from './utils/cloudinary';
 import { SocketServer } from './lib/classes/SocketServer';
 import { ControllerExtractor } from './lib/classes/ControllerExtractor';
 import http from 'http';
 
-dotenv.config();
 const app = express();
 
 app.use(cors());
@@ -47,7 +47,7 @@ controllerExtractor.addTask(socketServer.registerSockets);
 controllerExtractor.executeTasks();
 
 //Not Found Handler
-app.use((req, res, next) => next(errors.NOT_FOUND));
+app.use((req, res, next) =>{ console.log("request",req.get("Host")?.concat(" "+req.url));  next(errors.NOT_FOUND)});
 
 //Error Handler
 app.use(ErrorManager.handleError)
