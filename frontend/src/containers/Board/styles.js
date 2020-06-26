@@ -107,3 +107,93 @@ export const NoTasks = styled.div`
     font-weight: bold;
     font-size: 18px;
 `;
+
+export const ModalContainer = styled.div`
+    background: white;
+    display: flex;
+    flex-direction: row;
+    min-width: 600px;
+    max-width: 70vw;
+`;
+
+export const TaskTitle = styled.div`
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 24px;
+
+    span { 
+        font-size: 16px;
+        transition: 0.3s;
+        margin-left: 10px;
+        color: gray;
+        display: none;
+    }
+`;
+
+export const TaskDescription = styled.textarea`
+    border: 1px solid lightgrey;
+    border-radius: 2px;
+    background: #f2f2f2;
+    color: ${props => props.textColour};
+    padding: 5px;
+`;
+
+export const TaskContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    flex: 1;
+`;
+
+export const TaskActions = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-left: 1px solid #044862;
+    padding: 15px 10px;
+`;
+
+export const TaskAction = styled.div`
+    span {
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+`;
+
+export const TaskTags = styled.div`
+    display: flex;
+    margin: 10px 0px;
+`;
+
+export const Tag = styled.div`
+    background: ${props => props.colour};
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+`;
+
+export const HorizontalSeparator = styled.hr`
+    flex: 1;
+    width: 100%;
+    color: #044862;
+`;
+
+export const Comments = styled.div`
+
+`;
+
+export const SubTitle = styled.div`
+    margin-top: 0px;
+    font-size: 1.5em;
+`;
+
+export const TitleInput = styled.input`
+    margin-bottom: 10px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 24px;
+
+    border: none;
+`;

@@ -22,7 +22,14 @@ export class Board extends React.Component {
                             },
                             {
                                 title: "test task2",
+                                description: "Lorem ipsum dolor sit amet",
                                 type: "IMPROVEMENT",
+                                tags: [
+                                    {
+                                        name: "tag1",
+                                        colour: "red",
+                                    },
+                                ],
                                 _id: 2,
                             },
                         ],
@@ -40,6 +47,8 @@ export class Board extends React.Component {
                 ]
             },
             tempColName: "",
+            showEdit: false,
+            editingTitle: false,
             colInEdit: "",
             taskInEdit: null,
             projects: [],
@@ -99,6 +108,22 @@ export class Board extends React.Component {
         this.setState({ tempColName: value.target.value });
     }
 
+    getColorOfCard(type) {
+        switch(type) {
+            case "BUG": 
+                return "red";
+            case "STORY":
+                return "blue";
+            case "IDEA":
+                return "yellow";
+            case "IMPROVEMENT":
+                return "black";
+            case "GENERIC":
+                return "orange";
+
+        }
+    }
+
     onEditKeyPress(event, index) {
         const { tempColName, currentProject } = this.state; 
         if((event.which || event.key) === 13) {
@@ -120,10 +145,58 @@ export class Board extends React.Component {
         this.setState({ currentProject });
     } 
 
+    onEditTitle(event) {
+        if((event.which || event.key) === 13 || event.which === 27) {
+            this.setState({ editingTitle: false });
+        }
+    }
+
     renderTaskModal() {
-        return <div>
-            Task Here
-        </div>
+        const { taskInEdit, showEdit, editingTitle } = this.state;
+
+        console.log(taskInEdit);
+        if(!taskInEdit) return null;
+
+        const taskHasDescription = taskInEdit.description != null;
+        return (
+            <Styles.ModalContainer>
+                <Styles.TaskContent borderColour={this.getColorOfCard(taskInEdit.type)} >
+                    {editingTitle ? (
+                        <Styles.TitleInput 
+                            value={taskInEdit.title} 
+                            onChange={val => this.setState({ taskInEdit: { ...taskInEdit, title: val.target.value }})}
+                            onKeyPress={event => this.onEditTitle(event)}
+                        />
+                    ) : (
+                        <Styles.TaskTitle 
+                            onClick={() => this.setState({ editingTitle: true })}
+                            onMouseLeave={() => this.setState({ showEdit: false })} 
+                            onMouseEnter={() => this.setState({showEdit: true})}>
+                                {taskInEdit.title}<span style={{ display: showEdit ? 'inline' : 'none' }} className="moon-pencil" />
+                        </Styles.TaskTitle>
+                    )}
+                    <Styles.TaskDescription textColour={taskHasDescription ? "black" : "lightgrey"}>{taskHasDescription ? taskInEdit.description : "Add a description..."}</Styles.TaskDescription>
+                    <Styles.TaskTags>
+                        {taskInEdit.tags && taskInEdit.tags.map(tag => (
+                            <Styles.Tag colour={tag.colour}>
+                                {tag.name}
+                            </Styles.Tag>
+                            )
+                        )}
+                    </Styles.TaskTags>
+                    <Styles.HorizontalSeparator />
+                    <Styles.SubTitle>Comments</Styles.SubTitle>
+                    <Styles.Comments>
+
+                    </Styles.Comments>
+                </Styles.TaskContent>
+                <Styles.TaskActions>
+                    <Styles.TaskAction>
+                        <span className="moon-bin" />
+                    </Styles.TaskAction>
+                </Styles.TaskActions>
+            </Styles.ModalContainer>
+        );
     }
 
     renderBoard() {
@@ -175,7 +248,6 @@ export class Board extends React.Component {
 						padding: 0,
 						background: 'transparent',
 						border: 'none',
-						borderRadius: '8px',
 					},
 					overlay: {
 						zIndex: 998,
