@@ -7,8 +7,8 @@ import { createStructuredSelector } from 'reselect';
 import * as Styles from './styles';
 import { Input } from '../../components/Input';
 import { showToast } from '../../components/Toast';
-import { post } from '../../utils/api';
-import { uriLogin } from '../../utils/endpoints';
+import { post, get } from '../../utils/api';
+import { uriLogin, uriWorkspaces } from '../../utils/endpoints';
 import reducer from './reducer';
 import makeSelectLogin from './selectors';
 import injectReducer from '../../utils/injectReducer';
@@ -61,11 +61,17 @@ class Login extends React.Component {
                     const { token, user } = result.data;
                     showToast("SUCCESS", result.data.message);
                     dispatch(loginSuccess({ token, user }));
+
+                    const workResponse = await get(uriWorkspaces(""));
+                    if (Object.keys(workResponse.data).length > 0) {
+                        dispatch(push("/"));
+                    } else {
+                        dispatch(push("/create-workspace"));                        
+                    }
                 }
             } catch (err) {
                 dispatch(loginFail(err));
             } finally {
-                dispatch(push("/"));
             }
         } else {
             showToast("ERROR", Strings.auth.missingFields);

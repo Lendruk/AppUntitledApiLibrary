@@ -4,7 +4,7 @@ import { showToast } from '../components/Toast';
 const API_URL = `http://localhost${process.env.REACT_APP_USING_DOCKER ? "" : ":4000"}/api/`
 
 // Header generator
-const genRequestHeader = () => ({
+export const genRequestHeader = () => ({
 	headers: {
 		Authorization: `Bearer ${localStorage.getItem("token")}` || '',
 		source: 'web',

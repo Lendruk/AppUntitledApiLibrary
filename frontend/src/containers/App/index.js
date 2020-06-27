@@ -11,6 +11,7 @@ import Homepage from '../Homepage';
 import { Sidebar } from '../../components/Sidebar';
 import Navbar from '../../components/Navbar';
 import * as Styles from '../ContentContainer/styles';
+import CreateWorkspace from '../CreateWorkspace';
 
 class App extends React.Component {
     get isLoggedInUser() {
@@ -53,6 +54,7 @@ class App extends React.Component {
                             <div style={{ flex: 1 }}>
                                 <Switch>
                                     <Route exact path="/" component={Board} />
+                                    <Route exact path="/create-workspace" component={CreateWorkspace} />
                                     <Redirect to="/" />
                                     {this.renderNotFound()}
                                 </Switch>

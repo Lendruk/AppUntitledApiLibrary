@@ -133,6 +133,7 @@ export const TaskTitle = styled.div`
 export const TaskDescription = styled.textarea`
     border: 1px solid lightgrey;
     border-radius: 2px;
+    font-size: 14px;
     background: #f2f2f2;
     color: ${props => props.textColour};
     padding: 5px;
@@ -150,10 +151,11 @@ export const TaskActions = styled.div`
     flex-direction: column;
     align-items: center;
     border-left: 1px solid #044862;
-    padding: 15px 10px;
+    padding: 15px 0px;
 `;
 
 export const TaskAction = styled.div`
+    padding: 5px 10px;
     span {
 
         &:hover {
