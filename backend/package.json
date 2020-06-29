@@ -4,7 +4,7 @@
   "description": "",
   "main": "./app/app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "tsc": "tsc",
     "eslint": "eslint --fix . --ext .js,.jsx,.ts,.tsx",
     "dev": "ts-node-dev --watch ./app/utils,./app/lib,./app/models,./app/controllers --respawn --transpileOnly ./app/app.ts ",
@@ -39,9 +39,12 @@
     "typescript": "^3.8.3"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.3",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "eslint": "^6.8.0",
-    "eslint-plugin-node": "^11.1.0"
+    "eslint-plugin-node": "^11.1.0",
+    "jest": "^26.1.0",
+    "ts-jest": "^26.1.1"
   }
 }
