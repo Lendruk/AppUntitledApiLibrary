@@ -1,4 +1,4 @@
-export class Expiry {
+export default class Expiry {
     seconds?: number;
     minutes?: number;
     hours?: number;
