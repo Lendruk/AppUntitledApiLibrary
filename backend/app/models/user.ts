@@ -32,7 +32,8 @@ export class UserModel extends BaseModel implements IActivatable {
             name: this.name,
             roles: this.roles,
             email: this.email,
-            _active: this._active
+            _active: this._active,
+            _id : this._id,
         };
     }
 
