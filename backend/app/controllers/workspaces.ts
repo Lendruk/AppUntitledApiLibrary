@@ -27,7 +27,7 @@ export class WorkspaceController extends BaseController {
             throw errors.BAD_REQUEST;
         }
 
-        return { code: 201, workspaces: [ { name: "test" }] };
+        return { status: 201, workspaces: [ { name: "test" }] };
 
         const ownerRole = await new Role({ name: "owner", isOwner: true });
 
@@ -37,6 +37,6 @@ export class WorkspaceController extends BaseController {
 
         ownerRole.save();
 
-        return { code: 201, workspace };
+        return { status: 201, workspace };
     }
 }

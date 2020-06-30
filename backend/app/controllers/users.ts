@@ -1,18 +1,13 @@
-import { Request, Response } from 'express';
 import { errors } from '../utils/errors';
 import { Controller } from '../lib/decorators/controller';
 import { Get, Post, Put } from '../lib/decorators/verbs';
 import { BaseController } from '../lib/classes/BaseController';
 import User from '../models/user';
 import bcrypt from 'bcryptjs';
-import { SocketServer } from '../lib/classes/SocketServer';
-import { Inject } from '../lib/decorators/Inject';
+import { Request } from '../lib/types/Request';
 
 @Controller("/users")
 export class UserController extends BaseController {
-
-    @Inject()
-    private _socketService!: SocketServer;
 
     @Get("/")
     public async getUsers(req: Request) {
@@ -49,7 +44,7 @@ export class UserController extends BaseController {
     }
 
     @Post("/register", { body: { required: ["password", "email", "name"] } })
-    public async registerUser(req: Request) {
+    public async registerUser(req : Request) {
         const { body: { name, password, email } } = req;
 
         if (await User.findOne({ email: email })) {
@@ -57,7 +52,7 @@ export class UserController extends BaseController {
         }
         
         const newUser = await new User({ name, password: await this.hashPassword(password), email }).save();
-        return { code: 201, status: "USER_REGISTERED", message: "Account successfully created", user: newUser.getPublicInformation() };
+        return { status: 201, code: "USER_REGISTERED", message: "Account successfully created", user: newUser.getPublicInformation() };
     }
 
     private async hashPassword(password: string): Promise<string> {
