@@ -46,7 +46,6 @@ export class RouteAggregator {
 
                 this.app[route.requestMethod]((process.env.API_URL || "") + prefix + route.path, ...functions, (req: Request, res: Response, next: NextFunction) => {
                     let result = instance[route.methodName as string](req, res);
-
                     if (result instanceof Promise) {
                         result
                             .then(promiseValues => this.formatResponse(promiseValues, res))

@@ -44,7 +44,7 @@ export class InviteController extends BaseController {
 
         //TODO: Send Email
 
-        return { code: 201, invite };
+        return { status: 201, invite };
     }
 
     @Post("/:id", { requireToken: true, params: { required: ["id"] } })
