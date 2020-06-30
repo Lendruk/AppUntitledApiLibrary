@@ -15,7 +15,7 @@ export class UserController extends BaseController {
     private _socketService!: SocketServer;
 
     @Get("/")
-    public async getUsers(req: Request, res: Response) {
+    public async getUsers(req: Request) {
 
         console.log("body", req.body);
         const t = new User({ name: "test", role: "test" });
@@ -23,7 +23,7 @@ export class UserController extends BaseController {
     }
 
     @Get("/:id", { requireToken: true })
-    public async getUser(req: Request, res: Response) {
+    public async getUser(req: Request) {
         const { params: { id } } = req;
         let user;
         try {
@@ -49,15 +49,14 @@ export class UserController extends BaseController {
     }
 
     @Post("/register", { body: { required: ["password", "email", "name"] } })
-    public async registerUser(req: Request, res: Response) {
+    public async registerUser(req: Request) {
         const { body: { name, password, email } } = req;
 
         if (await User.findOne({ email: email })) {
             throw errors.EMAIL_ALREADY_IN_USE;
         }
-
+        
         const newUser = await new User({ name, password: await this.hashPassword(password), email }).save();
-
         return { code: 201, status: "USER_REGISTERED", message: "Account successfully created", user: newUser.getPublicInformation() };
     }
 
