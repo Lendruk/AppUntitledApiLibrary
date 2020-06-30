@@ -105,7 +105,7 @@ export class RouteAggregator {
 
         if (data) {
             for (const key in data) {
-                if (key === "code") {
+                if (key === "status") {
                     status = data[key];
                 } else {
                     results[key] = data[key];
