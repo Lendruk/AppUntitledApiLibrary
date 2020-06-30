@@ -190,7 +190,7 @@ export class TaskController extends BaseController {
 
         const comment = await new Comment({ user: user, content, task: id }).save();
 
-        return { code: 201, comment };
+        return { status: 201, comment };
     }
 
     @Delete("/:taskId/comments/:commentId") 

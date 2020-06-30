@@ -76,7 +76,7 @@ export class ProjectController extends BaseController {
                 new: true
             });
 
-        return { code: 201, tags: updatedWorkSpace?.tags };
+        return { status: 201, tags: updatedWorkSpace?.tags };
     }
 
     @Post("/", {
@@ -91,7 +91,7 @@ export class ProjectController extends BaseController {
 
         await Workspace.findOneAndUpdate({ _id: workspace as string }, { $push: { projects: project } });
 
-        return { code: 201, project };
+        return { status: 201, project };
     }
 
     @Put("/:id/tags", {
@@ -123,7 +123,7 @@ export class ProjectController extends BaseController {
 
         if (!updatedWorkSpace) throw errors.NOT_FOUND;
 
-        return { code: 201, tags: updatedWorkSpace?.tags };
+        return { status: 201, tags: updatedWorkSpace?.tags };
     }
 
     @Delete("/:id/tags", {
@@ -145,7 +145,7 @@ export class ProjectController extends BaseController {
                 new: true
             });
 
-        return { code: 201, tags: updatedWorkSpace?.tags };
+        return { status: 201, tags: updatedWorkSpace?.tags };
     }
 
     @Delete("/:id", { requireToken: true, headers: { required: ["workspace"] } })

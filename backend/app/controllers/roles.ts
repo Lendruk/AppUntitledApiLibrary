@@ -29,7 +29,7 @@ export class RoleController extends BaseController {
         //TODO: Validations
         const newRole = await new Role({ ...body }).save();
 
-        return { code: 201, role: newRole };
+        return { status: 201, role: newRole };
     }
 
     @Put("/:id", { params: { required: ["id"] } })
@@ -58,7 +58,7 @@ export class RoleController extends BaseController {
             throw errors.DB_FAILED_UPDATE;
         }
 
-        return { code: 200 };
+        return { status: 200 };
     }
 
     @Delete("/:id", { params: { required: ["id"] } })
@@ -69,6 +69,6 @@ export class RoleController extends BaseController {
 
         await Role.deleteOne({ _id: id });
 
-        return { code: 200 };
+        return { status: 200 };
     }
 }

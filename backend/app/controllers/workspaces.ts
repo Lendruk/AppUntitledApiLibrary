@@ -10,6 +10,15 @@ import { ObjectId } from "../lib/ObjectId";
 @Controller("/workspaces")
 export class WorkspaceController extends BaseController {
 
+    @Get("/", { requireToken: true })
+    public async getWorkspaces(req : Request) {
+        const { user } = req;
+
+        const workspaces = await Workspace.find({users: user });
+
+        return workspaces;
+    }
+
     @Post("/", { requireToken: true, body: { required: ["name"] } })
     public async postWorkspace(req: Request) {
         const { body: { name }, user } = req;
@@ -17,6 +26,8 @@ export class WorkspaceController extends BaseController {
         if (Boolean(await Workspace.findOne({ "users.user": user?._id }))) {
             throw errors.BAD_REQUEST;
         }
+
+        return { status: 201, workspaces: [ { name: "test" }] };
 
         const ownerRole = await new Role({ name: "owner", isOwner: true });
 
@@ -26,6 +37,6 @@ export class WorkspaceController extends BaseController {
 
         ownerRole.save();
 
-        return { code: 201, workspace };
+        return { status: 201, workspace };
     }
 }
