@@ -8,7 +8,7 @@ export default class Expiry {
     constructor(options: { seconds?: number; minutes?: number; hours?: number; days?: number; months?: number }) {
         this.seconds = options.seconds;
         this.minutes = options.minutes;
-        this.hours = options.minutes;
+        this.hours = options.hours;
         this.days = options.days;
         this.months = options.months;
     }
