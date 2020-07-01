@@ -1,5 +1,9 @@
 import React from 'react';
 import * as Styles from './styles';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
 import { Task } from '../../components/Task';
 import { Draggable } from '../../components/Draggable';
 import { Droppable } from '../../components/Droppable';
@@ -261,3 +265,27 @@ export class Board extends React.Component {
         )
     }
 }
+
+Board.propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    location: PropTypes.object,
+};
+
+const mapStateToProps = createStructuredSelector({
+    projects: state => state.projects,
+    workspaces: state => state.workspaces,
+    currentProject: state => state.currentProject,
+});
+
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch,
+    };
+}
+
+const withConnect = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+);
+
+export default compose(withConnect)(Board);

@@ -6,6 +6,9 @@ import {
     generalReducer,
     languageReducer,
     settingsReducer,
+    projectReducer,
+    workspaceReducer,
+    currentProjectReducer,
 } from './containers/App/reducer';
 
 import history from './utils/history';
@@ -23,6 +26,9 @@ export default function createReducer(injectedReducers = {}) {
         language: languageReducer,
         login: loginReducer,
         settings: settingsReducer,
+        projects: projectReducer,
+        workspaces: workspaceReducer,
+        currentProject: currentProjectReducer,
         ...injectedReducers,
     });
 

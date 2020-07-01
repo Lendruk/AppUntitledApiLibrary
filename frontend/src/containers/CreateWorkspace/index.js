@@ -2,13 +2,14 @@ import React from 'react';
 import * as Styles from './styles';
 import { Input } from '../../components/Input';
 import { showToast } from '../../components/Toast';
+import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { post } from '../../utils/api';
+import { post, get } from '../../utils/api';
 import { uriWorkspaces, uriProjects } from '../../utils/endpoints';
 import { genRequestHeader } from "../../utils/api";
-import { setWorkspaces } from '../App/actions';
+import { setWorkspaces, setProjects, setCurrentProject } from '../App/actions';
 
 class CreateWorkspace extends React.Component {
 
@@ -28,8 +29,22 @@ class CreateWorkspace extends React.Component {
 
         if(projectName) { 
             const headers = genRequestHeader();
-            headers.workspace = createdWorkspace._id;
-            const res = await post(uriProjects(""), { title: projectName }, headers);
+            headers.headers.workspace = createdWorkspace._id;
+
+            console.log(headers);
+            const res = await post(uriProjects(), { title: projectName }, headers);
+
+            const { project } = res.data;
+
+            this.props.dispatch(setProjects([project]));
+            this.props.dispatch(setCurrentProject(project));
+
+            const workRes = await get(uriWorkspaces());
+
+            const { workspaces } = workRes.data;
+
+            this.props.dispatch(setWorkspaces(workspaces));
+            this.props.dispatch(push("/"));
         } else {
             showToast("ERROR", "Name can't be empty");
         }
@@ -39,12 +54,12 @@ class CreateWorkspace extends React.Component {
         const { workspaceName } = this.state;
 
         if(workspaceName) {
-            const res = await post(uriWorkspaces(""), { name: workspaceName });
-            const { workspaces } = res.data;
+            const res = await post(uriWorkspaces(), { name: workspaceName });
+            const { workspace } = res.data;
             
             console.log("workspaces", res);
-            this.props.dispatch(setWorkspaces(workspaces));
-            this.setState({ creatingWorkspace: false, createdWorkspace: workspaces[0] });
+            
+            this.setState({ creatingWorkspace: false, createdWorkspace: workspace });
         } else {
             showToast("ERROR", "Name can't be empty");
         }

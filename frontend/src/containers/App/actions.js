@@ -1,4 +1,4 @@
-import { DEFAULT_ACTION, SETTINGS_ACTION, API_ERROR, WORKSPACES_ACTION } from './constants';
+import { DEFAULT_ACTION, SETTINGS_ACTION, API_ERROR, WORKSPACES_ACTION, CURRENT_PROJECT_ACTION,  PROJECTS_ACTION } from './constants';
 
 export function defaultAction() {
     return {
@@ -25,4 +25,18 @@ export function apiError(payload) {
         type: API_ERROR,
         payload,
     };
+}
+
+export function setProjects(value) {
+    return {
+        type: PROJECTS_ACTION,
+        value,
+    }
+}
+
+export function setCurrentProject(value) {
+    return {
+        type: CURRENT_PROJECT_ACTION,
+        value,
+    }
 }

@@ -53,6 +53,9 @@ class Navbar extends React.Component {
 
     render() {
         const { openProjectPicker } = this.state;
+        const { currentProject, workspaces } = this.props;
+        console.log(currentProject);
+        console.log(workspaces);
         return (
             <Styles.Container>
                 <Styles.Logo></Styles.Logo>
@@ -62,14 +65,14 @@ class Navbar extends React.Component {
                             <span className="moon-home" />
                         </Styles.Icon>
                         <span className="moon-back breadcrumb-arrow" />
-                        <div>Workspace name</div>
+                        <div>{workspaces && workspaces.length > 0 && workspaces.find(workspace => workspace.projects.find(elem => elem === currentProject._id)).name}</div>
                         <span className="moon-back breadcrumb-arrow" />
                         <Styles.ProjectSelector onClick={e => {
                             this.setState({ openProjectPicker: true }, () => {
                                 window.addEventListener("mousedown", this.handleProjectPickerClick);
                             })
                         }}>
-                            <div>Project name</div>
+                            <div>{currentProject.title}</div>
                             <span className="moon-back" />
                             {openProjectPicker && <ProjectPicker />}
                         </Styles.ProjectSelector>
@@ -94,6 +97,8 @@ Navbar.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
     router: state => state.router,
+    currentProject: state => state.currentProject,
+    workspaces: state => state.workspaces,
 });
 
 function mapDispatchToProps(dispatch) {
