@@ -1,6 +1,6 @@
 import { PropertyOptions } from '../types/PropertyOptions';
 import { mongoose } from '../../utils/database';
-import { Model as MongooseModel, SchemaOptions } from 'mongoose';
+import { Model as MongooseModel, SchemaOptions, Model } from 'mongoose';
 import { ModelProperties } from '../types/ModelProperties';
 import { ObjectId } from '../ObjectId';
 import { BaseModel } from '../classes/BaseModel';
@@ -52,7 +52,14 @@ export const getModelFromClass = <T extends BaseModel>(target: Function): Mongoo
         ...schemaProperties
     }, { timestamps: { createdAt: '_created', updatedAt: '_modified' } });
 
-    // Add Functions
+    // Add Static Functions
+    for (const staticKey of Object.getOwnPropertyNames(target)) {
+        if(!["length", "name", "prototype"].includes(staticKey)) {
+            schema.statics[staticKey] = target[staticKey as keyof typeof target];
+        }
+    }
+
+    // Add Methods
     for (const protoKey of Object.getOwnPropertyNames(target.prototype)) {
         if (protoKey !== 'constructor') {
             const protoFunction = target.prototype[protoKey];
@@ -64,7 +71,7 @@ export const getModelFromClass = <T extends BaseModel>(target: Function): Mongoo
         schema.index({ _created: 1 }, { expireAfterSeconds: modelOptions.expireAfter.getSeconds() });
     }
 
-    return mongoose.model<T>(target.name.replace(/(Model)+/g, ""), schema);
+    return  mongoose.model<T>(target.name.replace(/(Model)+/g, ""), schema);
 }
 
 function extractTypes(properties : any) {

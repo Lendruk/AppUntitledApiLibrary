@@ -1,6 +1,10 @@
 import { Request as ExpressRequest } from "express";
 import { UserModel } from "../../models/user";
 
-export interface Request extends ExpressRequest {
-    user?: Pick<UserModel, any>;
+export interface Request {
+    user? : Pick<UserModel, any>;
+    body? : any;
+    headers? : any;
+    query? : any;
+    params? : any;
 }
