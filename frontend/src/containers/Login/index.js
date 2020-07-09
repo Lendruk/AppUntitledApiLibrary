@@ -14,7 +14,8 @@ import makeSelectLogin from './selectors';
 import injectReducer from '../../utils/injectReducer';
 import { loginSuccess, loginFail, logout } from './actions'
 import Strings from '../../utils/strings';
-import { setWorkspaces, setCurrentProject } from '../App/actions';
+import { setWorkspaces, setCurrentProject, setSocket } from '../App/actions';
+import openSocket from "socket.io-client";
 
 class Login extends React.Component {
     constructor(props) {
@@ -63,10 +64,15 @@ class Login extends React.Component {
                     showToast("SUCCESS", result.data.message);
                     dispatch(loginSuccess({ token, user }));
                     const workResponse = await get(uriWorkspaces(""));
+                    
+                    const socket = openSocket("http://localhost:4000");
+                    dispatch(setSocket(socket));
+                    console.log("workresponse", workResponse);
                     if (Object.keys(workResponse.data.workspaces).length > 0) {
-                        dispatch(setWorkspaces(workResponse.data.workspaces));
                         const projectRes = await get(uriProjects(workResponse.data.workspaces[0].projects[0]));
-                        dispatch(setCurrentProject(projectRes.data.project))
+                        console.log("res", projectRes);
+                        dispatch(setWorkspaces(workResponse.data.workspaces));
+                        dispatch(setCurrentProject(projectRes.data.project));
                         dispatch(push("/"));
                     } else {
                         dispatch(push("/create-workspace"));                        

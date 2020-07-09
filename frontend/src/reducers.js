@@ -8,6 +8,7 @@ import {
     settingsReducer,
     projectReducer,
     workspaceReducer,
+    socketReducer,
     currentProjectReducer,
 } from './containers/App/reducer';
 
@@ -29,6 +30,7 @@ export default function createReducer(injectedReducers = {}) {
         projects: projectReducer,
         workspaces: workspaceReducer,
         currentProject: currentProjectReducer,
+        socket: socketReducer,
         ...injectedReducers,
     });
 

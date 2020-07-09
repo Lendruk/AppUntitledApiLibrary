@@ -1,4 +1,4 @@
-import { DEFAULT_ACTION, SETTINGS_ACTION, API_ERROR, WORKSPACES_ACTION, CURRENT_PROJECT_ACTION,  PROJECTS_ACTION } from './constants';
+import { DEFAULT_ACTION, SETTINGS_ACTION, API_ERROR, WORKSPACES_ACTION, CURRENT_PROJECT_ACTION,  PROJECTS_ACTION, SOCKET_ACTION } from './constants';
 
 export function defaultAction() {
     return {
@@ -19,6 +19,14 @@ export function setWorkspaces(value) {
         value,
     }
 }
+
+export function setSocket(value) {
+    return {
+        type: SOCKET_ACTION,
+        value,
+    }
+}
+
 
 export function apiError(payload) {
     return {

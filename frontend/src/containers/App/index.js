@@ -6,7 +6,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Board } from '../Board';
+import Board from '../Board';
 import Homepage from '../Homepage';
 import { Sidebar } from '../../components/Sidebar';
 import Navbar from '../../components/Navbar';
@@ -42,7 +42,7 @@ class App extends React.Component {
                 </Switch>
             );
         }
-
+        console.log("FDMDKDKD", this.props.currentProject);
         if (this.isLoggedInUser) {
             return (
                 <>
@@ -89,6 +89,7 @@ App.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
     login: state => state.login,
+    currentProject: state => state.currentProject,
 });
 
 function mapDispatchToProps(dispatch) {

@@ -8,48 +8,51 @@ import { Task } from '../../components/Task';
 import { Draggable } from '../../components/Draggable';
 import { Droppable } from '../../components/Droppable';
 import Modal from 'react-modal';
-export class Board extends React.Component {
+import { post } from '../../utils/api';
+import { uriColumns } from '../../utils/endpoints';
+class Board extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            currentProject: {
-                columns: [
-                    {
-                        name: "col1",
-                        _id: 1,
-                        tasks: [
-                            {
-                                title: "test task",
-                                type: "BUG",
-                                _id: 1,
-                            },
-                            {
-                                title: "test task2",
-                                description: "Lorem ipsum dolor sit amet",
-                                type: "IMPROVEMENT",
-                                tags: [
-                                    {
-                                        name: "tag1",
-                                        colour: "red",
-                                    },
-                                ],
-                                _id: 2,
-                            },
-                        ],
-                    },
-                    {
-                        name: "col2",
-                        _id: 2,
-                        tasks: [],
-                    },
-                    {
-                        name: "col3",
-                        _id: 3,
-                        tasks: [],
-                    },
-                ]
-            },
+            currentProject: props.currentProject,
+            // currentProject: {
+            //     columns: [
+            //         {
+            //             name: "col1",
+            //             _id: 1,
+            //             tasks: [
+            //                 {
+            //                     title: "test task",
+            //                     type: "BUG",
+            //                     _id: 1,
+            //                 },
+            //                 {
+            //                     title: "test task2",
+            //                     description: "Lorem ipsum dolor sit amet",
+            //                     type: "IMPROVEMENT",
+            //                     tags: [
+            //                         {
+            //                             name: "tag1",
+            //                             colour: "red",
+            //                         },
+            //                     ],
+            //                     _id: 2,
+            //                 },
+            //             ],
+            //         },
+            //         {
+            //             name: "col2",
+            //             _id: 2,
+            //             tasks: [],
+            //         },
+            //         {
+            //             name: "col3",
+            //             _id: 3,
+            //             tasks: [],
+            //         },
+            //     ]
+            // },
             tempColName: "",
             showEdit: false,
             editingTitle: false,
@@ -59,9 +62,20 @@ export class Board extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.state.currentProject = this.props.currentProject;
+
+        this.setState({ currentProject: this.props.currentProject });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({ currentProject: nextProps.currentProject });
+    }
+
 
     render() {
-        return this.renderBoard();
+        const { currentProject } = this.state;
+        return Object.keys(currentProject).length > 0 ? this.renderBoard() : null;
     }
 
     renderNoTasks() {
@@ -134,6 +148,7 @@ export class Board extends React.Component {
             const { columns } = currentProject;
             columns[index].name = tempColName;
             this.setState({ colInEdit: "", tempColName: "", currentProject });
+            post(uriColumns(), { name: tempColName, projectId: currentProject._id });
         } else if(event.which === 27) {
             this.setState({ colInEdit: "", tempColName: "", currentProject });
         }
@@ -158,7 +173,6 @@ export class Board extends React.Component {
     renderTaskModal() {
         const { taskInEdit, showEdit, editingTitle } = this.state;
 
-        console.log(taskInEdit);
         if(!taskInEdit) return null;
 
         const taskHasDescription = taskInEdit.description != null;
@@ -207,9 +221,9 @@ export class Board extends React.Component {
         const { currentProject, colInEdit, tempColName, taskInEdit } = this.state;
         return (
             <>
-            <Styles.Board>
-                {currentProject && currentProject.columns.map((col,index) => (
-                    <Styles.Column>
+            <Styles.Board key={currentProject._id}>
+                {currentProject && currentProject.columns && currentProject.columns.map((col,index) => (
+                    <Styles.Column key={col._id}>
                         <Styles.ColumnTitle>
                             {colInEdit == col._id ? (
                                 <Styles.ColumnTitleInput value={tempColName} onBlur={() => this.setState({ colInEdit: "", tempColName: "" })} onKeyUp={e => this.onEditKeyPress(e, index)} onChange={val => this.onEditColumnName(val)} />

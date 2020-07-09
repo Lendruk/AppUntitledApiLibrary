@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { DEFAULT_ACTION, SETTINGS_ACTION, WORKSPACES_ACTION, PROJECTS_ACTION, CURRENT_PROJECT_ACTION } from './constants';
+import { DEFAULT_ACTION, SETTINGS_ACTION, WORKSPACES_ACTION, PROJECTS_ACTION, CURRENT_PROJECT_ACTION, SOCKET_ACTION } from './constants';
 
 export const initialState = {};
 export const languageInitialState = { locale: 'en' };
@@ -13,6 +13,16 @@ export const generalReducer = (state = initialState, action) =>
                 break;
         }
     });
+
+export const socketReducer = (state = initialState, action) =>
+produce(state, (/* draft */) => {
+    switch (action.type) {
+        case SOCKET_ACTION:
+            break;
+        default:
+            break;
+    }
+});
 
 export const workspaceReducer = (state = initialState, action) => 
     produce(state, (/* draft */) => {
