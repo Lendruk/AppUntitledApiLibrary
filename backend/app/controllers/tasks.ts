@@ -120,6 +120,7 @@ export class TaskController extends BaseController {
                 }
             ).lean();
         } catch (err) {
+            console.log(err);
             throw errors.BAD_REQUEST;
         }
 
@@ -210,8 +211,9 @@ export class TaskController extends BaseController {
         console.log(req.files);
     }
 
-    @SocketEvent("test")
-    public async testSocket(socketServer: Server, socket: Socket, data? : any) {
-        
+    @SocketEvent("broadcast_task")
+    public async broadcastTask(socketServer: Server, socket: Socket, data? : any) {
+        socket.emit("test", { test: true });
+        console.log("test broadcast");
     }
 }
