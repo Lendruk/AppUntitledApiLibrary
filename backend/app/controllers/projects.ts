@@ -36,7 +36,18 @@ export class ProjectController extends BaseController {
 
         let project = null;
         try {
-            project = await Project.findOne({ _id: id }).lean();
+            project = await Project.findOne({ _id: id }).populate("columns.tasks").lean();
+            // project = await Project.aggregate([
+            // { $match: { _id: id as ObjectId } },
+            // {
+            //     $lookup: {
+            //         from: "tasks",
+            //         localField: "columns.tasks",
+            //         foreignField: "_id",
+            //         as: "columns.tasks",
+            //     },
+            // }
+        // ]);
         } catch (err) {
             throw errors.NOT_FOUND;
         }
