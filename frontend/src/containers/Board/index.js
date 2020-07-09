@@ -9,7 +9,7 @@ import { Draggable } from '../../components/Draggable';
 import { Droppable } from '../../components/Droppable';
 import Modal from 'react-modal';
 import { post } from '../../utils/api';
-import { uriColumns } from '../../utils/endpoints';
+import { uriColumns, uriCreateTasks } from '../../utils/endpoints';
 class Board extends React.Component {
 
     constructor(props) {
@@ -54,12 +54,16 @@ class Board extends React.Component {
             //     ]
             // },
             tempColName: "",
+            tempTaskTitle: "",
+            editTaskNameId: "",
             showEdit: false,
             editingTitle: false,
             colInEdit: "",
             taskInEdit: null,
             projects: [],
         }
+
+        this.onEditTaskTitleKeyPress = this.onEditTaskTitleKeyPress.bind(this);
     }
 
     componentDidMount() {
@@ -118,7 +122,7 @@ class Board extends React.Component {
         const { columns } = currentProject;
         if(colInEdit === "") {
             const column = columns.find(elem => elem._id === colId);
-            this.setState({ colInEdit: colId, tempColName: column.name });
+            this.setState({ colInEdit: colId, tempColName: column.name }, () => document.getElementById("column-title-input").focus());
         }
     }
 
@@ -150,18 +154,46 @@ class Board extends React.Component {
             this.setState({ colInEdit: "", tempColName: "", currentProject });
             post(uriColumns(), { name: tempColName, projectId: currentProject._id });
         } else if(event.which === 27) {
+            currentProject.columns.splice(index, 1);
             this.setState({ colInEdit: "", tempColName: "", currentProject });
+        }
+    }
+
+    async onEditTaskTitleKeyPress(event, columnIndex, task) {
+        const { currentProject, tempTaskTitle } = this.state;
+        console.log(event.which);
+        if(event.which === 13) { // Enter
+            const { columns } = currentProject;
+            console.log("enter");
+            delete task._id;
+            const taskRes = await post(uriCreateTasks(currentProject._id), { columnId: columns[columnIndex]._id, ...task, title: tempTaskTitle });
+            const index = currentProject.columns[columnIndex].tasks.findIndex(elem => elem._id === task._id);
+            currentProject.columns[columnIndex].tasks[index] = taskRes.data.task;
+            
+            task = taskRes.data.task;
+            this.setState({ editTaskNameId: "", tempTaskTitle: "", currentProject });
+        } else if(event.which === 27) { // Esc
+            console.log("escape");
+            const index = currentProject.columns[columnIndex].tasks.findIndex(elem => elem === task);
+            if(index !== -1) {
+                currentProject.columns[columnIndex].tasks.splice(index, 1);
+            }
+            this.setState({ editTaskNameId: "", tempTaskTitle: "", currentProject });
         }
     }
 
     addTask(column, colIndex) {
         const { currentProject } = this.state;
 
-        const newTask = { title: "New Task", type: "TASK" };
+        const newTask = { title: "New Task", type: "GENERIC", _id: "new_task" };
 
         currentProject.columns[colIndex].tasks.push(newTask);
 
-        this.setState({ currentProject });
+        this.setState({ currentProject, tempTaskTitle: newTask.title, editTaskNameId: newTask._id }, () => {
+            const node = document.getElementById("task-title-input").focus();
+        });
+
+
     } 
 
     onEditTitle(event) {
@@ -218,7 +250,8 @@ class Board extends React.Component {
     }
 
     renderBoard() {
-        const { currentProject, colInEdit, tempColName, taskInEdit } = this.state;
+        const { currentProject, colInEdit, tempColName, taskInEdit, editTaskNameId, tempTaskTitle } = this.state;
+        console.log("temp", tempTaskTitle);
         return (
             <>
             <Styles.Board key={currentProject._id}>
@@ -226,21 +259,25 @@ class Board extends React.Component {
                     <Styles.Column key={col._id}>
                         <Styles.ColumnTitle>
                             {colInEdit == col._id ? (
-                                <Styles.ColumnTitleInput value={tempColName} onBlur={() => this.setState({ colInEdit: "", tempColName: "" })} onKeyUp={e => this.onEditKeyPress(e, index)} onChange={val => this.onEditColumnName(val)} />
+                                <Styles.ColumnTitleInput id="column-title-input" value={tempColName} onBlur={() => this.setState({ colInEdit: "", tempColName: "" })} onKeyUp={e => this.onEditKeyPress(e, index)} onChange={val => this.onEditColumnName(val)} />
                             ) : <span onClick={() => this.editColumnTitle(col._id)} className="title-value">{col.name}</span>}
                         </Styles.ColumnTitle>
                         <Droppable onDrop={id => this.onDropTask(id,col._id)} style={{ height: '100%' }} id={`col_${col.name}`}>
                             
                                 {col.tasks.length > 0 ? col.tasks.map(task => (
                                     <Draggable onClick={() => this.setState({ taskInEdit: task })} id={`tsk_${task._id}`}>
-                                        <Task task={task} />
+                                        <Task onEditTaskTitle={e => this.setState({ tempTaskTitle: e.target.value })}
+                                         editTitleValue={tempTaskTitle}
+                                         onInteractionTitle={ e => this.onEditTaskTitleKeyPress(e, index, task)}
+                                         editingTitle={editTaskNameId === task._id} task={task} />
                                     </Draggable>
                                 )) : this.renderNoTasks()}     
-                        <Styles.AddTask onClick={() => this.addTask(col, index)}>
+                        {editTaskNameId === "" && <Styles.AddTask onClick={() => this.addTask(col, index)}>
                             <div />
                             <span className="moon-plus"  />
                             <div />
                         </Styles.AddTask>
+                        }
                         </Droppable>
                     </Styles.Column>
                 ))}
