@@ -14,9 +14,9 @@ export class WorkspaceController extends BaseController {
     public async getWorkspaces(req : Request) {
         const { user } = req;
 
-        const workspaces = await Workspace.find({users: user });
+        const workspaces = await Workspace.find({"users.user": user });
 
-        return workspaces;
+        return { workspaces };
     }
 
     @Post("/", { requireToken: true, body: { required: ["name"] } })
@@ -26,8 +26,6 @@ export class WorkspaceController extends BaseController {
         if (Boolean(await Workspace.findOne({ "users.user": user?._id }))) {
             throw errors.BAD_REQUEST;
         }
-
-        return { status: 201, workspaces: [ { name: "test" }] };
 
         const ownerRole = await new Role({ name: "owner", isOwner: true });
 

@@ -7,13 +7,15 @@ import { createStructuredSelector } from 'reselect';
 import * as Styles from './styles';
 import { Input } from '../../components/Input';
 import { showToast } from '../../components/Toast';
-import { post } from '../../utils/api';
-import { uriLogin } from '../../utils/endpoints';
+import { post, get } from '../../utils/api';
+import { uriLogin, uriWorkspaces, uriProjects } from '../../utils/endpoints';
 import reducer from './reducer';
 import makeSelectLogin from './selectors';
 import injectReducer from '../../utils/injectReducer';
 import { loginSuccess, loginFail, logout } from './actions'
 import Strings from '../../utils/strings';
+import { setWorkspaces, setCurrentProject, setSocket } from '../App/actions';
+import openSocket from "socket.io-client";
 
 class Login extends React.Component {
     constructor(props) {
@@ -61,11 +63,24 @@ class Login extends React.Component {
                     const { token, user } = result.data;
                     showToast("SUCCESS", result.data.message);
                     dispatch(loginSuccess({ token, user }));
+                    const workResponse = await get(uriWorkspaces(""));
+                    
+                    const socket = openSocket("http://localhost:4000");
+                    dispatch(setSocket(socket));
+                    console.log("workresponse", workResponse);
+                    if (Object.keys(workResponse.data.workspaces).length > 0) {
+                        const projectRes = await get(uriProjects(workResponse.data.workspaces[0].projects[0]));
+                        console.log("res", projectRes);
+                        dispatch(setWorkspaces(workResponse.data.workspaces));
+                        dispatch(setCurrentProject(projectRes.data.project));
+                        dispatch(push("/"));
+                    } else {
+                        dispatch(push("/create-workspace"));                        
+                    }
                 }
             } catch (err) {
                 dispatch(loginFail(err));
             } finally {
-                dispatch(push("/"));
             }
         } else {
             showToast("ERROR", Strings.auth.missingFields);

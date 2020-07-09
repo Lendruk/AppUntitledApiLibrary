@@ -1,4 +1,4 @@
-import { DEFAULT_ACTION, SETTINGS_ACTION, API_ERROR } from './constants';
+import { DEFAULT_ACTION, SETTINGS_ACTION, API_ERROR, WORKSPACES_ACTION, CURRENT_PROJECT_ACTION,  PROJECTS_ACTION, SOCKET_ACTION } from './constants';
 
 export function defaultAction() {
     return {
@@ -13,9 +13,38 @@ export function setSettings(value) {
     };
 }
 
+export function setWorkspaces(value) {
+    return {
+        type: WORKSPACES_ACTION,
+        value,
+    }
+}
+
+export function setSocket(value) {
+    return {
+        type: SOCKET_ACTION,
+        value,
+    }
+}
+
+
 export function apiError(payload) {
     return {
         type: API_ERROR,
         payload,
     };
+}
+
+export function setProjects(value) {
+    return {
+        type: PROJECTS_ACTION,
+        value,
+    }
+}
+
+export function setCurrentProject(value) {
+    return {
+        type: CURRENT_PROJECT_ACTION,
+        value,
+    }
 }
