@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { errors } from '../utils/errors';
 import { Controller } from '../lib/decorators/controller';
-import { Get, Post, Put, Delete } from '../lib/decorators/verbs';
+import { Get, Post, Put, Delete, Patch } from '../lib/decorators/verbs';
 import { BaseController } from '../lib/classes/BaseController';
 import Task from '../models/Task';
 import Project from '../models/Project';
@@ -93,6 +93,38 @@ export class TaskController extends BaseController {
         return { tasks: tasks[0].columns.tasks };
     }
 
+    @Patch("/project/:projectId/:taskId")
+    public async moveTask(req : Request) {
+        const {
+            params: { projectId, taskId },
+            body: { newColumnId, oldColumnId },
+        } = req;
+
+        try {  
+            await Project.findOneAndUpdate(
+                { 
+                    _id: projectId,
+                    columns: { $elemMatch: { _id: oldColumnId } }
+                },
+                {
+                    $pull: { "columns.$.tasks": taskId },
+                } ,{new: true });
+            
+            await Project.findOneAndUpdate(
+                {
+                    _id: projectId,
+                    columns: { $elemMatch: { _id: newColumnId } }
+                },
+                {
+                    $push: { "columns.$.tasks": taskId }
+                }
+            );
+        } catch(err) {
+            console.log(err);
+            throw errors.BAD_REQUEST;
+        }
+    }
+
     @Post("/project/:projectId", {
         requireToken: true,
         params: { required: ["projectId"] },
@@ -146,14 +178,13 @@ export class TaskController extends BaseController {
         return { task: updatedTask };
     }
 
-    @Delete("/project/:projectId", {
+    @Delete("/project/:projectId/:columnId/:taskId", {
         requireToken: true,
         params: { required: ["projectId"] },
     })
     public async deleteTasks(req: Request) {
         const {
-            params: { projectId },
-            body: { columnId, taskId },
+            params: { projectId,columnId, taskId },
         } = req;
 
         try {
@@ -208,7 +239,7 @@ export class TaskController extends BaseController {
         requireToken: true
     })
     public async uploadFile(req: Request, res: Response) {
-        console.log(req.files);
+        // console.log(req.files);
     }
 
     @SocketEvent("broadcast_task")
