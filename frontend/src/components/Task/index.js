@@ -54,7 +54,6 @@ export class Task extends React.Component {
 
     render() {
         const { task, editingTitle } = this.props;
-        console.log("edit", editingTitle);
         return (
         <Styles.Task id={`task_${task._id}`} onMouseUp={e => this.onMouseUpTask(e,task._id)} onMouseDown={e => this.onMouseTask(e,task._id)} color={this.getColorOfCard(task.type)}>
             <Styles.Poly color={this.getColorOfCard(task.type)} >
@@ -68,7 +67,7 @@ export class Task extends React.Component {
             {task.description}
             </Styles.Description>
             <Styles.Tags>
-                {task.tags.map(tag => (
+                {task.tags && task.tags.map(tag => (
                     <Styles.Tag colour={tag.colour}>{tag.name}</Styles.Tag>
                 ))}
             </Styles.Tags>

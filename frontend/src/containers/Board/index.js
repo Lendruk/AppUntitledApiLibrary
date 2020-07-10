@@ -8,8 +8,8 @@ import { Task } from '../../components/Task';
 import { Draggable } from '../../components/Draggable';
 import { Droppable } from '../../components/Droppable';
 import Modal from 'react-modal';
-import { post, patch } from '../../utils/api';
-import { uriColumns, uriCreateTasks } from '../../utils/endpoints';
+import { post, patch, remove, put } from '../../utils/api';
+import { uriColumns, uriCreateTasks, uriTasks } from '../../utils/endpoints';
 class Board extends React.Component {
 
     constructor(props) {
@@ -165,10 +165,8 @@ class Board extends React.Component {
 
     async onEditTaskTitleKeyPress(event, columnIndex, task) {
         const { currentProject, tempTaskTitle } = this.state;
-        console.log(event.which);
         if(event.which === 13) { // Enter
             const { columns } = currentProject;
-            console.log("enter");
             delete task._id;
             const taskRes = await post(uriCreateTasks(currentProject._id), { columnId: columns[columnIndex]._id, ...task, title: tempTaskTitle });
             const index = currentProject.columns[columnIndex].tasks.findIndex(elem => elem._id === task._id);
@@ -177,7 +175,6 @@ class Board extends React.Component {
             task = taskRes.data.task;
             this.setState({ editTaskNameId: "", tempTaskTitle: "", currentProject });
         } else if(event.which === 27) { // Esc
-            console.log("escape");
             const index = currentProject.columns[columnIndex].tasks.findIndex(elem => elem === task);
             if(index !== -1) {
                 currentProject.columns[columnIndex].tasks.splice(index, 1);
@@ -202,7 +199,42 @@ class Board extends React.Component {
 
     onEditTitle(event) {
         if((event.which || event.key) === 13 || event.which === 27) {
-            this.setState({ editingTitle: false });
+            this.setState({ editingTitle: false }, () => this.updateTask());
+        }
+    }
+
+    async updateTask() {
+        const { taskInEdit, currentProject } = this.state;
+        if(taskInEdit) {
+            const res = await put(uriTasks(taskInEdit._id), 
+            { 
+                title: taskInEdit.title,
+                description: taskInEdit.description, 
+                tags: taskInEdit.tags || [],
+            });
+            if(res.status >= 200 && res.status < 400) {
+                const col = currentProject.columns[taskInEdit.col.index];
+                const index = col.tasks.findIndex(tsk => tsk._id === taskInEdit._id);
+                if(index !== -1) {
+                    col.tasks[index] = { ...res.data.task, col: taskInEdit.col };
+                    this.setState({ currentProject, taskInEdit: { ...res.data.task, col: taskInEdit.col }});
+                }
+            }
+        }
+    }
+
+    async deleteTask() {
+        const { taskInEdit, currentProject } = this.state;
+        if(taskInEdit) {
+           const res = await remove(uriCreateTasks(`${currentProject._id}/${taskInEdit.col._id}/${taskInEdit._id}`));
+            if(res.status >= 200 && res.status < 400) {
+                const taskIndex = currentProject.columns[taskInEdit.col.index].tasks.findIndex(tsk => tsk._id === taskInEdit._id);
+                if(taskIndex !== -1) {
+                    currentProject.columns[taskInEdit.col.index].tasks.splice(taskIndex, 1);
+                }
+
+                this.setState({ currentProject, taskInEdit: null });
+            }
         }
     }
 
@@ -225,11 +257,12 @@ class Board extends React.Component {
                         <Styles.TaskTitle 
                             onClick={() => this.setState({ editingTitle: true })}
                             onMouseLeave={() => this.setState({ showEdit: false })} 
-                            onMouseEnter={() => this.setState({showEdit: true})}>
+                            onMouseEnter={() => {  this.setState({showEdit: true})}}>
                                 {taskInEdit.title}<span style={{ display: showEdit ? 'inline' : 'none' }} className="moon-pencil" />
                         </Styles.TaskTitle>
                     )}
-                    <Styles.TaskDescription textColour={taskHasDescription ? "black" : "lightgrey"}>{taskHasDescription ? taskInEdit.description : "Add a description..."}</Styles.TaskDescription>
+                    <Styles.TaskDescription onChange={val => this.setState({ taskInEdit: { ...taskInEdit, description: val.target.value } })} onBlur={() => this.updateTask()} value={taskInEdit.description} placeholder={"Add a description..."} textColour={"black"}>
+                    </Styles.TaskDescription>
                     <Styles.TaskTags>
                         {taskInEdit.tags && taskInEdit.tags.map(tag => (
                             <Styles.Tag colour={tag.colour}>
@@ -245,7 +278,7 @@ class Board extends React.Component {
                     </Styles.Comments>
                 </Styles.TaskContent>
                 <Styles.TaskActions>
-                    <Styles.TaskAction>
+                    <Styles.TaskAction onClick={() => this.deleteTask()}>
                         <span className="moon-bin" />
                     </Styles.TaskAction>
                 </Styles.TaskActions>
@@ -255,7 +288,6 @@ class Board extends React.Component {
 
     renderBoard() {
         const { currentProject, colInEdit, tempColName, taskInEdit, editTaskNameId, tempTaskTitle } = this.state;
-        console.log("temp", tempTaskTitle);
         return (
             <>
             <Styles.Board key={currentProject._id}>
@@ -269,7 +301,7 @@ class Board extends React.Component {
                         <Droppable onDrop={id => this.onDropTask(id,col._id)} style={{ height: '100%' }} id={`col_${col.name}`}>
                             
                                 {col.tasks.length > 0 ? col.tasks.map(task => (
-                                    <Draggable onClick={() => this.setState({ taskInEdit: task })} id={`tsk_${task._id}`}>
+                                    <Draggable onClick={() => this.setState({ taskInEdit: { ...task, col: { ...col, index }}})} id={`tsk_${task._id}`}>
                                         <Task onEditTaskTitle={e => this.setState({ tempTaskTitle: e.target.value })}
                                          editTitleValue={tempTaskTitle}
                                          onInteractionTitle={ e => this.onEditTaskTitleKeyPress(e, index, task)}

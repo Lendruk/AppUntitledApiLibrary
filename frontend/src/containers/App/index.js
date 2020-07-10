@@ -42,7 +42,6 @@ class App extends React.Component {
                 </Switch>
             );
         }
-        console.log("FDMDKDKD", this.props.currentProject);
         if (this.isLoggedInUser) {
             return (
                 <>
