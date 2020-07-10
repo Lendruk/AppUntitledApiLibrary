@@ -8,7 +8,7 @@ import { Task } from '../../components/Task';
 import { Draggable } from '../../components/Draggable';
 import { Droppable } from '../../components/Droppable';
 import Modal from 'react-modal';
-import { post } from '../../utils/api';
+import { post, patch } from '../../utils/api';
 import { uriColumns, uriCreateTasks } from '../../utils/endpoints';
 class Board extends React.Component {
 
@@ -90,22 +90,26 @@ class Board extends React.Component {
         )
     }
 
-    onDropTask(id, colId) {
+    async onDropTask(id, colId) {
        const { currentProject } = this.state;
        const { columns } = currentProject;
         const taskId = id.split("_")[1];
         let task;
+        let oldColumnId = "";
         for(const column of columns) {
             const index = column.tasks.findIndex(elem => elem._id == taskId);
             
             if(index !== -1) {
                 task = column.tasks.splice(index, 1)[0];
+                oldColumnId = column._id;
                 break;
             }
         }
         const col = columns.find(elem => elem._id === colId);
         col.tasks.push(task);
-        this.setState({ currentProject: { ...currentProject, columns: columns } });
+        this.setState({ currentProject: { ...currentProject, columns: columns } }, async () => {
+            await patch(uriCreateTasks(`${currentProject._id}/${task._id}`), { oldColumnId, newColumnId: col._id });
+        });
     }
 
     addColumn() {
