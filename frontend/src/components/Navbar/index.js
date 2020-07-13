@@ -70,10 +70,10 @@ class Navbar extends React.Component {
                         <span className="moon-back breadcrumb-arrow" />
                         <div>{Object.keys(currentProject).length > 0 && workspaces && workspaces.length > 0 && workspaces.find(workspace => workspace.projects.find(elem => elem._id === currentProject._id)).name}</div>
                         <span className="moon-back breadcrumb-arrow" />
-                        <Styles.ProjectSelector onClick={e => {
-                            this.setState({ openProjectPicker: true }, () => {
-                                window.addEventListener("mousedown", this.handleProjectPickerClick);
-                            })
+                        <Styles.ProjectSelector style={{ cursor: "not-allowed" }} onClick={e => {
+                            // this.setState({ openProjectPicker: true }, () => {
+                            //     window.addEventListener("mousedown", this.handleProjectPickerClick);
+                            // })
                         }}>
                             <div>{currentProject.title}</div>
                             <span className="moon-back" />

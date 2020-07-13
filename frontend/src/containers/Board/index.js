@@ -181,12 +181,17 @@ class Board extends React.Component {
             task = taskRes.data.task;
             this.setState({ editTaskNameId: "", tempTaskTitle: "", currentProject });
         } else if(event.which === 27) { // Esc
-            const index = currentProject.columns[columnIndex].tasks.findIndex(elem => elem === task);
-            if(index !== -1) {
-                currentProject.columns[columnIndex].tasks.splice(index, 1);
-            }
-            this.setState({ editTaskNameId: "", tempTaskTitle: "", currentProject });
+            this.escapeFromTask(columnIndex, task);
         }
+    }
+
+    escapeFromTask(columnIndex, task) {
+        const { currentProject } = this.state;
+        const index = currentProject.columns[columnIndex].tasks.findIndex(elem => elem === task);
+        if(index !== -1) {
+            currentProject.columns[columnIndex].tasks.splice(index, 1);
+        }
+        this.setState({ editTaskNameId: "", tempTaskTitle: "", currentProject });
     }
 
     addTask(column, colIndex) {
@@ -267,7 +272,7 @@ class Board extends React.Component {
                                 {taskInEdit.title}<span style={{ display: showEdit ? 'inline' : 'none' }} className="moon-pencil" />
                         </Styles.TaskTitle>
                     )}
-                    <Styles.TaskDescription onChange={val => this.setState({ taskInEdit: { ...taskInEdit, description: val.target.value } })} onBlur={() => this.updateTask()} value={taskInEdit.description} placeholder={"Add a description..."} textColour={"black"}>
+                    <Styles.TaskDescription style={{ minHeight: 172 }} onChange={val => this.setState({ taskInEdit: { ...taskInEdit, description: val.target.value } })} onBlur={() => this.updateTask()} value={taskInEdit.description} placeholder={"Add a description..."} textColour={"black"}>
                     </Styles.TaskDescription>
                     <Styles.TaskTags>
                         {taskInEdit.tags && taskInEdit.tags.map(tag => (
@@ -278,7 +283,9 @@ class Board extends React.Component {
                         )}
                     </Styles.TaskTags>
                     <Styles.HorizontalSeparator />
-                    <Styles.SubTitle>Comments</Styles.SubTitle>
+                    <Styles.SubTitle>Comments ({taskInEdit.comments ? taskInEdit.comments.length : 0})</Styles.SubTitle>
+                    <Styles.TaskDescription placeholder={"Add a comment..."}></Styles.TaskDescription>
+                    <button>Post</button>
                     <Styles.Comments>
 
                     </Styles.Comments>
@@ -310,6 +317,7 @@ class Board extends React.Component {
                                     <Draggable onClick={() => this.setState({ taskInEdit: { ...task, col: { ...col, index }}})} id={`tsk_${task._id}`}>
                                         <Task onEditTaskTitle={e => this.setState({ tempTaskTitle: e.target.value })}
                                          editTitleValue={tempTaskTitle}
+                                         onBlur={e => this.escapeFromTask(index, task) }
                                          onInteractionTitle={ e => this.onEditTaskTitleKeyPress(e, index, task)}
                                          editingTitle={editTaskNameId === task._id} task={task} />
                                     </Draggable>

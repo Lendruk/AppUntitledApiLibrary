@@ -46,9 +46,9 @@ export class Task extends React.Component {
     }
 
     renderEditTaskTitle() {
-        const { task, onEditTaskTitle,editTitleValue, onInteractionTitle } = this.props;
+        const { task, onEditTaskTitle,editTitleValue, onInteractionTitle, onBlur } = this.props;
         return (
-            <Input id="task-title-input" onKeyUp={ e => onInteractionTitle(e)} value={editTitleValue} onChange={e => onEditTaskTitle(e)}/>
+            <Input id="task-title-input" onBlur={e => onBlur(e)} onKeyUp={ e => onInteractionTitle(e)} value={editTitleValue} onChange={e => onEditTaskTitle(e)}/>
         );
     }
 

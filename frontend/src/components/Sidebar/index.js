@@ -17,28 +17,56 @@ export class Sidebar extends React.Component {
                 },
                 {
                     icon: "moon-cogs",
-                    title: "Project Settings",
-                },
-                {
-                    icon: "moon-cogs",
-                    title: "Workspace Settings",
+                    title: "Settings",
+                    children: [
+                        {
+                            title: "Project Settings",
+                        },
+                        {
+                            title: "Workspace Settings",
+                        },
+                    ],
                 },
             ]
         }
+    }
+
+    renderNormalOption(option) {
+        return (
+            <Styles.SidebarOption>
+                <div>
+                    <span className={option.icon} />
+                    {option.title}
+                </div>
+            </Styles.SidebarOption>
+        )
+    }
+
+    renderOptionWithChildren(option) {
+        return (
+            <div style={{ width: "100%" }}>
+                <Styles.ParentSidebarOption>
+                    <span className={option.icon}></span>
+                    {option.title}
+                </Styles.ParentSidebarOption>
+                <div>
+                    {option.children.map(elem => (
+                        <Styles.ChildOption>
+                            {elem.title}
+                        </Styles.ChildOption>
+                    ))}
+                </div>
+            </div>
+        )
     }
 
     render() {
         const { options } = this.state;
         return (
             <Styles.Container>
-                {options.map(option => (
-                    <Styles.SidebarOption>
-                        <div>
-                            <span className={option.icon} />
-                            {option.title}
-                        </div>
-                    </Styles.SidebarOption>
-                ))}
+                {options.map(option => 
+                    option.children ? this.renderOptionWithChildren(option) : this.renderNormalOption(option)
+                )}
             </Styles.Container>
         )
     }
