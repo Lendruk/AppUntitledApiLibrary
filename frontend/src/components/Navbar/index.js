@@ -68,7 +68,7 @@ class Navbar extends React.Component {
                             <span className="moon-home" />
                         </Styles.Icon>
                         <span className="moon-back breadcrumb-arrow" />
-                        <div>{Object.keys(currentProject).length > 0 && workspaces && workspaces.length > 0 && workspaces.find(workspace => workspace.projects.find(elem => elem === currentProject._id)).name}</div>
+                        <div>{Object.keys(currentProject).length > 0 && workspaces && workspaces.length > 0 && workspaces.find(workspace => workspace.projects.find(elem => elem._id === currentProject._id)).name}</div>
                         <span className="moon-back breadcrumb-arrow" />
                         <Styles.ProjectSelector onClick={e => {
                             this.setState({ openProjectPicker: true }, () => {

@@ -115,7 +115,7 @@ class Board extends React.Component {
     addColumn() {
         const { currentProject } = this.state;
         const { columns } = currentProject;
-        const newColumn = { name: "New Column", tasks: [], _id: "test" };
+        const newColumn = { name: "New Column", tasks: [], _id: "new_column" };
         columns.push(newColumn);
         this.setState({ currentProject });
         this.editColumnTitle(newColumn._id);
@@ -150,15 +150,21 @@ class Board extends React.Component {
         }
     }
 
-    onEditKeyPress(event, index) {
+    async onEditKeyPress(event, index) {
         const { tempColName, currentProject } = this.state; 
         if((event.which || event.key) === 13) {
             const { columns } = currentProject;
             columns[index].name = tempColName;
             this.setState({ colInEdit: "", tempColName: "", currentProject });
-            post(uriColumns(), { name: tempColName, projectId: currentProject._id });
+            if(currentProject.columns[index]._id !== "new_column") {
+                await put(uriColumns(columns[index]._id), { name: tempColName, projectId: currentProject._id });
+            } else {
+                await post(uriColumns(), { name: tempColName, projectId: currentProject._id });
+            }
         } else if(event.which === 27) {
-            currentProject.columns.splice(index, 1);
+            if(currentProject.columns[index]._id === "new_column") {
+                currentProject.columns.splice(index, 1);
+            }
             this.setState({ colInEdit: "", tempColName: "", currentProject });
         }
     }
