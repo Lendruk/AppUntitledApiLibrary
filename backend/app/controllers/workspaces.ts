@@ -11,10 +11,18 @@ import { ObjectId } from "../lib/ObjectId";
 export class WorkspaceController extends BaseController {
 
     @Get("/", { requireToken: true })
-    public async getWorkspaces(req : Request) {
+    public async getWorkspaces(req: Request) {
         const { user } = req;
 
-        const workspaces = await Workspace.find({"users.user": user });
+        const workspaces = await Workspace.find({ "users.user": user }).populate({
+            path: 'projects',
+            populate: {
+                path: 'columns.tasks',
+                model: 'Task',
+            },
+        }).populate({ path: 'users ' });
+
+
 
         return { workspaces };
     }
