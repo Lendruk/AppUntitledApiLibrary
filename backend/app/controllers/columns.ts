@@ -37,7 +37,7 @@ export class ColumnController extends BaseController {
 
         let project = null;
         try {
-            project = await Project.findOneAndUpdate({ _id: projectId, "columns._id": new ObjectId(id) }, { name }, { new: true }).lean();
+            project = await Project.findOneAndUpdate({ _id: projectId, "columns._id": id}, { name }, { new: true }).lean();
         } catch {
             throw errors.DB_FAILED_UPDATE;
         }

@@ -14,7 +14,14 @@ export class WorkspaceController extends BaseController {
     public async getWorkspaces(req : Request) {
         const { user } = req;
 
-        const workspaces = await Workspace.find({"users.user": user });
+        // Remove populate later 
+        const workspaces = await Workspace.find({"users.user": user }).populate({
+            path: 'projects',
+            populate: {
+                path: 'columns.tasks',
+                model: 'Task',
+            },
+        });
 
         return { workspaces };
     }
