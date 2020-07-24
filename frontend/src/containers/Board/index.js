@@ -55,6 +55,7 @@ class Board extends React.Component {
             // },
             tempColName: "",
             tempTaskTitle: "",
+            editingTag: null,
             editTaskNameId: "",
             showEdit: false,
             editingTitle: false,
@@ -250,7 +251,7 @@ class Board extends React.Component {
     }
 
     renderTaskModal() {
-        const { taskInEdit, showEdit, editingTitle } = this.state;
+        const { taskInEdit, showEdit, editingTitle, currentProject, editingTag } = this.state;
 
         if(!taskInEdit) return null;
 
@@ -274,13 +275,18 @@ class Board extends React.Component {
                     )}
                     <Styles.TaskDescription style={{ minHeight: 172 }} onChange={val => this.setState({ taskInEdit: { ...taskInEdit, description: val.target.value } })} onBlur={() => this.updateTask()} value={taskInEdit.description} placeholder={"Add a description..."} textColour={"black"}>
                     </Styles.TaskDescription>
-                    <Styles.TaskTags>
-                        {taskInEdit.tags && taskInEdit.tags.map(tag => (
-                            <Styles.Tag colour={tag.colour}>
-                                {tag.name}
-                            </Styles.Tag>
-                            )
+                    <Styles.TaskTags style={{marginLeft: 0 }}>
+                        {taskInEdit.tags && taskInEdit.tags.length > 0 && taskInEdit.tags.map(id => {
+                            const tag = currentProject.tags.find(tg => tg._id === id);
+                            
+                            return tag ? (
+                                <Styles.Tag colour={tag.colour}>
+                                    {tag.name}
+                                </Styles.Tag>
+                                ) : null;
+                            }
                         )}
+                        <Styles.NewTag onKeyPress={event => this.onKeyPressEditTag(event)} onClick={() => this.createOrEditTag({ name: "", colour: "", isNew: true })}>{editingTag ? <Styles.TagInput id="task_edit_input" onChange={val => this.setState({ editingTag: { ...editingTag, name: val.target.value }})} value={editingTag.name} /> : "New Tag +"}</Styles.NewTag>
                     </Styles.TaskTags>
                     <Styles.HorizontalSeparator />
                     <Styles.SubTitle>Comments ({taskInEdit.comments ? taskInEdit.comments.length : 0})</Styles.SubTitle>
@@ -297,6 +303,26 @@ class Board extends React.Component {
                 </Styles.TaskActions>
             </Styles.ModalContainer>
         );
+    }
+
+    onKeyPressEditTag(event) {
+        const { editingTag } = this.state;
+
+        let newTag = null;
+        if(event.which === 13) {
+            this.setState({ editingTag: null });
+        } else if(event.which === 27) {
+            newTag = { name: editingTag.name, colour: editingTag.colour };
+
+            // Create Tag
+        }
+    }
+
+    createOrEditTag(tag) {
+        this.setState({ editingTag: tag }, () => {
+            const input = document.getElementById("task_edit_input");
+            input.focus();
+        });
     }
 
     renderBoard() {
