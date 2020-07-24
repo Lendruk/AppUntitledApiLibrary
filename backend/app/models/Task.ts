@@ -27,6 +27,12 @@ export class TaskModel extends BaseModel implements IActivatable {
     @Property({ enum: ["BUG", "STORY", "IDEA", "IMPROVEMENT", "GENERIC"], default: "GENERIC" })
     type!: string;
 
+    @Property({ ref: "User" })
+    creator!: ObjectId;
+
+    @Property({ ref: "User"})
+    users!: ObjectId[];
+
     //Seconds
     @Property({})
     timeSpent?: Number;
