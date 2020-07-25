@@ -9,7 +9,7 @@ import { Draggable } from '../../components/Draggable';
 import { Droppable } from '../../components/Droppable';
 import Modal from 'react-modal';
 import { post, patch, remove, put } from '../../utils/api';
-import { uriColumns, uriCreateTasks, uriTasks } from '../../utils/endpoints';
+import { uriColumns, uriCreateTasks, uriTasks, uriTags } from '../../utils/endpoints';
 class Board extends React.Component {
 
     constructor(props) {
@@ -305,16 +305,25 @@ class Board extends React.Component {
         );
     }
 
-    onKeyPressEditTag(event) {
-        const { editingTag } = this.state;
+    async onKeyPressEditTag(event) {
+        const { editingTag, currentProject, taskInEdit } = this.state;
 
         let newTag = null;
         if(event.which === 13) {
-            this.setState({ editingTag: null });
-        } else if(event.which === 27) {
-            newTag = { name: editingTag.name, colour: editingTag.colour };
+            newTag = { name: editingTag.name, colour: "#ffffff"};
+            
+            let tags = currentProject.tags;
+            if(!tags.find(tag => tag.name === newTag.name)) {
+                const res = await post(uriTags(currentProject._id), newTag);
+                tags = res.data.tags;
+            }
+            newTag = tags.find(tg => tg.name === newTag.name); 
+            taskInEdit.tags ? taskInEdit.tags.push(newTag._id) : taskInEdit.tags = [newTag._id];
+            await put(uriTasks(taskInEdit._id), taskInEdit );
 
-            // Create Tag
+            this.setState({ currentProject: { ...currentProject, tags }, editingTag: null });
+        } else if(event.which === 27) {
+            this.setState({ editingTag: null });
         }
     }
 
@@ -343,6 +352,7 @@ class Board extends React.Component {
                                     <Draggable onClick={() => this.setState({ taskInEdit: { ...task, col: { ...col, index }}})} id={`tsk_${task._id}`}>
                                         <Task onEditTaskTitle={e => this.setState({ tempTaskTitle: e.target.value })}
                                          editTitleValue={tempTaskTitle}
+                                         tags={currentProject.tags}
                                          onBlur={e => this.escapeFromTask(index, task) }
                                          onInteractionTitle={ e => this.onEditTaskTitleKeyPress(e, index, task)}
                                          editingTitle={editTaskNameId === task._id} task={task} />
@@ -366,7 +376,7 @@ class Board extends React.Component {
             </Styles.Board>
             <Modal
                 isOpen={taskInEdit}
-                onRequestClose={() => { this.setState({ taskInEdit: null })}}
+                onRequestClose={() => { this.setState({ taskInEdit: null, editingTag: null })}}
                 closeOnEscape
                 style={{
 					content: {
