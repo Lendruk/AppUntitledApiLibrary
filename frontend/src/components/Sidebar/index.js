@@ -1,6 +1,10 @@
 import React from 'react';
 import * as Styles from './styles';
-export class Sidebar extends React.Component {
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
+class Sidebar extends React.Component {
 
     constructor(props) {
         super(props);
@@ -10,10 +14,12 @@ export class Sidebar extends React.Component {
                 {
                     icon: "moon-users",
                     title: "Board",
+                    location: "/",
                 },
                 {
                     icon: "moon-users",
                     title: "Members",
+                    location: "/members",
                 },
                 {
                     icon: "moon-cogs",
@@ -32,8 +38,9 @@ export class Sidebar extends React.Component {
     }
 
     renderNormalOption(option) {
+        const { dispatch } = this.props;
         return (
-            <Styles.SidebarOption>
+            <Styles.SidebarOption onClick={() => option.location && dispatch(push(option.location))}>
                 <div>
                     <span className={option.icon} />
                     {option.title}
@@ -43,15 +50,16 @@ export class Sidebar extends React.Component {
     }
 
     renderOptionWithChildren(option) {
+        const { dispatch } = this.props;
         return (
             <div style={{ width: "100%" }}>
                 <Styles.ParentSidebarOption>
-                    <span className={option.icon}></span>
+                    <span  className={option.icon}></span>
                     {option.title}
                 </Styles.ParentSidebarOption>
                 <div>
                     {option.children.map(elem => (
-                        <Styles.ChildOption>
+                        <Styles.ChildOption onClick={() => elem.location && dispatch(push(elem.location))}>
                             {elem.title}
                         </Styles.ChildOption>
                     ))}
@@ -71,3 +79,16 @@ export class Sidebar extends React.Component {
         )
     }
 }
+
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch,
+    };
+}
+
+const withConnect = connect(
+    null,
+    mapDispatchToProps,
+);
+
+export default compose(withConnect)(Sidebar);

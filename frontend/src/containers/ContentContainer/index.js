@@ -3,7 +3,7 @@ import * as Styles from './styles';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Sidebar } from '../../components/Sidebar';
+import Sidebar from '../../components/Sidebar';
 import { Navbar } from '../../components/Navbar';
 
 export default class ContentContainer extends React.Component {
