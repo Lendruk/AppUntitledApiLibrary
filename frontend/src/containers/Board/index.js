@@ -305,12 +305,21 @@ class Board extends React.Component {
         );
     }
 
+    generateColour() {
+        const letters = "0123456789ABCDEF";
+        let colour = "#";
+        for(let i = 0; i < 6 ; i++) {
+            colour += letters[(Math.floor(Math.random()*16))];
+        }
+        return colour;
+    }
+
     async onKeyPressEditTag(event) {
         const { editingTag, currentProject, taskInEdit } = this.state;
 
         let newTag = null;
         if(event.which === 13) {
-            newTag = { name: editingTag.name, colour: "#ffffff"};
+            newTag = { name: editingTag.name, colour: this.generateColour()};
             
             let tags = currentProject.tags;
             if(!tags.find(tag => tag.name === newTag.name)) {
