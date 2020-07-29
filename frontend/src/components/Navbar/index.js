@@ -10,6 +10,7 @@ import { post } from '../../utils/api';
 import PropTypes from 'prop-types';
 import { showToast } from '../Toast';
 import { setWorkspaces, setCurrentProject } from '../../containers/App/actions';
+import { push } from 'connected-react-router';
 
 class Navbar extends React.Component {
     constructor(props) {
@@ -30,6 +31,7 @@ class Navbar extends React.Component {
 
         if (result.status >= 200 && result.status < 400) {
             showToast("SUCCESS", result.data.message);
+            dispatch(push("/"));
             dispatch(setWorkspaces([]));
             dispatch(setCurrentProject({}));
             dispatch(logout());
@@ -57,11 +59,9 @@ class Navbar extends React.Component {
     render() {
         const { openProjectPicker } = this.state;
         const { currentProject, workspaces } = this.props;
-        console.log("navbar cur", currentProject);
-        console.log("navbar work", workspaces);
         return (
             <Styles.Container>
-                <Styles.Logo></Styles.Logo>
+                {/* <Styles.Logo></Styles.Logo> */}
                 <Styles.Navbar>
                     <Styles.Breadcrumb>
                         <Styles.Icon>
