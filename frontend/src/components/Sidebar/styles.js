@@ -21,6 +21,8 @@ export const SidebarOption = styled.div`
     cursor: pointer;
     color: white;
     min-height: 40px;
+    color: ${props => props.isActive ? "#3C4D5B" : "white" };
+    background: ${props => props.isActive ? "#DADFCF": "none" };
 
     div {
         padding: 0px 20px;

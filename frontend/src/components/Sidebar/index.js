@@ -10,6 +10,7 @@ class Sidebar extends React.Component {
         super(props);
 
         this.state = {
+            currentLocation: "",
             options: [
                 {
                     icon: "moon-users",
@@ -37,10 +38,20 @@ class Sidebar extends React.Component {
         }
     }
 
-    renderNormalOption(option) {
+    componentDidMount() {
+        this.setState({ currentLocation: window.location.pathname });
+    }
+
+    goToLocation(location) {
         const { dispatch } = this.props;
+        dispatch(push(location));
+        this.setState({ currentLocation: location });
+    }
+
+    renderNormalOption(option) {
+        const { currentLocation } = this.state;
         return (
-            <Styles.SidebarOption onClick={() => option.location && dispatch(push(option.location))}>
+            <Styles.SidebarOption isActive={currentLocation === option.location} onClick={() => option.location && this.goToLocation(option.location)}>
                 <div>
                     <span className={option.icon} />
                     {option.title}
@@ -50,6 +61,7 @@ class Sidebar extends React.Component {
     }
 
     renderOptionWithChildren(option) {
+        const { currentLocation } = this.state;
         const { dispatch } = this.props;
         return (
             <div style={{ width: "100%" }}>
@@ -59,7 +71,7 @@ class Sidebar extends React.Component {
                 </Styles.ParentSidebarOption>
                 <div>
                     {option.children.map(elem => (
-                        <Styles.ChildOption onClick={() => elem.location && dispatch(push(elem.location))}>
+                        <Styles.ChildOption isActive={currentLocation === elem.location}  onClick={() => elem.location && this.goToLocation(elem.location)}>
                             {elem.title}
                         </Styles.ChildOption>
                     ))}
