@@ -13,7 +13,7 @@ class Sidebar extends React.Component {
             currentLocation: "",
             options: [
                 {
-                    icon: "moon-users",
+                    icon: "moon-list2",
                     title: "Board",
                     location: "/",
                 },

@@ -8,7 +8,8 @@ class Members extends React.Component {
         super(props);
 
         this.state= {
-
+            searchValue: "",
+            
         };
 
 
@@ -16,12 +17,30 @@ class Members extends React.Component {
 
     render() {
         const { currentProject } = this.props;
-        console.log("currentProject", currentProject);
+        const { searchValue } = this.state;
+        currentProject.users.push({ name: "test", roles: [{ name: "role1", colour: "#332C33"}] });
         return (
             <Styles.Container>
-                {currentProject.users.map(user => (
-                    <div>user</div>
-                ))}
+                <h3>Users</h3>
+                <Styles.SearchInput value={searchValue} onChange={event => this.setState({ searchValue: event.target.value })}  placeholder={"Search..."} />
+                <Styles.UserTable>
+                        <Styles.RowLabels>
+                            <div>Name</div>
+                            <div>Roles</div>
+                        </Styles.RowLabels>
+                    {currentProject.users.map(user => (
+                        <Styles.User>
+                            <div>{user.name}</div>
+                            <Styles.Roles>
+                                {user.roles.map(role => (
+                                    <Styles.Role colour={role.colour}>
+                                        {role.name}
+                                    </Styles.Role>
+                                ))}
+                            </Styles.Roles>
+                        </Styles.User>
+                    ))}
+                </Styles.UserTable>
             </Styles.Container>
         );
     }
