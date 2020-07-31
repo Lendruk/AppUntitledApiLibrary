@@ -94,22 +94,22 @@ export class TaskController extends BaseController {
     }
 
     @Patch("/project/:projectId/:taskId")
-    public async moveTask(req : Request) {
+    public async moveTask(req: Request) {
         const {
             params: { projectId, taskId },
             body: { newColumnId, oldColumnId },
         } = req;
 
-        try {  
+        try {
             await Project.findOneAndUpdate(
-                { 
+                {
                     _id: projectId,
                     columns: { $elemMatch: { _id: oldColumnId } }
                 },
                 {
                     $pull: { "columns.$.tasks": taskId },
-                } ,{new: true });
-            
+                }, { new: true });
+
             await Project.findOneAndUpdate(
                 {
                     _id: projectId,
@@ -119,7 +119,7 @@ export class TaskController extends BaseController {
                     $push: { "columns.$.tasks": taskId }
                 }
             );
-        } catch(err) {
+        } catch (err) {
             console.log(err);
             throw errors.BAD_REQUEST;
         }
@@ -184,7 +184,7 @@ export class TaskController extends BaseController {
     })
     public async deleteTasks(req: Request) {
         const {
-            params: { projectId,columnId, taskId },
+            params: { projectId, columnId, taskId },
         } = req;
 
         try {
@@ -216,8 +216,8 @@ export class TaskController extends BaseController {
         return { comments };
     }
 
-    @Post("/:id/comments",{ body: { required: ["content"]}})
-    public async createComment(req : Request) {
+    @Post("/:id/comments", { body: { required: ["content"] } })
+    public async createComment(req: Request) {
         const { body: { content }, user, params: { id } } = req;
 
         const comment = await new Comment({ user: user, content, task: id }).save();
@@ -225,8 +225,8 @@ export class TaskController extends BaseController {
         return { status: 201, comment };
     }
 
-    @Delete("/:taskId/comments/:commentId") 
-    public async deleteComment(req : Request) {
+    @Delete("/:taskId/comments/:commentId")
+    public async deleteComment(req: Request) {
         const { params: { taskId, commentId } } = req;
 
         await Comment.findOneAndDelete({ _id: commentId, task: new ObjectId(taskId) });
@@ -243,7 +243,7 @@ export class TaskController extends BaseController {
     }
 
     @SocketEvent("broadcast_task")
-    public async broadcastTask(socketServer: Server, socket: Socket, data? : any) {
+    public async broadcastTask(socketServer: Server, socket: Socket, data?: any) {
         socket.emit("test", { test: true });
         console.log("test broadcast");
     }

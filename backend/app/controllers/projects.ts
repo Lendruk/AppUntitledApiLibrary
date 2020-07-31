@@ -6,6 +6,7 @@ import Project, { Tag, ProjectModel } from "../models/Project";
 import Workspace from "../models/Workspace";
 import { errors } from "../utils/errors";
 import ObjectId from "../lib/ObjectId";
+import Mongoose from "mongoose";
 
 @Controller("/projects")
 export class ProjectController extends BaseController {
@@ -15,19 +16,15 @@ export class ProjectController extends BaseController {
         const { headers: { workspace } } = req;
 
         //Add verification to check if user belongs to provided workspace
-        const projects = await Workspace.aggregate([
-            { $match: { _id: new ObjectId(workspace as string) } },
-            {
-                $lookup: {
-                    from: "projects",
-                    localField: "projects",
-                    foreignField: "_id",
-                    as: "projects",
-                },
+        const projects = await Workspace.find({ _id: workspace }).populate({
+            path: 'projects',
+            populate: {
+                path: 'columns.tasks',
+                model: 'Task',
             },
-        ]);
+        }).populate({ path: 'users ' });
 
-        return { projects };
+        return { "projects": projects[0].projects }
     }
 
     @Get("/:id", { requireToken: true, params: { required: ["id"] } })
@@ -47,7 +44,7 @@ export class ProjectController extends BaseController {
             //         as: "columns.tasks",
             //     },
             // }
-        // ]);
+            // ]);
         } catch (err) {
             throw errors.NOT_FOUND;
         }
@@ -140,6 +137,23 @@ export class ProjectController extends BaseController {
         if (!updatedWorkSpace) throw errors.NOT_FOUND;
 
         return { status: 201, tags: updatedWorkSpace?.tags };
+    }
+
+    @Put("/:id", {
+        requireToken: true,
+        params: { required: ["id"] }
+    })
+    public async editProject(req: Request) {
+        const {
+            params: { id },
+            body,
+        } = req;
+
+        console.log('Im here ', body);
+
+        let updatedProject = await Project.findOneAndUpdate({ _id: id }, body, { new: true }).populate('columns.tasks');
+
+        return { project: updatedProject };
     }
 
     @Delete("/:id/tags", {
