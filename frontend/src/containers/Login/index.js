@@ -69,7 +69,7 @@ class Login extends React.Component {
                     dispatch(setSocket(socket));
                     console.log("workresponse", workResponse);
                     if (Object.keys(workResponse.data.workspaces).length > 0) {
-                        const projectRes = await get(uriProjects(workResponse.data.workspaces[0].projects[0]));
+                        const projectRes = await get(uriProjects(workResponse.data.workspaces[0].projects[0]._id));
                         console.log("res", projectRes);
                         dispatch(setWorkspaces(workResponse.data.workspaces));
                         dispatch(setCurrentProject(projectRes.data.project));

@@ -169,6 +169,20 @@ export const TaskTags = styled.div`
     margin: 10px 0px;
 `;
 
+export const TagInput = styled.input`
+    background: none;
+    border: none;
+    width: auto;
+`;
+
+export const NewTag = styled.div`
+    opacity: 0.8;
+    background: lightgrey;
+    border-radius: 15px;
+    padding: 5px 10px;
+    cursor: pointer;
+`;
+
 export const Tag = styled.div`
     background: ${props => props.colour};
     padding: 5px 10px;
