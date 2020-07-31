@@ -1,5 +1,5 @@
 import { mongoose } from "../utils/database";
-import { ObjectId } from "../lib/ObjectId";
+import ObjectId from "../lib/ObjectId";
 import { Property, ModelOptions, getModelFromClass } from "../lib/decorators/model";
 import Expiry from "../lib/classes/Expiry";
 import { BaseModel } from "../lib/classes/BaseModel";

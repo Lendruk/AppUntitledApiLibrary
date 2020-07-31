@@ -40,9 +40,9 @@ class CreateWorkspace extends React.Component {
             this.props.dispatch(setCurrentProject(project));
 
             const workRes = await get(uriWorkspaces());
-
+            console.log("work res", workRes);
             const { workspaces } = workRes.data;
-
+            console.log("wkwk", workspaces);
             this.props.dispatch(setWorkspaces(workspaces));
             this.props.dispatch(push("/"));
         } else {

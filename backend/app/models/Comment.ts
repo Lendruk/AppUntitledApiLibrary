@@ -1,6 +1,6 @@
 import { BaseModel } from "../lib/classes/BaseModel";
 import { getModelFromClass, Property } from "../lib/decorators/model";
-import { ObjectId } from "../lib/ObjectId";
+import ObjectId from "../lib/ObjectId";
 
 export class CommentModel extends BaseModel {
 

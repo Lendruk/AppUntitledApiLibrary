@@ -5,8 +5,9 @@ The current front-end is a placeholder made in react.
 
 Test Coverage: 0% :( (Need to do tests)
 
-Note:
-This description is still a work in progress, a lot of the information present here can be wrong or out of date.
+### Note:
+1. This description is still a work in progress, a lot of the information present here can be wrong or out of date.
+2. Current front-end is a placeholder made in react.
 
 ## How to start
 
@@ -42,7 +43,7 @@ To inject a service the user needs to mark a class as being injectable.
 ```
 In the consumer class if we want to use this class we can inject it.
 ```typescript
-    export class ExampleClass {
+    export class ConsumerClass {
 
         @Inject()
         private _example!: ExampleClass;
@@ -61,7 +62,7 @@ This API uses the MVC (Model-View-Controller) pattern, and as such we use contro
 We use typescript decorators to register all the routes in express. To create a controller we need to annotate the class with the controller decorator and give it a path as such:
 ```typescript
     @Controller("/example")
-    export class ControllerExample : BaseController {
+    export class ControllerExample extends BaseController {
         // Routes Go Here
 
         @Get("/")

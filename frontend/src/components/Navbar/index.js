@@ -10,6 +10,7 @@ import { post } from '../../utils/api';
 import PropTypes from 'prop-types';
 import { showToast } from '../Toast';
 import { setWorkspaces, setCurrentProject } from '../../containers/App/actions';
+import { push } from 'connected-react-router';
 
 class Navbar extends React.Component {
     constructor(props) {
@@ -30,6 +31,7 @@ class Navbar extends React.Component {
 
         if (result.status >= 200 && result.status < 400) {
             showToast("SUCCESS", result.data.message);
+            dispatch(push("/"));
             dispatch(setWorkspaces([]));
             dispatch(setCurrentProject({}));
             dispatch(logout());
@@ -57,23 +59,21 @@ class Navbar extends React.Component {
     render() {
         const { openProjectPicker } = this.state;
         const { currentProject, workspaces } = this.props;
-        console.log("navbar cur", currentProject);
-        console.log("navbar work", workspaces);
         return (
             <Styles.Container>
-                <Styles.Logo></Styles.Logo>
+                {/* <Styles.Logo></Styles.Logo> */}
                 <Styles.Navbar>
                     <Styles.Breadcrumb>
                         <Styles.Icon>
                             <span className="moon-home" />
                         </Styles.Icon>
                         <span className="moon-back breadcrumb-arrow" />
-                        <div>{Object.keys(currentProject).length > 0 && workspaces && workspaces.length > 0 && workspaces.find(workspace => workspace.projects.find(elem => elem === currentProject._id)).name}</div>
+                        <div>{Object.keys(currentProject).length > 0 && workspaces && workspaces.length > 0 && workspaces.find(workspace => workspace.projects.find(elem => elem._id === currentProject._id)).name}</div>
                         <span className="moon-back breadcrumb-arrow" />
-                        <Styles.ProjectSelector onClick={e => {
-                            this.setState({ openProjectPicker: true }, () => {
-                                window.addEventListener("mousedown", this.handleProjectPickerClick);
-                            })
+                        <Styles.ProjectSelector style={{ cursor: "not-allowed" }} onClick={e => {
+                            // this.setState({ openProjectPicker: true }, () => {
+                            //     window.addEventListener("mousedown", this.handleProjectPickerClick);
+                            // })
                         }}>
                             <div>{currentProject.title}</div>
                             <span className="moon-back" />

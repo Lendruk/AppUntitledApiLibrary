@@ -3,7 +3,7 @@ import { IActivatable } from "../lib/interfaces/IActivatable";
 import { Property, getModelFromClass } from "../lib/decorators/model";
 import Project, { ProjectModel } from "./Project";
 import Role, { RoleModel } from "./Role";
-import { ObjectId } from "../lib/ObjectId";
+import ObjectId from "../lib/ObjectId";
 import { BaseModel } from "../lib/classes/BaseModel";
 
 export class WorkspaceUser {

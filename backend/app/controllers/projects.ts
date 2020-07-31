@@ -4,8 +4,8 @@ import { Get, Post, Put, Delete } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
 import Project, { Tag, ProjectModel } from "../models/Project";
 import Workspace from "../models/Workspace";
-import { ObjectId } from "../lib/ObjectId";
 import { errors } from "../utils/errors";
+import ObjectId from "../lib/ObjectId";
 import Mongoose from "mongoose";
 
 @Controller("/projects")
@@ -33,7 +33,7 @@ export class ProjectController extends BaseController {
 
         let project = null;
         try {
-            project = await Project.findOne({ _id: id }).populate("columns.tasks").lean();
+            project = await Project.findOne({ _id: id }).populate(" users.roles users.user columns.tasks").lean();
             // project = await Project.aggregate([
             // { $match: { _id: id as ObjectId } },
             // {
@@ -93,25 +93,14 @@ export class ProjectController extends BaseController {
         body: { required: ["title"] }
     })
     public async postProject(req: Request) {
-        const { headers: { workspace }, body: { title } } = req;
+        const { headers: { workspace }, body: { title }, user } = req;
 
-        const defaultColumns = [{
-            "name": 'To Do',
-            "tasks": [],
-            "default": [],
-        },
-        {
-            "name": 'In Progress',
-            "tasks": [],
-            "default": [],
-        },
-        {
-            "name": 'Done',
-            "tasks": [],
-            "default": [],
-        }];
+        if(!user) throw errors.BAD_REQUEST;
 
-        const project = await new Project({ title, columns: defaultColumns }).save();
+        const workspaceObj = await Workspace.findOne({ _id: workspace as string });
+        const userEntry = workspaceObj?.users.find(usrEntry => String(usrEntry.user) == String(user._id));
+        const users = [{ user: user._id, roles: userEntry?.roles }];
+        const project = await new Project({ title, users }).save();
 
         await Workspace.findOneAndUpdate({ _id: workspace as string }, { $push: { projects: project } });
 

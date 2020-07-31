@@ -1,3 +1,2 @@
 import { mongoose } from "../utils/database";
-
-export class ObjectId extends mongoose.Schema.Types.ObjectId {};
+export default mongoose.Schema.Types.ObjectId;

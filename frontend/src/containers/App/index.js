@@ -8,10 +8,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Board from '../Board';
 import Homepage from '../Homepage';
-import { Sidebar } from '../../components/Sidebar';
+import Sidebar from '../../components/Sidebar';
 import Navbar from '../../components/Navbar';
 import * as Styles from '../ContentContainer/styles';
 import CreateWorkspace from '../CreateWorkspace';
+import Members from '../Members';
 
 class App extends React.Component {
     get isLoggedInUser() {
@@ -42,18 +43,16 @@ class App extends React.Component {
                 </Switch>
             );
         }
-        console.log("FDMDKDKD", this.props.currentProject);
         if (this.isLoggedInUser) {
             return (
                 <>
                         <Navbar />
                         <Styles.Container>
-                            <Sidebar>
-
-                            </Sidebar>
+                            <Sidebar />
                             <div style={{ flex: 1 }}>
                                 <Switch>
                                     <Route exact path="/" component={Board} />
+                                    <Route exact path="/members" component={Members} />
                                     <Route exact path="/create-workspace" component={CreateWorkspace} />
                                     <Redirect to="/" />
                                     {this.renderNotFound()}

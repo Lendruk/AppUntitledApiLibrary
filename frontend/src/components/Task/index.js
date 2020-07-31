@@ -46,15 +46,14 @@ export class Task extends React.Component {
     }
 
     renderEditTaskTitle() {
-        const { task, onEditTaskTitle,editTitleValue, onInteractionTitle } = this.props;
+        const { task, onEditTaskTitle,editTitleValue, onInteractionTitle, onBlur } = this.props;
         return (
-            <Input id="task-title-input" onKeyUp={ e => onInteractionTitle(e)} value={editTitleValue} onChange={e => onEditTaskTitle(e)}/>
+            <Input id="task-title-input" onBlur={e => onBlur(e)} onKeyUp={ e => onInteractionTitle(e)} value={editTitleValue} onChange={e => onEditTaskTitle(e)}/>
         );
     }
 
     render() {
-        const { task, editingTitle } = this.props;
-        console.log("edit", editingTitle);
+        const { task, editingTitle, tags } = this.props;
         return (
         <Styles.Task id={`task_${task._id}`} onMouseUp={e => this.onMouseUpTask(e,task._id)} onMouseDown={e => this.onMouseTask(e,task._id)} color={this.getColorOfCard(task.type)}>
             <Styles.Poly color={this.getColorOfCard(task.type)} >
@@ -65,11 +64,15 @@ export class Task extends React.Component {
             </Styles.Poly>
             {editingTitle ? this.renderEditTaskTitle() : <Styles.TaskTitle>{task.title}</Styles.TaskTitle>}    
             <Styles.Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vel imperdiet risus, ac tempus odio. Duis ultrices tortor sit amet risus ornare, eu efficitur leo viverra. Proin sed urna tristique, facilisis risus sed, auctor velit. Proin commodo eget massa eget faucibus. Pellentesque sed aliquam mauris. Praesent posuere eu ligula non dapibus. Curabitur dui lectus, iaculis vel viverra in, pellentesque a tellus. Phasellus maximus, odio sit amet efficitur ultricies, tellus felis suscipit arcu, id ullamcorper quam magna id urna. Suspendisse et consequat orci, et pulvinar ante.
+            {task.description}
             </Styles.Description>
             <Styles.Tags>
-                <Styles.Tag>test</Styles.Tag>
-                <Styles.Tag>test2</Styles.Tag>
+                {task.tags && task.tags.map(tag => 
+                {
+                    const tagObj = tags.find(tg => tg._id === tag);
+                    return (
+                    <Styles.Tag colour={tagObj.colour}>{tagObj.name}</Styles.Tag>
+                )})}
             </Styles.Tags>
         </Styles.Task>
         )

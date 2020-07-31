@@ -8,7 +8,7 @@ import Project from '../models/Project';
 import mongoose from 'mongoose';
 import Comment from '../models/Comment';
 import { Request } from '../lib/types/Request';
-import { ObjectId } from '../lib/ObjectId';
+import ObjectId from '../lib/ObjectId';
 import { SocketEvent, SocketServer } from '../lib/classes/SocketServer';
 import { Server, Socket } from 'socket.io';
 import { Inject } from '../lib/decorators/Inject';

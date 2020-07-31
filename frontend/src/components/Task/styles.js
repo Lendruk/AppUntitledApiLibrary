@@ -40,8 +40,8 @@ export const Tags = styled.div`
 `;
 
 export const Tag = styled.div`
-    background: blue;
-    color:white;
+    background: ${props => props.colour};
+    color: white;
     padding: 2px 10px;
     margin: 0px 5px;
     border-radius: 15px;
