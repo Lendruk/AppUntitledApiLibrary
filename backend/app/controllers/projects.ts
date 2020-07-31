@@ -6,6 +6,7 @@ import Project, { Tag, ProjectModel } from "../models/Project";
 import Workspace from "../models/Workspace";
 import { ObjectId } from "../lib/ObjectId";
 import { errors } from "../utils/errors";
+import Mongoose from "mongoose";
 
 @Controller("/projects")
 export class ProjectController extends BaseController {
@@ -15,19 +16,15 @@ export class ProjectController extends BaseController {
         const { headers: { workspace } } = req;
 
         //Add verification to check if user belongs to provided workspace
-        const projects = await Workspace.aggregate([
-            { $match: { _id: new ObjectId(workspace as string) } },
-            {
-                $lookup: {
-                    from: "projects",
-                    localField: "projects",
-                    foreignField: "_id",
-                    as: "projects",
-                },
+        const projects = await Workspace.find({ _id: workspace }).populate({
+            path: 'projects',
+            populate: {
+                path: 'columns.tasks',
+                model: 'Task',
             },
-        ]);
+        }).populate({ path: 'users ' });
 
-        return { projects };
+        return { "projects": projects[0].projects }
     }
 
     @Get("/:id", { requireToken: true, params: { required: ["id"] } })
@@ -47,7 +44,7 @@ export class ProjectController extends BaseController {
             //         as: "columns.tasks",
             //     },
             // }
-        // ]);
+            // ]);
         } catch (err) {
             throw errors.NOT_FOUND;
         }
@@ -98,7 +95,23 @@ export class ProjectController extends BaseController {
     public async postProject(req: Request) {
         const { headers: { workspace }, body: { title } } = req;
 
-        const project = await new Project({ title }).save();
+        const defaultColumns = [{
+            "name": 'To Do',
+            "tasks": [],
+            "default": [],
+        },
+        {
+            "name": 'In Progress',
+            "tasks": [],
+            "default": [],
+        },
+        {
+            "name": 'Done',
+            "tasks": [],
+            "default": [],
+        }];
+
+        const project = await new Project({ title, columns: defaultColumns }).save();
 
         await Workspace.findOneAndUpdate({ _id: workspace as string }, { $push: { projects: project } });
 
@@ -135,6 +148,23 @@ export class ProjectController extends BaseController {
         if (!updatedWorkSpace) throw errors.NOT_FOUND;
 
         return { status: 201, tags: updatedWorkSpace?.tags };
+    }
+
+    @Put("/:id", {
+        requireToken: true,
+        params: { required: ["id"] }
+    })
+    public async editProject(req: Request) {
+        const {
+            params: { id },
+            body,
+        } = req;
+
+        console.log('Im here ', body);
+
+        let updatedProject = await Project.findOneAndUpdate({ _id: id }, body, { new: true }).populate('columns.tasks');
+
+        return { project: updatedProject };
     }
 
     @Delete("/:id/tags", {
