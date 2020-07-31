@@ -4,8 +4,9 @@ import { Get, Post, Put, Delete } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
 import Project, { Tag, ProjectModel } from "../models/Project";
 import Workspace from "../models/Workspace";
-import { ObjectId } from "../lib/ObjectId";
 import { errors } from "../utils/errors";
+import ObjectId from "../lib/ObjectId";
+import Mongoose from "mongoose";
 
 @Controller("/projects")
 export class ProjectController extends BaseController {
@@ -15,19 +16,15 @@ export class ProjectController extends BaseController {
         const { headers: { workspace } } = req;
 
         //Add verification to check if user belongs to provided workspace
-        const projects = await Workspace.aggregate([
-            { $match: { _id: new ObjectId(workspace as string) } },
-            {
-                $lookup: {
-                    from: "projects",
-                    localField: "projects",
-                    foreignField: "_id",
-                    as: "projects",
-                },
+        const projects = await Workspace.find({ _id: workspace }).populate({
+            path: 'projects',
+            populate: {
+                path: 'columns.tasks',
+                model: 'Task',
             },
-        ]);
+        }).populate({ path: 'users ' });
 
-        return { projects };
+        return { "projects": projects[0].projects }
     }
 
     @Get("/:id", { requireToken: true, params: { required: ["id"] } })
@@ -36,7 +33,7 @@ export class ProjectController extends BaseController {
 
         let project = null;
         try {
-            project = await Project.findOne({ _id: id }).populate("columns.tasks").lean();
+            project = await Project.findOne({ _id: id }).populate(" users.roles users.user columns.tasks").lean();
             // project = await Project.aggregate([
             // { $match: { _id: id as ObjectId } },
             // {
@@ -47,7 +44,7 @@ export class ProjectController extends BaseController {
             //         as: "columns.tasks",
             //     },
             // }
-        // ]);
+            // ]);
         } catch (err) {
             throw errors.NOT_FOUND;
         }
@@ -96,9 +93,14 @@ export class ProjectController extends BaseController {
         body: { required: ["title"] }
     })
     public async postProject(req: Request) {
-        const { headers: { workspace }, body: { title } } = req;
+        const { headers: { workspace }, body: { title }, user } = req;
 
-        const project = await new Project({ title }).save();
+        if(!user) throw errors.BAD_REQUEST;
+
+        const workspaceObj = await Workspace.findOne({ _id: workspace as string });
+        const userEntry = workspaceObj?.users.find(usrEntry => String(usrEntry.user) == String(user._id));
+        const users = [{ user: user._id, roles: userEntry?.roles }];
+        const project = await new Project({ title, users }).save();
 
         await Workspace.findOneAndUpdate({ _id: workspace as string }, { $push: { projects: project } });
 
@@ -135,6 +137,23 @@ export class ProjectController extends BaseController {
         if (!updatedWorkSpace) throw errors.NOT_FOUND;
 
         return { status: 201, tags: updatedWorkSpace?.tags };
+    }
+
+    @Put("/:id", {
+        requireToken: true,
+        params: { required: ["id"] }
+    })
+    public async editProject(req: Request) {
+        const {
+            params: { id },
+            body,
+        } = req;
+
+        console.log('Im here ', body);
+
+        let updatedProject = await Project.findOneAndUpdate({ _id: id }, body, { new: true }).populate('columns.tasks');
+
+        return { project: updatedProject };
     }
 
     @Delete("/:id/tags", {

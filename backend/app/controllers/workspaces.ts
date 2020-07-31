@@ -5,7 +5,7 @@ import { Request } from "../lib/types/Request";
 import Workspace from "../models/Workspace";
 import { errors } from "../utils/errors";
 import Role from "../models/Role";
-import { ObjectId } from "../lib/ObjectId";
+import ObjectId from "../lib/ObjectId";
 
 @Controller("/workspaces")
 export class WorkspaceController extends BaseController {
@@ -36,7 +36,7 @@ export class WorkspaceController extends BaseController {
 
         const ownerRole = await new Role({ name: "owner", isOwner: true });
 
-        const workspace = await new Workspace({ name, projects: [], users: [{ user, roles: [ownerRole] }] }).save();
+        const workspace = await new Workspace({ name, projects: [], users: [{ user: user?._id, roles: [ownerRole] }] }).save();
 
         // ownerRole.workspace = new ObjectId(workspace._id as string);
 

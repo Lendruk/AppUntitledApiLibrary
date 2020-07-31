@@ -5,7 +5,7 @@ import { Column } from "../models/Project";
 import { Request } from "express";
 import { errors } from "../utils/errors";
 import Project from "../models/Project";
-import { ObjectId } from "../lib/ObjectId";
+import ObjectId from "../lib/ObjectId";
 
 @Controller("/projects/columns")
 export class ColumnController extends BaseController {

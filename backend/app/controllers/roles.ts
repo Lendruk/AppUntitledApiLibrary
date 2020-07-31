@@ -3,7 +3,7 @@ import { BaseController } from "../lib/classes/BaseController";
 import { Get, Post, Delete, Put, Patch } from "../lib/decorators/verbs";
 import { Request, Response } from "express";
 import Role from "../models/Role";
-import { ObjectId } from "../lib/ObjectId";
+import ObjectId from "../lib/ObjectId";
 import { errors } from "../utils/errors";
 
 @Controller("/roles")
