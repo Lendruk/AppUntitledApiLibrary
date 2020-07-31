@@ -7,7 +7,7 @@ import { errors } from "../utils/errors";
 import Project from "../models/Project";
 import Workspace from "../models/Workspace";
 import { mongoose } from "../utils/database";
-import { ObjectId } from "../lib/ObjectId";
+import ObjectId from "../lib/ObjectId";
 
 
 

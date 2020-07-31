@@ -4,7 +4,7 @@ import { NextFunction } from "express";
 import { errors } from "../utils/errors";
 import { Request } from "../lib/types/Request";
 import Workspace, { WorkspaceModel } from "../models/Workspace";
-import { ObjectId } from "../lib/ObjectId";
+import ObjectId from "../lib/ObjectId";
 
 export class PermissionChecker {
 

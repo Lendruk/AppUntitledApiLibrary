@@ -2,7 +2,7 @@ import { mongoose } from "../utils/database";
 import { IActivatable } from "../lib/interfaces/IActivatable";
 import { Property, getModelFromClass } from "../lib/decorators/model";
 import Permission, { PermissionModel } from './Permission';
-import { ObjectId } from "../lib/ObjectId";
+import ObjectId from "../lib/ObjectId";
 import { BaseModel } from "../lib/classes/BaseModel";
 
 export class RoleModel extends BaseModel implements IActivatable {
