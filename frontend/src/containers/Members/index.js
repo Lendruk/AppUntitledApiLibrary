@@ -18,7 +18,6 @@ class Members extends React.Component {
     render() {
         const { currentProject } = this.props;
         const { searchValue } = this.state;
-        currentProject.users.push({ name: "test", roles: [{ name: "role1", colour: "#332C33"}] });
         return (
             <Styles.Container>
                 <h3>Users</h3>
@@ -28,12 +27,12 @@ class Members extends React.Component {
                             <div>Name</div>
                             <div>Roles</div>
                         </Styles.RowLabels>
-                    {currentProject.users.map(user => (
+                    {currentProject.users.map(usrPair => (
                         <Styles.User>
-                            <div>{user.name}</div>
+                            <div>{usrPair.user.name}</div>
                             <Styles.Roles>
-                                {user.roles.map(role => (
-                                    <Styles.Role colour={role.colour}>
+                                {usrPair.roles.map(role => (
+                                    <Styles.Role colour={role.colour || "#185C77"}>
                                         {role.name}
                                     </Styles.Role>
                                 ))}

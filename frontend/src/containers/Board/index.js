@@ -160,7 +160,10 @@ class Board extends React.Component {
             if(currentProject.columns[index]._id !== "new_column") {
                 await put(uriColumns(columns[index]._id), { name: tempColName, projectId: currentProject._id });
             } else {
-                await post(uriColumns(), { name: tempColName, projectId: currentProject._id });
+                const newColumn = await post(uriColumns(), { name: tempColName, projectId: currentProject._id });
+
+                currentProject.columns[index] = newColumn.data.column;
+                this.setState({ currentProject });
             }
         } else if(event.which === 27) {
             if(currentProject.columns[index]._id === "new_column") {
