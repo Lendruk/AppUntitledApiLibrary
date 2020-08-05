@@ -1,13 +1,8 @@
 # Munchellos
-Scrum team management tool
-
-The current front-end is a placeholder made in react.
-
-Test Coverage: 0% :( (Need to do tests)
+Backend Repo
 
 ### Note:
 1. This description is still a work in progress, a lot of the information present here can be wrong or out of date.
-2. Current front-end is a placeholder made in react.
 
 ## How to start
 
