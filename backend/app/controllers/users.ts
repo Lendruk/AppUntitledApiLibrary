@@ -5,6 +5,9 @@ import { BaseController } from '../lib/classes/BaseController';
 import User from '../models/user';
 import bcrypt from 'bcryptjs';
 import { Request } from '../lib/types/Request';
+import Role from '../models/Role';
+import Project from '../models/Project';
+import Workspace from '../models/Workspace';
 
 @Controller("/users")
 export class UserController extends BaseController {
@@ -44,14 +47,30 @@ export class UserController extends BaseController {
     }
 
     @Post("/register", { body: { required: ["password", "email", "name"] } })
-    public async registerUser(req : Request) {
-        const { body: { name, password, email } } = req;
+    public async registerUser(req: Request) {
+        const { body: { name, password, email }, headers } = req;
 
         if (await User.findOne({ email: email })) {
             throw errors.EMAIL_ALREADY_IN_USE;
         }
-        
+
         const newUser = await new User({ name, password: await this.hashPassword(password), email }).save();
+
+
+        if (headers.source === "app") {
+            console.log('at start');
+            const ownerRole = await new Role({ name: "owner", isOwner: true });
+            console.log('After Role');
+            const project = await new Project({
+                columns: [{ name: "To Do", tasks: [] }, { name: "In Progress", tasks: [] }, { name: "Done", tasks: [] }],
+                title: "First Project",
+                users: [{ user: newUser._id, roles: [ownerRole] }]
+            }).save();
+            console.log('After Project');
+            const workspace = await new Workspace({ name: "First Workspace", projects: [project], users: [{ user: newUser._id, roles: [ownerRole] }] }).save();
+            console.log('After Workspace');
+        }
+
         return { status: 201, code: "USER_REGISTERED", message: "Account successfully created", user: newUser.getPublicInformation() };
     }
 
