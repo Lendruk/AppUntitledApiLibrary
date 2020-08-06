@@ -29,7 +29,6 @@ export class UserController extends BaseController {
         } catch (err) {
             throw errors.NOT_FOUND;
         }
-
         return { user: user?.getPublicInformation() };
     }
 
@@ -42,42 +41,22 @@ export class UserController extends BaseController {
         } catch {
             throw errors.BAD_REQUEST;
         }
-
         return { user: user?.getPublicInformation() };
     }
 
     @Post("/register", { body: { required: ["password", "email", "name"] } })
     public async registerUser(req: Request) {
         const { body: { name, password, email }, headers } = req;
-
         if (await User.findOne({ email: email })) {
             throw errors.EMAIL_ALREADY_IN_USE;
         }
-
         const newUser = await new User({ name, password: await this.hashPassword(password), email }).save();
-
-
-        if (headers.source === "app") {
-            console.log('at start');
-            const ownerRole = await new Role({ name: "owner", isOwner: true });
-            console.log('After Role');
-            const project = await new Project({
-                columns: [{ name: "To Do", tasks: [] }, { name: "In Progress", tasks: [] }, { name: "Done", tasks: [] }],
-                title: "First Project",
-                users: [{ user: newUser._id, roles: [ownerRole] }]
-            }).save();
-            console.log('After Project');
-            const workspace = await new Workspace({ name: "First Workspace", projects: [project], users: [{ user: newUser._id, roles: [ownerRole] }] }).save();
-            console.log('After Workspace');
-        }
-
         return { status: 201, code: "USER_REGISTERED", message: "Account successfully created", user: newUser.getPublicInformation() };
     }
 
     private async hashPassword(password: string): Promise<string> {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
-
         return hash;
     }
 }

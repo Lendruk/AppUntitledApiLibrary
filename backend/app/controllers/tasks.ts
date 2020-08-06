@@ -232,16 +232,6 @@ export class TaskController extends BaseController {
         await Comment.findOneAndDelete({ _id: commentId, task: new ObjectId(taskId) });
     }
 
-    //Test file upload
-    //TODO investigate file extension being removed
-    @Post("/file", {
-        uploadFiles: true,
-        requireToken: true
-    })
-    public async uploadFile(req: Request, res: Response) {
-        // console.log(req.files);
-    }
-
     @SocketEvent("broadcast_task")
     public async broadcastTask(socketServer: Server, socket: Socket, data?: any) {
         socket.emit("test", { test: true });
