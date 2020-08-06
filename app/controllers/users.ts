@@ -1,20 +1,18 @@
-import { errors } from '../utils/errors';
-import { Controller } from '../lib/decorators/controller';
-import { Get, Post, Put } from '../lib/decorators/verbs';
-import { BaseController } from '../lib/classes/BaseController';
-import User from '../models/user';
-import bcrypt from 'bcryptjs';
-import { Request } from '../lib/types/Request';
-import Role from '../models/Role';
-import Project from '../models/Project';
-import Workspace from '../models/Workspace';
+import { errors } from "../utils/errors";
+import { Controller } from "../lib/decorators/controller";
+import { Get, Post, Put } from "../lib/decorators/verbs";
+import { BaseController } from "../lib/classes/BaseController";
+import User from "../models/user";
+import bcrypt from "bcryptjs";
+import { Request } from "../lib/types/Request";
+import Role from "../models/Role";
+import Project from "../models/Project";
+import Workspace from "../models/Workspace";
 
 @Controller("/users")
 export class UserController extends BaseController {
-
     @Get("/")
     public async getUsers(req: Request) {
-
         console.log("body", req.body);
         const t = new User({ name: "test", role: "test" });
         return { good: "Boost" };
@@ -22,7 +20,9 @@ export class UserController extends BaseController {
 
     @Get("/:id", { requireToken: true })
     public async getUser(req: Request) {
-        const { params: { id } } = req;
+        const {
+            params: { id },
+        } = req;
         let user;
         try {
             user = await User.findOne({ _id: id });
@@ -34,7 +34,10 @@ export class UserController extends BaseController {
 
     @Put("/:id", { requireToken: true })
     public async putUser(req: Request) {
-        const { body, params: { id } } = req;
+        const {
+            body,
+            params: { id },
+        } = req;
         let user;
         try {
             user = await User.findOneAndUpdate({ _id: id }, body, { new: true });
@@ -46,12 +49,20 @@ export class UserController extends BaseController {
 
     @Post("/register", { body: { required: ["password", "email", "name"] } })
     public async registerUser(req: Request) {
-        const { body: { name, password, email }, headers } = req;
+        const {
+            body: { name, password, email },
+            headers,
+        } = req;
         if (await User.findOne({ email: email })) {
             throw errors.EMAIL_ALREADY_IN_USE;
         }
         const newUser = await new User({ name, password: await this.hashPassword(password), email }).save();
-        return { status: 201, code: "USER_REGISTERED", message: "Account successfully created", user: newUser.getPublicInformation() };
+        return {
+            status: 201,
+            code: "USER_REGISTERED",
+            message: "Account successfully created",
+            user: newUser.getPublicInformation(),
+        };
     }
 
     private async hashPassword(password: string): Promise<string> {

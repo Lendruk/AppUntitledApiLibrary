@@ -18,8 +18,7 @@ export class Injector {
         const keys = this.serviceMap.keys();
         let key = keys.next();
         while (!key.done) {
-            if (key.value instanceof service)
-                return true;
+            if (key.value instanceof service) return true;
             key = keys.next();
         }
         return false;
@@ -29,8 +28,7 @@ export class Injector {
         const keys = this.serviceMap.keys();
         let key = keys.next();
         while (!key.done) {
-            if (key.value instanceof service)
-                return { service: key.value, consumers: this.serviceMap.get(key.value) };
+            if (key.value instanceof service) return { service: key.value, consumers: this.serviceMap.get(key.value) };
             key = keys.next();
         }
 
@@ -57,8 +55,6 @@ export class Injector {
 
     injectService(service: any) {
         if (this.serviceMap.has(service)) {
-
         }
     }
-
 }

@@ -8,10 +8,11 @@ import { errors } from "../utils/errors";
 
 @Controller("/roles")
 export class RoleController extends BaseController {
-
     @Get("/", { requireToken: true, headers: { required: ["workspace"] } })
     public async getRoles(req: Request, res: Response) {
-        const { headers: { workspace } } = req;
+        const {
+            headers: { workspace },
+        } = req;
 
         const roles = await Role.find({ workspace: new ObjectId(workspace as string) });
 
@@ -21,10 +22,13 @@ export class RoleController extends BaseController {
     @Post("/", {
         requireToken: true,
         body: { required: ["name", "permissions"] },
-        // headers: { required: ["workspace"] } 
+        // headers: { required: ["workspace"] }
     })
     public async postRole(req: Request, res: Response) {
-        const { headers: { workspace }, body } = req;
+        const {
+            headers: { workspace },
+            body,
+        } = req;
 
         //TODO: Validations
         const newRole = await new Role({ ...body }).save();
@@ -34,7 +38,10 @@ export class RoleController extends BaseController {
 
     @Put("/:id", { params: { required: ["id"] } })
     public async putRole(req: Request, res: Response) {
-        const { params: { id }, body } = req;
+        const {
+            params: { id },
+            body,
+        } = req;
 
         let role = null;
 
@@ -45,12 +52,14 @@ export class RoleController extends BaseController {
         }
 
         return { role };
-
     }
 
     @Patch("/:id", { body: { required: ["_active"] }, params: { required: ["id"] } })
     public async patchRole(req: Request, res: Response) {
-        const { params: { id }, body: { _active } } = req;
+        const {
+            params: { id },
+            body: { _active },
+        } = req;
 
         try {
             await Role.findOneAndUpdate({ _id: id }, { _active });
@@ -63,7 +72,9 @@ export class RoleController extends BaseController {
 
     @Delete("/:id", { params: { required: ["id"] } })
     public async deleteRole(req: Request, res: Response) {
-        const { params: { id } } = req;
+        const {
+            params: { id },
+        } = req;
 
         //TODO: Remove Role from all users;
 

@@ -9,7 +9,7 @@ export const checkToken = async (req: Request, res: Response, next: NextFunction
         const { authorization } = req.headers;
         if (!authorization) throw errors.NO_TOKEN;
 
-        const splitToken: string[] = authorization.split(' ');
+        const splitToken: string[] = authorization.split(" ");
 
         if (splitToken[0] !== "Bearer" || splitToken[1] == null || splitToken[1] == "null") throw errors.INVALID_TOKEN;
 
@@ -27,4 +27,4 @@ export const checkToken = async (req: Request, res: Response, next: NextFunction
     }
 
     next();
-}
+};

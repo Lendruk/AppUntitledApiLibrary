@@ -1,10 +1,9 @@
 import { mongoose } from "../utils/database";
-import { IActivatable } from "../lib/interfaces/IActivatable";
+import { Activatable } from "../lib/interfaces/Activatable";
 import { Property, getModelFromClass } from "../lib/decorators/model";
 import { BaseModel } from "../lib/classes/BaseModel";
 
-export class PermissionModel extends BaseModel implements IActivatable {
-
+export class PermissionModel extends BaseModel implements Activatable {
     @Property({ default: true })
     _active!: boolean;
 

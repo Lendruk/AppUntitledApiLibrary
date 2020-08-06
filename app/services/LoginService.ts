@@ -6,8 +6,7 @@ import { buildToken } from "../utils/TokenBuilder";
 @Injectable()
 export class LoginService {
     public async login(email: string, password: string) {
-
-        let user = await User.findOne({ email: email });
+        const user = await User.findOne({ email: email });
 
         if (!user) throw errors.INVALID_CREDENTIALS;
         if (!user.comparePassword(password) || !user._active) throw errors.INVALID_CREDENTIALS;

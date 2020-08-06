@@ -1,5 +1,5 @@
 import { mongoose } from "../utils/database";
-import { IActivatable } from "../lib/interfaces/IActivatable";
+import { Activatable } from "../lib/interfaces/Activatable";
 import { Property, getModelFromClass, ModelOptions } from "../lib/decorators/model";
 import Role, { RoleModel } from "./Role";
 import ObjectId from "../lib/ObjectId";
@@ -41,8 +41,7 @@ export class Tag {
     }
 }
 
-export class ProjectModel extends BaseModel implements IActivatable {
-
+export class ProjectModel extends BaseModel implements Activatable {
     @Property({ default: true })
     _active!: boolean;
 
@@ -57,7 +56,6 @@ export class ProjectModel extends BaseModel implements IActivatable {
 
     @Property({ items: Tag, default: [] })
     tags!: Tag[];
-
 }
 
 const Project = getModelFromClass<ProjectModel>(ProjectModel);

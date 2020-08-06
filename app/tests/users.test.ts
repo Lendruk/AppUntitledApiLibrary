@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 import dbConnection, { mongoose } from "../utils/database";
 import { UserController } from "../controllers/users";
@@ -7,7 +7,7 @@ import { Response } from "../lib/types/Response";
 import User from "../models/user";
 
 describe("Auth", () => {
-    let controller : UserController;
+    let controller: UserController;
     beforeAll(async () => {
         await dbConnection();
         controller = new UserController();
@@ -24,14 +24,14 @@ describe("Auth", () => {
                 password: "nice password",
                 email: "email2@emailProvider.com",
             };
-            
-            let response : Response = {};
+
+            let response: Response = {};
             beforeAll(async () => {
                 const request = {
                     body: {
                         ...userToCreate,
-                    }
-                 };
+                    },
+                };
                 response = await controller.registerUser(request);
             });
 
@@ -51,24 +51,23 @@ describe("Auth", () => {
                 password: "nice password",
                 email: "email2@emailProvider.com",
             };
-            
-            let response : Response = {};
-            let duplicateResponse : Response = {};
+
+            let response: Response = {};
+            let duplicateResponse: Response = {};
             const request = {
                 body: {
                     ...userToCreate,
-                }
-             };
-            let error : any= null;
+                },
+            };
+            let error: any = null;
             beforeAll(async () => {
                 response = await controller.registerUser(request);
 
-                try  {
+                try {
                     duplicateResponse = await controller.registerUser(request);
-                } catch(err) {
+                } catch (err) {
                     error = err;
                 }
-                
             });
 
             afterAll(async () => {
@@ -76,7 +75,7 @@ describe("Auth", () => {
             });
 
             it("Error exists", () => expect(error).toBeTruthy());
-            it("return is 409",() => expect(error.status).toEqual(409));
+            it("return is 409", () => expect(error.status).toEqual(409));
         });
     });
 });

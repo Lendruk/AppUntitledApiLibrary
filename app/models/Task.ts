@@ -1,11 +1,10 @@
 import { mongoose } from "../utils/database";
-import { IActivatable } from "../lib/interfaces/IActivatable";
+import { Activatable } from "../lib/interfaces/Activatable";
 import { Property, getModelFromClass } from "../lib/decorators/model";
 import ObjectId from "../lib/ObjectId";
 import { BaseModel } from "../lib/classes/BaseModel";
 
-export class TaskModel extends BaseModel implements IActivatable {
-
+export class TaskModel extends BaseModel implements Activatable {
     @Property({ default: true })
     _active!: boolean;
 
@@ -19,7 +18,7 @@ export class TaskModel extends BaseModel implements IActivatable {
     parent?: ObjectId;
 
     @Property({})
-    value?: Number;
+    value?: number;
 
     @Property({})
     dueDate?: Date;
@@ -30,12 +29,12 @@ export class TaskModel extends BaseModel implements IActivatable {
     @Property({ ref: "User" })
     creator!: ObjectId;
 
-    @Property({ ref: "User"})
+    @Property({ ref: "User" })
     users!: ObjectId[];
 
     //Seconds
     @Property({})
-    timeSpent?: Number;
+    timeSpent?: number;
 
     @Property({ items: ObjectId, default: [] })
     tags!: ObjectId[];

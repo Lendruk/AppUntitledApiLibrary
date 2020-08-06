@@ -16,16 +16,11 @@ export default class Expiry {
     getSeconds(): number {
         let total = 0;
 
-        if (this.seconds != null)
-            total += this.seconds;
-        if (this.minutes != null)
-            total += this.minutes * 60;
-        if (this.hours != null)
-            total += this.hours * 3600;
-        if (this.days != null)
-            total += this.days * 86400;
-        if (this.months != null)
-            total += this.months * 2592000;
+        if (this.seconds != null) total += this.seconds;
+        if (this.minutes != null) total += this.minutes * 60;
+        if (this.hours != null) total += this.hours * 3600;
+        if (this.days != null) total += this.days * 86400;
+        if (this.months != null) total += this.months * 2592000;
 
         return total;
     }

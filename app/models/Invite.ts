@@ -4,7 +4,6 @@ import { Property, getModelFromClass } from "../lib/decorators/model";
 import { BaseModel } from "../lib/classes/BaseModel";
 
 export class InviteModel extends BaseModel {
-
     @Property({ ref: "User", required: true })
     invitee!: ObjectId;
 

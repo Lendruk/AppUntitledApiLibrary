@@ -9,14 +9,10 @@ import Workspace from "../models/Workspace";
 import { mongoose } from "../utils/database";
 import ObjectId from "../lib/ObjectId";
 
-
-
 @Controller("/invites")
 export class InviteController extends BaseController {
-
     // entityMap: Map<string, mongoose.Model<any>>;
     entityMap: Map<string, any>;
-
 
     constructor() {
         super();
@@ -25,7 +21,6 @@ export class InviteController extends BaseController {
         this.entityMap.set("project", Project);
         this.entityMap.set("workspace", Workspace);
     }
-
 
     @Get("/", { requireToken: true })
     public async getInvites(req: Request) {
@@ -38,7 +33,10 @@ export class InviteController extends BaseController {
 
     @Post("/", { requireToken: true, body: { required: ["invitee", "entityId", "entityType", "role"] } })
     public async postInvite(req: Request) {
-        const { user, body: { invitee, entityId, entityType, role } } = req;
+        const {
+            user,
+            body: { invitee, entityId, entityType, role },
+        } = req;
 
         const invite = await new Invite({ inviter: user, invitee, entityId, entityType, role }).save();
 
@@ -49,22 +47,29 @@ export class InviteController extends BaseController {
 
     @Post("/:id", { requireToken: true, params: { required: ["id"] } })
     public async acceptInvite(req: Request) {
-        const { params: { id }, user } = req;
+        const {
+            params: { id },
+            user,
+        } = req;
 
         const invite = await Invite.findOne({ _id: id, invitee: user }).lean();
 
-        if (!invite)
-            throw errors.NOT_FOUND;
+        if (!invite) throw errors.NOT_FOUND;
 
         const entity = this.entityMap.get(invite.entityType);
 
-        await entity?.findOneAndUpdate({ _id: new ObjectId(invite.entityId) },
-            { $push: { users: { user: user, role: invite.role } } }, { new: true });
+        await entity?.findOneAndUpdate(
+            { _id: new ObjectId(invite.entityId) },
+            { $push: { users: { user: user, role: invite.role } } },
+            { new: true }
+        );
     }
 
     @Delete("/:id", { params: { required: ["id"] } })
     public async deleteInvite(req: Request) {
-        const { params: { id } } = req;
+        const {
+            params: { id },
+        } = req;
 
         await Invite.findOneAndDelete({ _id: id });
     }

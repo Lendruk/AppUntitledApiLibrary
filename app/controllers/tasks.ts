@@ -1,29 +1,28 @@
-import { Response } from 'express';
-import { errors } from '../utils/errors';
-import { Controller } from '../lib/decorators/controller';
-import { Get, Post, Put, Delete, Patch } from '../lib/decorators/verbs';
-import { BaseController } from '../lib/classes/BaseController';
-import Task from '../models/Task';
-import Project from '../models/Project';
-import mongoose from 'mongoose';
-import Comment from '../models/Comment';
-import { Request } from '../lib/types/Request';
-import ObjectId from '../lib/ObjectId';
-import { SocketEvent, SocketServer } from '../lib/classes/SocketServer';
-import { Server, Socket } from 'socket.io';
-import { Inject } from '../lib/decorators/Inject';
+import { Response } from "express";
+import { errors } from "../utils/errors";
+import { Controller } from "../lib/decorators/controller";
+import { Get, Post, Put, Delete, Patch } from "../lib/decorators/verbs";
+import { BaseController } from "../lib/classes/BaseController";
+import Task from "../models/Task";
+import Project from "../models/Project";
+import mongoose from "mongoose";
+import Comment from "../models/Comment";
+import { Request } from "../lib/types/Request";
+import ObjectId from "../lib/ObjectId";
+import { SocketEvent, SocketServer } from "../lib/classes/SocketServer";
+import { Server, Socket } from "socket.io";
+import { Inject } from "../lib/decorators/Inject";
 
 @Controller("/tasks")
 export class TaskController extends BaseController {
-
     @Inject()
     private _socketServer!: SocketServer;
 
     @Get("/", {
         requireToken: true,
         headers: {
-            required: ["workspace"]
-        }
+            required: ["workspace"],
+        },
     })
     public async getTasks(req: Request) {
         let tasks = null;
@@ -46,7 +45,7 @@ export class TaskController extends BaseController {
 
         let task = null;
         try {
-            task = await Task.findOne({ _id: id }, '-__v -_created -_modified').lean();
+            task = await Task.findOne({ _id: id }, "-__v -_created -_modified").lean();
         } catch (err) {
             throw errors.NOT_FOUND;
         }
@@ -56,7 +55,7 @@ export class TaskController extends BaseController {
     @Get("/project/:projectId", {
         requireToken: true,
         params: { required: ["projectId"] },
-        body: { required: ["columnId"] }
+        body: { required: ["columnId"] },
     })
     public async getTasksFromColumn(req: Request) {
         const {
@@ -77,16 +76,16 @@ export class TaskController extends BaseController {
                         localField: "columns.tasks",
                         foreignField: "_id",
                         as: "columns.tasks",
-                    }
+                    },
                 },
                 {
                     $project: {
                         "columns.tasks.__v": 0,
                         "columns.tasks._created": 0,
-                        "columns.tasks._modified": 0
-                    }
+                        "columns.tasks._modified": 0,
+                    },
                 },
-            ])
+            ]);
         } catch (err) {
             throw errors.NOT_FOUND;
         }
@@ -104,19 +103,21 @@ export class TaskController extends BaseController {
             await Project.findOneAndUpdate(
                 {
                     _id: projectId,
-                    columns: { $elemMatch: { _id: oldColumnId } }
+                    columns: { $elemMatch: { _id: oldColumnId } },
                 },
                 {
                     $pull: { "columns.$.tasks": taskId },
-                }, { new: true });
+                },
+                { new: true }
+            );
 
             await Project.findOneAndUpdate(
                 {
                     _id: projectId,
-                    columns: { $elemMatch: { _id: newColumnId } }
+                    columns: { $elemMatch: { _id: newColumnId } },
                 },
                 {
-                    $push: { "columns.$.tasks": taskId }
+                    $push: { "columns.$.tasks": taskId },
                 }
             );
         } catch (err) {
@@ -142,13 +143,13 @@ export class TaskController extends BaseController {
             await Project.findOneAndUpdate(
                 {
                     _id: projectId,
-                    columns: { $elemMatch: { _id: columnId } }
+                    columns: { $elemMatch: { _id: columnId } },
                 },
                 {
-                    $push: { "columns.$.tasks": task._id }
+                    $push: { "columns.$.tasks": task._id },
                 },
                 {
-                    new: true
+                    new: true,
                 }
             ).lean();
         } catch (err) {
@@ -156,7 +157,7 @@ export class TaskController extends BaseController {
             throw errors.BAD_REQUEST;
         }
 
-        return { task }
+        return { task };
     }
 
     @Put("/:id", {
@@ -193,13 +194,13 @@ export class TaskController extends BaseController {
             await Project.findOneAndUpdate(
                 {
                     _id: projectId,
-                    columns: { $elemMatch: { _id: columnId } }
+                    columns: { $elemMatch: { _id: columnId } },
                 },
                 {
-                    $pull: { "columns.$.tasks": taskId }
+                    $pull: { "columns.$.tasks": taskId },
                 },
                 {
-                    new: true
+                    new: true,
                 }
             ).lean();
         } catch (err) {
@@ -209,7 +210,9 @@ export class TaskController extends BaseController {
 
     @Get("/:id/comments")
     public async getComments(req: Request) {
-        const { params: { id } } = req;
+        const {
+            params: { id },
+        } = req;
 
         const comments = await Comment.find({ task: new ObjectId(id) });
 
@@ -218,7 +221,11 @@ export class TaskController extends BaseController {
 
     @Post("/:id/comments", { body: { required: ["content"] } })
     public async createComment(req: Request) {
-        const { body: { content }, user, params: { id } } = req;
+        const {
+            body: { content },
+            user,
+            params: { id },
+        } = req;
 
         const comment = await new Comment({ user: user, content, task: id }).save();
 
@@ -227,7 +234,9 @@ export class TaskController extends BaseController {
 
     @Delete("/:taskId/comments/:commentId")
     public async deleteComment(req: Request) {
-        const { params: { taskId, commentId } } = req;
+        const {
+            params: { taskId, commentId },
+        } = req;
 
         await Comment.findOneAndDelete({ _id: commentId, task: new ObjectId(taskId) });
     }

@@ -9,17 +9,22 @@ import ObjectId from "../lib/ObjectId";
 
 @Controller("/projects/columns")
 export class ColumnController extends BaseController {
-
     @Post("/", {
         requireToken: true,
         body: { required: ["name", "projectId"] },
     })
     public async postColumn(req: Request) {
-        const { body: { name, projectId } } = req;
+        const {
+            body: { name, projectId },
+        } = req;
 
         let project;
         try {
-            project = await Project.findOneAndUpdate({ _id: projectId }, { $push: { columns: new Column(name) } }, { new: true }).lean();
+            project = await Project.findOneAndUpdate(
+                { _id: projectId },
+                { $push: { columns: new Column(name) } },
+                { new: true }
+            ).lean();
         } catch {
             throw errors.DB_FAILED_UPDATE;
         }
@@ -30,14 +35,21 @@ export class ColumnController extends BaseController {
     @Put("/:id", {
         requireToken: true,
         body: { required: ["name", "projectId"] },
-        params: { required: ["id"] }
+        params: { required: ["id"] },
     })
     public async putColumn(req: Request) {
-        const { params: { id }, body: { name, projectId } } = req;
+        const {
+            params: { id },
+            body: { name, projectId },
+        } = req;
 
         let project = null;
         try {
-            project = await Project.findOneAndUpdate({ _id: projectId, "columns._id": id}, { name }, { new: true }).lean();
+            project = await Project.findOneAndUpdate(
+                { _id: projectId, "columns._id": id },
+                { name },
+                { new: true }
+            ).lean();
         } catch {
             throw errors.DB_FAILED_UPDATE;
         }
@@ -47,7 +59,10 @@ export class ColumnController extends BaseController {
 
     @Delete("/:id", { requireToken: true, params: { required: ["id"] } })
     public async deleteColumn(req: Request) {
-        const { params: { id }, query: { projectId } } = req;
+        const {
+            params: { id },
+            query: { projectId },
+        } = req;
 
         await Project.findOneAndUpdate({ _id: projectId as string }, { $pull: { "columns._id": new ObjectId(id) } });
     }

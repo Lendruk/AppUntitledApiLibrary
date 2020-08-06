@@ -8,10 +8,9 @@ type Session = {
     os: string;
     systemVersion: string;
     appVersion: string;
-}
+};
 
 export class SessionsModel extends mongoose.Document {
-
     @Property({ required: true, ref: "User" })
     user: ObjectId;
 

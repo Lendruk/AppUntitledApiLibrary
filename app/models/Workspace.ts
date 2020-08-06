@@ -1,5 +1,5 @@
 import { mongoose } from "../utils/database";
-import { IActivatable } from "../lib/interfaces/IActivatable";
+import { Activatable } from "../lib/interfaces/Activatable";
 import { Property, getModelFromClass } from "../lib/decorators/model";
 import Project, { ProjectModel } from "./Project";
 import Role, { RoleModel } from "./Role";
@@ -14,8 +14,7 @@ export class WorkspaceUser {
     user!: ObjectId;
 }
 
-export class WorkspaceModel extends BaseModel implements IActivatable {
-
+export class WorkspaceModel extends BaseModel implements Activatable {
     @Property({ default: true })
     _active!: boolean;
 

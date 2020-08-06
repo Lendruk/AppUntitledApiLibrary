@@ -10,26 +10,31 @@ import Mongoose from "mongoose";
 
 @Controller("/projects")
 export class ProjectController extends BaseController {
-
     @Get("/", { requireToken: true, headers: { required: ["workspace"] } })
     public async getProjects(req: Request) {
-        const { headers: { workspace } } = req;
+        const {
+            headers: { workspace },
+        } = req;
 
         //Add verification to check if user belongs to provided workspace
-        const projects = await Workspace.find({ _id: workspace }).populate({
-            path: 'projects',
-            populate: {
-                path: 'columns.tasks',
-                model: 'Task',
-            },
-        }).populate({ path: 'users ' });
+        const projects = await Workspace.find({ _id: workspace })
+            .populate({
+                path: "projects",
+                populate: {
+                    path: "columns.tasks",
+                    model: "Task",
+                },
+            })
+            .populate({ path: "users " });
 
-        return { "projects": projects[0].projects }
+        return { projects: projects[0].projects };
     }
 
     @Get("/:id", { requireToken: true, params: { required: ["id"] } })
     public async getProject(req: Request) {
-        const { params: { id } } = req;
+        const {
+            params: { id },
+        } = req;
 
         let project = null;
         try {
@@ -54,11 +59,13 @@ export class ProjectController extends BaseController {
 
     @Get("/:id/tags", { requireToken: true, params: { required: ["id"] } })
     public async getProjectTags(req: Request) {
-        const { params: { id } } = req;
+        const {
+            params: { id },
+        } = req;
 
         let tags = null;
         try {
-            tags = await Project.findOne({ _id: id }, '-_id tags').lean();
+            tags = await Project.findOne({ _id: id }, "-_id tags").lean();
         } catch (err) {
             throw errors.NOT_FOUND;
         }
@@ -67,22 +74,23 @@ export class ProjectController extends BaseController {
 
     @Post("/:id/tags", {
         requireToken: true,
-        params: { required: ["id"] }
+        params: { required: ["id"] },
     })
     public async postProjectTags(req: Request) {
         const {
             params: { id },
-            body: { name, colour }
+            body: { name, colour },
         } = req;
 
-        let updatedWorkSpace = await Project.findOneAndUpdate(
+        const updatedWorkSpace = await Project.findOneAndUpdate(
             { _id: id },
             {
-                $push: { "tags": new Tag(name, colour) }
+                $push: { tags: new Tag(name, colour) },
             },
             {
-                new: true
-            });
+                new: true,
+            }
+        );
 
         return { status: 201, tags: updatedWorkSpace?.tags };
     }
@@ -90,15 +98,19 @@ export class ProjectController extends BaseController {
     @Post("/", {
         requireToken: true,
         headers: { required: ["workspace"] },
-        body: { required: ["title"] }
+        body: { required: ["title"] },
     })
     public async postProject(req: Request) {
-        const { headers: { workspace }, body: { title }, user } = req;
+        const {
+            headers: { workspace },
+            body: { title },
+            user,
+        } = req;
 
-        if(!user) throw errors.BAD_REQUEST;
+        if (!user) throw errors.BAD_REQUEST;
 
         const workspaceObj = await Workspace.findOne({ _id: workspace as string });
-        const userEntry = workspaceObj?.users.find(usrEntry => String(usrEntry.user) == String(user._id));
+        const userEntry = workspaceObj?.users.find((usrEntry) => String(usrEntry.user) == String(user._id));
         const users = [{ user: user._id, roles: userEntry?.roles }];
         const project = await new Project({ title, users }).save();
 
@@ -109,30 +121,31 @@ export class ProjectController extends BaseController {
 
     @Put("/:id/tags", {
         requireToken: true,
-        params: { required: ["id"] }
+        params: { required: ["id"] },
     })
     public async putProjectTags(req: Request) {
         const {
             params: { id },
-            body: { tagId }
+            body: { tagId },
         } = req;
 
-        let query: { [index: string]: any } = {};
+        const query: { [index: string]: any } = {};
         for (const key in req.body) {
-            query[`tags.$.${key}`] = req.body[key]
+            query[`tags.$.${key}`] = req.body[key];
         }
 
-        let updatedWorkSpace = await Project.findOneAndUpdate(
+        const updatedWorkSpace = await Project.findOneAndUpdate(
             {
                 _id: id,
-                tags: { $elemMatch: { _id: tagId } }
+                tags: { $elemMatch: { _id: tagId } },
             },
             {
-                $set: { ...query }
+                $set: { ...query },
             },
             {
                 new: true,
-            });
+            }
+        );
 
         if (!updatedWorkSpace) throw errors.NOT_FOUND;
 
@@ -141,7 +154,7 @@ export class ProjectController extends BaseController {
 
     @Put("/:id", {
         requireToken: true,
-        params: { required: ["id"] }
+        params: { required: ["id"] },
     })
     public async editProject(req: Request) {
         const {
@@ -149,38 +162,45 @@ export class ProjectController extends BaseController {
             body,
         } = req;
 
-        console.log('Im here ', body);
+        console.log("Im here ", body);
 
-        let updatedProject = await Project.findOneAndUpdate({ _id: id }, body, { new: true }).populate('columns.tasks');
+        const updatedProject = await Project.findOneAndUpdate({ _id: id }, body, { new: true }).populate(
+            "columns.tasks"
+        );
 
         return { project: updatedProject };
     }
 
     @Delete("/:id/tags", {
         requireToken: true,
-        params: { required: ["id"] }
+        params: { required: ["id"] },
     })
     public async postdeleteTag(req: Request) {
         const {
             params: { id },
-            body: { tagId }
+            body: { tagId },
         } = req;
 
-        let updatedWorkSpace = await Project.findOneAndUpdate(
+        const updatedWorkSpace = await Project.findOneAndUpdate(
             { _id: id },
             {
-                $pull: { "tags": { _id: tagId } }
+                $pull: { tags: { _id: tagId } },
             },
             {
-                new: true
-            });
+                new: true,
+            }
+        );
 
         return { status: 201, tags: updatedWorkSpace?.tags };
     }
 
     @Delete("/:id", { requireToken: true, headers: { required: ["workspace"] } })
     public async deleteProject(req: Request) {
-        const { headers: { workspace }, params: { id }, user } = req;
+        const {
+            headers: { workspace },
+            params: { id },
+            user,
+        } = req;
 
         const workspaceObj = await Workspace.aggregate([
             { $match: { projects: new ObjectId(id) } },
@@ -192,7 +212,7 @@ export class ProjectController extends BaseController {
                     as: "users.role",
                 },
             },
-            { $match: { $and: [{ "users.user": user?._id }, { "users.role.isOwner": true }] } }
+            { $match: { $and: [{ "users.user": user?._id }, { "users.role.isOwner": true }] } },
         ]);
 
         if (!workspaceObj) throw errors.NO_PERMISSION;

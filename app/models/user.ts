@@ -1,13 +1,12 @@
-import { Property, getModelFromClass } from '../lib/decorators/model';
-import bycrypt from 'bcryptjs';
-import { IActivatable } from '../lib/interfaces/IActivatable';
-import Role from './Role';
-import bcrypt from 'bcryptjs';
-import { BaseModel } from '../lib/classes/BaseModel';
+import { Property, getModelFromClass } from "../lib/decorators/model";
+import bycrypt from "bcryptjs";
+import { Activatable } from "../lib/interfaces/Activatable";
+import Role from "./Role";
+import bcrypt from "bcryptjs";
+import { BaseModel } from "../lib/classes/BaseModel";
 
 // Application Model
-export class UserModel extends BaseModel implements IActivatable {
-
+export class UserModel extends BaseModel implements Activatable {
     @Property({ default: true })
     _active!: boolean;
 
@@ -33,7 +32,7 @@ export class UserModel extends BaseModel implements IActivatable {
             roles: this.roles,
             email: this.email,
             _active: this._active,
-            _id : this._id,
+            _id: this._id,
         };
     }
 
@@ -43,7 +42,7 @@ export class UserModel extends BaseModel implements IActivatable {
 
         return hash;
     }
-};
+}
 const User = getModelFromClass<UserModel>(UserModel);
 
 export default User;

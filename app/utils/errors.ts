@@ -66,8 +66,7 @@ export const errors = {
             missingFields,
         };
     },
-}
-
+};
 
 export class ErrorManager {
     static async handleError(err: ErrorType, req: Request, res: Response, next: NextFunction) {
@@ -84,6 +83,5 @@ export class ErrorManager {
             results: null,
             ...err,
         });
-
     }
 }

@@ -1,16 +1,16 @@
-import express from 'express';
-import dotenv from 'dotenv';
+import express from "express";
+import dotenv from "dotenv";
 dotenv.config();
-import 'reflect-metadata';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import dbConnection from './utils/database';
-import { ErrorManager, errors } from './utils/errors';
-import { RouteAggregator } from './lib/classes/RouteAggregator';
-import { Injector } from './lib/classes/Injector';
-import { SocketServer } from './lib/classes/SocketServer';
-import { ControllerExtractor } from './lib/classes/ControllerExtractor';
-import http from 'http';
+import "reflect-metadata";
+import bodyParser from "body-parser";
+import cors from "cors";
+import dbConnection from "./utils/database";
+import { ErrorManager, errors } from "./utils/errors";
+import { RouteAggregator } from "./lib/classes/RouteAggregator";
+import { Injector } from "./lib/classes/Injector";
+import { SocketServer } from "./lib/classes/SocketServer";
+import { ControllerExtractor } from "./lib/classes/ControllerExtractor";
+import http from "http";
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Connect DB
 dbConnection().then(() => console.log("Database Connected..."));
 
-// Initialize the dependecy injection 
+// Initialize the dependecy injection
 const injector = new Injector();
 
 // Create the server
@@ -43,10 +43,13 @@ controllerExtractor.addTask(socketServer.registerSockets);
 controllerExtractor.executeTasks();
 
 //Not Found Handler
-app.use((req, res, next) =>{ console.log("request",req.get("Host")?.concat(" "+req.url));  next(errors.NOT_FOUND)});
+app.use((req, res, next) => {
+    console.log("request", req.get("Host")?.concat(" " + req.url));
+    next(errors.NOT_FOUND);
+});
 
 //Error Handler
-app.use(ErrorManager.handleError)
+app.use(ErrorManager.handleError);
 
 httpServer.listen(4000);
 console.log("server listening on port 4000");

@@ -6,7 +6,6 @@ export const MethodHandler = (method: "get" | "put" | "post" | "patch" | "delete
         // target = class
         // propertyKey = decorated Method
         return (target, propertyKey: string | symbol): void => {
-
             if (!Reflect.hasMetadata("routes", target.constructor)) {
                 Reflect.defineMetadata("routes", [], target.constructor);
             }
@@ -22,6 +21,6 @@ export const MethodHandler = (method: "get" | "put" | "post" | "patch" | "delete
             });
 
             Reflect.defineMetadata("routes", routes, target.constructor);
-        }
-    }
-}
+        };
+    };
+};
