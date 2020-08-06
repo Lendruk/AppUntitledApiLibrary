@@ -8,7 +8,6 @@ import dbConnection from './utils/database';
 import { ErrorManager, errors } from './utils/errors';
 import { RouteAggregator } from './lib/classes/RouteAggregator';
 import { Injector } from './lib/classes/Injector';
-import { cloudinaryConfig } from './utils/cloudinary';
 import { SocketServer } from './lib/classes/SocketServer';
 import { ControllerExtractor } from './lib/classes/ControllerExtractor';
 import http from 'http';
@@ -21,9 +20,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Connect DB
 dbConnection().then(() => console.log("Database Connected..."));
-
-// Setup Cloudinary Config
-app.use('*', cloudinaryConfig);
 
 // Initialize the dependecy injection 
 const injector = new Injector();
