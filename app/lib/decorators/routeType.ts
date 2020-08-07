@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Response } from "express";
 import { RouteOptions } from "../types/RouteOptions";
+import { Request } from "../types/Request";
 
 export interface RouteType {
     path: string;
@@ -16,10 +17,8 @@ export interface RouteType {
 }
 
 export interface MiddyPair {
-    functions: MiddyFunctions;
+    functions: Array<MiddyFunction>;
     method: string | symbol;
 }
-
-export type MiddyFunctions = Array<MiddyFunction>;
 
 export type MiddyFunction = (req: Request, res: Response, next: NextFunction) => void;

@@ -3,9 +3,8 @@ import { BaseController } from "../lib/classes/BaseController";
 import { Get, Post } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
 import Workspace from "../models/Workspace";
-import { errors } from "../utils/errors";
+import { ErrorManager } from "../utils/ErrorManager";
 import Role from "../models/Role";
-import ObjectId from "../lib/ObjectId";
 
 @Controller("/workspaces")
 export class WorkspaceController extends BaseController {
@@ -35,7 +34,7 @@ export class WorkspaceController extends BaseController {
         } = req;
 
         if (Boolean(await Workspace.findOne({ "users.user": user?._id }))) {
-            throw errors.BAD_REQUEST;
+            throw ErrorManager.errors.BAD_REQUEST;
         }
 
         const ownerRole = await new Role({ name: "owner", isOwner: true });
@@ -45,9 +44,7 @@ export class WorkspaceController extends BaseController {
             projects: [],
             users: [{ user: user?._id, roles: [ownerRole] }],
         }).save();
-
         // ownerRole.workspace = new ObjectId(workspace._id as string);
-
         ownerRole.save();
 
         return { status: 201, workspace };

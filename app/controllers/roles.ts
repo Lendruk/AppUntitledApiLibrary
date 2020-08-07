@@ -4,7 +4,7 @@ import { Get, Post, Delete, Put, Patch } from "../lib/decorators/verbs";
 import { Request, Response } from "express";
 import Role from "../models/Role";
 import ObjectId from "../lib/ObjectId";
-import { errors } from "../utils/errors";
+import { ErrorManager } from "../utils/ErrorManager";
 
 @Controller("/roles")
 export class RoleController extends BaseController {
@@ -46,9 +46,9 @@ export class RoleController extends BaseController {
         let role = null;
 
         try {
-            role = await Role.findOneAndUpdate({ _id: id }, body, { new: true, runValidators: true });
+            role = await Role.findOneAndUpdate({ _id: new ObjectId(id) }, body, { new: true, runValidators: true });
         } catch {
-            throw errors.DB_FAILED_UPDATE;
+            throw ErrorManager.errors.DB_FAILED_UPDATE;
         }
 
         return { role };
@@ -62,9 +62,9 @@ export class RoleController extends BaseController {
         } = req;
 
         try {
-            await Role.findOneAndUpdate({ _id: id }, { _active });
+            await Role.findOneAndUpdate({ _id: new ObjectId(id) }, { _active });
         } catch {
-            throw errors.DB_FAILED_UPDATE;
+            throw ErrorManager.errors.DB_FAILED_UPDATE;
         }
 
         return { status: 200 };
@@ -78,7 +78,7 @@ export class RoleController extends BaseController {
 
         //TODO: Remove Role from all users;
 
-        await Role.deleteOne({ _id: id });
+        await Role.deleteOne({ _id: new ObjectId(id) });
 
         return { status: 200 };
     }

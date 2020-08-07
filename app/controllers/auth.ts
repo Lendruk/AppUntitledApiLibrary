@@ -1,13 +1,11 @@
 import { BaseController } from "../lib/classes/BaseController";
 import { Controller } from "../lib/decorators/controller";
-import { Post, Get } from "../lib/decorators/verbs";
+import { Post } from "../lib/decorators/verbs";
 import { Request, Response } from "express";
-import User from "../models/user";
-import { errors } from "../utils/errors";
+import { ErrorManager } from "../utils/ErrorManager";
 import { LoginService } from "../services/LoginService";
 import { Inject } from "../lib/decorators/Inject";
 import Token from "../models/token";
-import { checkToken } from "../utils/checkToken";
 
 @Controller("/auth")
 export class AuthController extends BaseController {
@@ -20,7 +18,7 @@ export class AuthController extends BaseController {
             body: { email, password },
         } = req;
 
-        if (!email || !password) throw errors.REQUIRED_FIELDS_EMPTY;
+        if (!email || !password) throw ErrorManager.errors.REQUIRED_FIELDS_EMPTY;
         return {
             code: "LOGIN_SUCCESSFUL",
             message: "Login Successful",
@@ -32,7 +30,7 @@ export class AuthController extends BaseController {
     public async logout(req: Request) {
         const { authorization } = req.headers;
         console.log("Auth ", authorization);
-        if (!authorization) throw errors.NO_TOKEN;
+        if (!authorization) throw ErrorManager.errors.NO_TOKEN;
         const splitToken: string[] = authorization.split(" ");
         await Token.findOneAndDelete({ authToken: splitToken[1] }).lean();
 

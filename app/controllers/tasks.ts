@@ -1,5 +1,4 @@
-import { Response } from "express";
-import { errors } from "../utils/errors";
+import { ErrorManager } from "../utils/ErrorManager";
 import { Controller } from "../lib/decorators/controller";
 import { Get, Post, Put, Delete, Patch } from "../lib/decorators/verbs";
 import { BaseController } from "../lib/classes/BaseController";
@@ -29,7 +28,7 @@ export class TaskController extends BaseController {
         try {
             tasks = await Task.find().lean();
         } catch (err) {
-            throw errors.NOT_FOUND;
+            throw ErrorManager.errors.NOT_FOUND;
         }
         return { tasks };
     }
@@ -47,7 +46,7 @@ export class TaskController extends BaseController {
         try {
             task = await Task.findOne({ _id: id }, "-__v -_created -_modified").lean();
         } catch (err) {
-            throw errors.NOT_FOUND;
+            throw ErrorManager.errors.NOT_FOUND;
         }
         return { task };
     }
@@ -87,7 +86,7 @@ export class TaskController extends BaseController {
                 },
             ]);
         } catch (err) {
-            throw errors.NOT_FOUND;
+            throw ErrorManager.errors.NOT_FOUND;
         }
         return { tasks: tasks[0].columns.tasks };
     }
@@ -122,7 +121,7 @@ export class TaskController extends BaseController {
             );
         } catch (err) {
             console.log(err);
-            throw errors.BAD_REQUEST;
+            throw ErrorManager.errors.BAD_REQUEST;
         }
     }
 
@@ -154,7 +153,7 @@ export class TaskController extends BaseController {
             ).lean();
         } catch (err) {
             console.log(err);
-            throw errors.BAD_REQUEST;
+            throw ErrorManager.errors.BAD_REQUEST;
         }
 
         return { task };
@@ -174,7 +173,7 @@ export class TaskController extends BaseController {
         try {
             updatedTask = await Task.findOneAndUpdate({ _id: id }, body, { new: true }).lean();
         } catch (err) {
-            throw errors.NOT_FOUND;
+            throw ErrorManager.errors.NOT_FOUND;
         }
         return { task: updatedTask };
     }
@@ -204,7 +203,7 @@ export class TaskController extends BaseController {
                 }
             ).lean();
         } catch (err) {
-            throw errors.BAD_REQUEST;
+            throw ErrorManager.errors.BAD_REQUEST;
         }
     }
 

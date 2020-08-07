@@ -3,10 +3,9 @@ import { Controller } from "../lib/decorators/controller";
 import { Get, Post, Delete } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
 import Invite from "../models/Invite";
-import { errors } from "../utils/errors";
+import { ErrorManager } from "../utils/ErrorManager";
 import Project from "../models/Project";
 import Workspace from "../models/Workspace";
-import { mongoose } from "../utils/database";
 import ObjectId from "../lib/ObjectId";
 
 @Controller("/invites")
@@ -54,7 +53,7 @@ export class InviteController extends BaseController {
 
         const invite = await Invite.findOne({ _id: id, invitee: user }).lean();
 
-        if (!invite) throw errors.NOT_FOUND;
+        if (!invite) throw ErrorManager.errors.NOT_FOUND;
 
         const entity = this.entityMap.get(invite.entityType);
 

@@ -1,5 +1,5 @@
 import { Injectable } from "../lib/decorators/Injectable";
-import { errors } from "../utils/errors";
+import { ErrorManager } from "../utils/ErrorManager";
 import User from "../models/user";
 import { buildToken } from "../utils/TokenBuilder";
 
@@ -7,12 +7,9 @@ import { buildToken } from "../utils/TokenBuilder";
 export class LoginService {
     public async login(email: string, password: string) {
         const user = await User.findOne({ email: email });
-
-        if (!user) throw errors.INVALID_CREDENTIALS;
-        if (!user.comparePassword(password) || !user._active) throw errors.INVALID_CREDENTIALS;
-
-        const token = await buildToken(user._id);
-
+        if (!user) throw ErrorManager.errors.INVALID_CREDENTIALS;
+        if (!user.comparePassword(password) || !user._active) throw ErrorManager.errors.INVALID_CREDENTIALS;
+        const token = await buildToken(String(user._id));
         return { token: token.authToken, user: user.getPublicInformation() };
     }
 }

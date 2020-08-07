@@ -2,11 +2,10 @@ import { BaseController } from "../lib/classes/BaseController";
 import { Controller } from "../lib/decorators/controller";
 import { Get, Post, Put, Delete } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
-import Project, { Tag, ProjectModel } from "../models/Project";
+import Project, { Tag } from "../models/Project";
 import Workspace from "../models/Workspace";
-import { errors } from "../utils/errors";
+import { ErrorManager } from "../utils/ErrorManager";
 import ObjectId from "../lib/ObjectId";
-import Mongoose from "mongoose";
 
 @Controller("/projects")
 export class ProjectController extends BaseController {
@@ -38,20 +37,19 @@ export class ProjectController extends BaseController {
 
         let project = null;
         try {
-            project = await Project.findOne({ _id: id }).populate(" users.roles users.user columns.tasks").lean();
-            // project = await Project.aggregate([
-            // { $match: { _id: id as ObjectId } },
-            // {
-            //     $lookup: {
-            //         from: "tasks",
-            //         localField: "columns.tasks",
-            //         foreignField: "_id",
-            //         as: "columns.tasks",
-            //     },
-            // }
-            // ]);
+            project = await Project.aggregate([
+                { $match: { _id: id as ObjectId } },
+                {
+                    $lookup: {
+                        from: "tasks",
+                        localField: "columns.tasks",
+                        foreignField: "_id",
+                        as: "columns.tasks",
+                    },
+                },
+            ]);
         } catch (err) {
-            throw errors.NOT_FOUND;
+            throw ErrorManager.errors.NOT_FOUND;
         }
 
         return { project };
@@ -67,7 +65,7 @@ export class ProjectController extends BaseController {
         try {
             tags = await Project.findOne({ _id: id }, "-_id tags").lean();
         } catch (err) {
-            throw errors.NOT_FOUND;
+            throw ErrorManager.errors.NOT_FOUND;
         }
         return { tags: tags?.tags };
     }
@@ -107,14 +105,14 @@ export class ProjectController extends BaseController {
             user,
         } = req;
 
-        if (!user) throw errors.BAD_REQUEST;
+        if (!user) throw ErrorManager.errors.BAD_REQUEST;
 
-        const workspaceObj = await Workspace.findOne({ _id: workspace as string });
+        const workspaceObj = await Workspace.findOne({ _id: new ObjectId(workspace) });
         const userEntry = workspaceObj?.users.find((usrEntry) => String(usrEntry.user) == String(user._id));
         const users = [{ user: user._id, roles: userEntry?.roles }];
         const project = await new Project({ title, users }).save();
 
-        await Workspace.findOneAndUpdate({ _id: workspace as string }, { $push: { projects: project } });
+        await Workspace.findOneAndUpdate({ _id: new ObjectId(workspace) }, { $push: { projects: project } });
 
         return { status: 201, project };
     }
@@ -147,7 +145,7 @@ export class ProjectController extends BaseController {
             }
         );
 
-        if (!updatedWorkSpace) throw errors.NOT_FOUND;
+        if (!updatedWorkSpace) throw ErrorManager.errors.NOT_FOUND;
 
         return { status: 201, tags: updatedWorkSpace?.tags };
     }
@@ -215,12 +213,12 @@ export class ProjectController extends BaseController {
             { $match: { $and: [{ "users.user": user?._id }, { "users.role.isOwner": true }] } },
         ]);
 
-        if (!workspaceObj) throw errors.NO_PERMISSION;
+        if (!workspaceObj) throw ErrorManager.errors.NO_PERMISSION;
 
         try {
             await Project.findOneAndDelete({ _id: id });
         } catch (err) {
-            throw errors.BAD_REQUEST;
+            throw ErrorManager.errors.BAD_REQUEST;
         }
     }
 }

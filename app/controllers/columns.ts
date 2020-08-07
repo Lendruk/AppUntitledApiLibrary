@@ -3,7 +3,7 @@ import { Controller } from "../lib/decorators/controller";
 import { Post, Delete, Put } from "../lib/decorators/verbs";
 import { Column } from "../models/Project";
 import { Request } from "express";
-import { errors } from "../utils/errors";
+import { ErrorManager } from "../utils/ErrorManager";
 import Project from "../models/Project";
 import ObjectId from "../lib/ObjectId";
 
@@ -26,7 +26,7 @@ export class ColumnController extends BaseController {
                 { new: true }
             ).lean();
         } catch {
-            throw errors.DB_FAILED_UPDATE;
+            throw ErrorManager.errors.DB_FAILED_UPDATE;
         }
 
         return { column: project?.columns.shift() };
@@ -51,7 +51,7 @@ export class ColumnController extends BaseController {
                 { new: true }
             ).lean();
         } catch {
-            throw errors.DB_FAILED_UPDATE;
+            throw ErrorManager.errors.DB_FAILED_UPDATE;
         }
 
         return { columns: project?.columns };
@@ -64,6 +64,9 @@ export class ColumnController extends BaseController {
             query: { projectId },
         } = req;
 
-        await Project.findOneAndUpdate({ _id: projectId as string }, { $pull: { "columns._id": new ObjectId(id) } });
+        await Project.findOneAndUpdate(
+            { _id: new ObjectId(projectId as string) },
+            { $pull: { "columns._id": new ObjectId(id) } }
+        );
     }
 }

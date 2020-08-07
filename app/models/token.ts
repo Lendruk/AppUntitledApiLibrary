@@ -1,4 +1,3 @@
-import { mongoose } from "../utils/database";
 import ObjectId from "../lib/ObjectId";
 import { Property, ModelOptions, getModelFromClass } from "../lib/decorators/model";
 import Expiry from "../lib/classes/Expiry";

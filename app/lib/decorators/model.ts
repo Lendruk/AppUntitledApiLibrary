@@ -1,6 +1,6 @@
 import { PropertyOptions } from "../types/PropertyOptions";
 import { mongoose } from "../../utils/database";
-import { Model as MongooseModel, SchemaOptions, Model } from "mongoose";
+import { Model as MongooseModel, SchemaOptions } from "mongoose";
 import { ModelProperties } from "../types/ModelProperties";
 import ObjectId from "../ObjectId";
 import { BaseModel } from "../classes/BaseModel";

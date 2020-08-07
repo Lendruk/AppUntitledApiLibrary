@@ -1,6 +1,5 @@
-import { mongoose } from "../utils/database";
 import { Activatable } from "../lib/interfaces/Activatable";
-import { Property, getModelFromClass, ModelOptions } from "../lib/decorators/model";
+import { Property, getModelFromClass } from "../lib/decorators/model";
 import Role, { RoleModel } from "./Role";
 import ObjectId from "../lib/ObjectId";
 import Task, { TaskModel } from "./Task";

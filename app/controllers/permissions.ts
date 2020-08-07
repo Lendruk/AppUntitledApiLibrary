@@ -1,10 +1,10 @@
-import { mongoose } from "../utils/database";
 import { BaseController } from "../lib/classes/BaseController";
 import { Controller } from "../lib/decorators/controller";
 import { Get, Post, Delete, Put } from "../lib/decorators/verbs";
 import { Request, Response } from "express";
 import Permission from "../models/Permission";
-import { errors } from "../utils/errors";
+import { ErrorManager } from "../utils/ErrorManager";
+import ObjectId from "../lib/ObjectId";
 
 @Controller("/permissions")
 export class PermissionController extends BaseController {
@@ -23,7 +23,7 @@ export class PermissionController extends BaseController {
         try {
             newPermission = await new Permission({ name, _active, endpoint, controller }).save();
         } catch {
-            throw errors.RESOURCE_ALREADY_EXISTS;
+            throw ErrorManager.errors.RESOURCE_ALREADY_EXISTS;
         }
 
         return { permission: newPermission, code: 201 };
@@ -38,9 +38,9 @@ export class PermissionController extends BaseController {
 
         let updatedPermission;
         try {
-            updatedPermission = await Permission.findOneAndUpdate({ _id: id }, body, { new: true });
+            updatedPermission = await Permission.findOneAndUpdate({ _id: new ObjectId(id) }, body, { new: true });
         } catch {
-            throw errors.DB_FAILED_UPDATE;
+            throw ErrorManager.errors.DB_FAILED_UPDATE;
         }
 
         return { permission: updatedPermission };
@@ -52,6 +52,6 @@ export class PermissionController extends BaseController {
             params: { id },
         } = req;
 
-        await Permission.deleteOne({ _id: id });
+        await Permission.deleteOne({ _id: new ObjectId(id) });
     }
 }

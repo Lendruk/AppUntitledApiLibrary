@@ -1,4 +1,3 @@
-import { mongoose } from "../utils/database";
 import ObjectId from "../lib/ObjectId";
 import { Property, getModelFromClass } from "../lib/decorators/model";
 import { BaseModel } from "../lib/classes/BaseModel";
