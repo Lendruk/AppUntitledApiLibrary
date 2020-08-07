@@ -25,6 +25,7 @@ export class ControllerExtractor {
         const controllers: Array<Constructable<BaseController>> = [];
         for (const file of files) {
             if (!file.includes("index") && !file.includes("BaseController")) {
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
                 const controller = require(`../../controllers/${file}`);
                 controllers.push(Object.values(controller)[0] as Constructable<BaseController>);
             }
