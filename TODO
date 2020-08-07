@@ -1,10 +1,6 @@
-- Create default roles when a workspace is created
-- Add modifiers to tasks. (due date, time spent, etc)
-- Emails
-- comments on tasks
-- setup websockets
-- refresh board automatically using websockets
 - Login QR code
-- Pull requests on task (integration with gitlab)
-- Add sorting to columns and tasks
-- Add task type(Bug, story, etc)
+
+Fixes:
+
+- default prop on model not working correctly
+- model.ts file needs to be refactored

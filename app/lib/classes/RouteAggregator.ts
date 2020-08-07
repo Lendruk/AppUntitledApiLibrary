@@ -1,14 +1,14 @@
-import express, { Response, NextFunction } from "express";
+import { NextFunction } from "express";
 import e from "express";
 // Import Controllers
 import { RouteType, MiddyPair, MiddyFunction } from "../decorators/routeType";
 import { BaseController } from "./BaseController";
 import { RouteOptions } from "../types/RouteOptions";
-import { errors } from "../../utils/errors";
+import { ErrorManager } from "../../utils/ErrorManager";
 import { checkToken } from "../../utils/checkToken";
-import { PermissionChecker } from "../../middleware/PermissionChecker";
 import { Request } from "../types/Request";
 import { Constructable } from "../interfaces/Constructable";
+import { Response } from "../types/Response";
 
 /**
  * Refactor this class completely
@@ -17,7 +17,19 @@ export class RouteAggregator {
     private app: e.Express;
     private debug: boolean;
 
-    aggregateRoutes(controllers: Array<Constructable<BaseController>>) {
+    /**
+     *
+     * @param app Express App
+     * @param debug Debug flag currently used to send missing fields to front-end on calls
+     */
+    constructor(app: e.Express, debug?: boolean) {
+        this.app = app;
+        this.debug = Boolean(debug);
+        // Binding the correct prototype
+        this.aggregateRoutes = this.aggregateRoutes.bind(this);
+    }
+
+    aggregateRoutes(controllers: Array<Constructable<BaseController>>): void {
         for (const controller of controllers) {
             const instance = new controller();
 
@@ -37,14 +49,6 @@ export class RouteAggregator {
 
                 if (route.routeOptions?.requireToken) {
                     functions = functions.concat(checkToken);
-                    functions = functions.concat((req: Request, res: Response, next: NextFunction) =>
-                        PermissionChecker.verifyPermission(
-                            prefix.replace("/", ""),
-                            route.methodName as string,
-                            next,
-                            req
-                        )
-                    );
                 }
 
                 this.app[route.requestMethod](
@@ -65,19 +69,6 @@ export class RouteAggregator {
         }
     }
 
-    /**
-     *
-     * @param app Express App
-     * @param debug Debug flag currently used to send missing fields to front-end on calls
-     */
-    constructor(app: e.Express, debug?: boolean) {
-        this.app = app;
-        this.debug = Boolean(debug);
-
-        // Binding the correct prototype
-        this.aggregateRoutes = this.aggregateRoutes.bind(this);
-    }
-
     private mapRequiredFields(options: RouteOptions): MiddyFunction[] {
         const functions = new Array<MiddyFunction>();
         for (const key in options) {
@@ -89,12 +80,12 @@ export class RouteAggregator {
                     for (const field of options[key].required) {
                         if (reqProp.value[field] == null) {
                             if (this.debug) missingFields.push(field);
-                            else throw errors.REQUIRED_FIELDS_EMPTY;
+                            else throw ErrorManager.errors.REQUIRED_FIELDS_EMPTY;
                         }
                     }
                 }
 
-                if (this.debug && missingFields.length > 0) throw errors.FIELDS_EMPTY(key, missingFields);
+                if (this.debug && missingFields.length > 0) throw ErrorManager.errors.FIELDS_EMPTY(key, missingFields);
 
                 next();
             });
@@ -103,7 +94,7 @@ export class RouteAggregator {
         return functions;
     }
 
-    private formatResponse(data: any, res: Response) {
+    private formatResponse(data: any, res: Response): void {
         let status = 200;
         const results: { [key: string]: any[] } = {};
 

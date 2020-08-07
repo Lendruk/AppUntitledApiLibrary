@@ -1,4 +1,3 @@
-import { Request as ExpressRequest } from "express";
 import { UserModel } from "../../models/user";
 
 export interface Request {

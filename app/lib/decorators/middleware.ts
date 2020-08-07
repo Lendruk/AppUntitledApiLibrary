@@ -1,6 +1,6 @@
-import { MiddyPair, MiddyFunctions } from "./routeType";
+import { MiddyPair, MiddyFunction } from "./routeType";
 
-export const Middleware = (...middlewares: MiddyFunctions): MethodDecorator => {
+export const Middleware = (...middlewares: Array<MiddyFunction>): MethodDecorator => {
     return (target: any, propertyKey: string | symbol) => {
         if (!Reflect.hasMetadata("middleware", target.constructor)) {
             Reflect.defineMetadata("middleware", new Array<MiddyPair>(), target.constructor);
