@@ -3,7 +3,7 @@ import { BaseController } from "../lib/classes/BaseController";
 import { Get, Post } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
 import Workspace from "../models/Workspace";
-import { ErrorManager } from "../utils/ErrorManager";
+import { ErrorManager } from "../lib/classes/ErrorManager";
 import Role from "../models/Role";
 
 @Controller("/workspaces")

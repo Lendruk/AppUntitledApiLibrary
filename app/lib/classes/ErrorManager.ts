@@ -1,4 +1,4 @@
-import { ErrorFormat } from "../lib/types/ErrorFormat";
+import { ErrorFormat } from "../types/ErrorFormat";
 import { Request, Response, NextFunction } from "express";
 
 export class ErrorManager {

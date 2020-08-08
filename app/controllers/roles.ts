@@ -4,7 +4,7 @@ import { Get, Post, Delete, Put, Patch } from "../lib/decorators/verbs";
 import { Request, Response } from "express";
 import Role from "../models/Role";
 import ObjectId from "../lib/ObjectId";
-import { ErrorManager } from "../utils/ErrorManager";
+import { ErrorManager } from "../lib/classes/ErrorManager";
 
 @Controller("/roles")
 export class RoleController extends BaseController {

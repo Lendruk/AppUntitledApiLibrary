@@ -3,7 +3,7 @@ import { Controller } from "../lib/decorators/controller";
 import { Post, Delete, Put } from "../lib/decorators/verbs";
 import { Column } from "../models/Project";
 import { Request } from "express";
-import { ErrorManager } from "../utils/ErrorManager";
+import { ErrorManager } from "../lib/classes/ErrorManager";
 import Project from "../models/Project";
 import ObjectId from "../lib/ObjectId";
 

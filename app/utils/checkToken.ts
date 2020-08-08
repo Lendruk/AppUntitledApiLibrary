@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { ErrorManager } from "./ErrorManager";
+import { ErrorManager } from "../lib/classes/ErrorManager";
 import Token from "../models/token";
 import User from "../models/user";
 import { Request } from "../lib/types/Request";

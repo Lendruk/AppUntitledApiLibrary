@@ -1,5 +1,5 @@
 import { Injectable } from "../lib/decorators/Injectable";
-import { ErrorManager } from "../utils/ErrorManager";
+import { ErrorManager } from "../lib/classes/ErrorManager";
 import User from "../models/user";
 import { buildToken } from "../utils/TokenBuilder";
 

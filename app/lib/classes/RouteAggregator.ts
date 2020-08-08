@@ -4,7 +4,7 @@ import e from "express";
 import { RouteType, MiddyPair, MiddyFunction } from "../decorators/routeType";
 import { BaseController } from "./BaseController";
 import { RouteOptions } from "../types/RouteOptions";
-import { ErrorManager } from "../../utils/ErrorManager";
+import { ErrorManager } from "./ErrorManager";
 import { checkToken } from "../../utils/checkToken";
 import { Request } from "../types/Request";
 import { Constructable } from "../interfaces/Constructable";

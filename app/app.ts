@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import "reflect-metadata";
 import connectToDb from "./utils/database";
-import { ErrorManager } from "./utils/ErrorManager";
+import { ErrorManager } from "./lib/classes/ErrorManager";
 import App from "./lib/classes/App";
 import { PermissionChecker } from "./middleware/PermissionChecker";
 

@@ -4,7 +4,7 @@ import { Get, Post, Put, Delete } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
 import Project, { Tag } from "../models/Project";
 import Workspace from "../models/Workspace";
-import { ErrorManager } from "../utils/ErrorManager";
+import { ErrorManager } from "../lib/classes/ErrorManager";
 import ObjectId from "../lib/ObjectId";
 
 @Controller("/projects")

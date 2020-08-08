@@ -3,7 +3,7 @@ import { Controller } from "../lib/decorators/controller";
 import { Get, Post, Delete, Put } from "../lib/decorators/verbs";
 import { Request, Response } from "express";
 import Permission from "../models/Permission";
-import { ErrorManager } from "../utils/ErrorManager";
+import { ErrorManager } from "../lib/classes/ErrorManager";
 import ObjectId from "../lib/ObjectId";
 
 @Controller("/permissions")

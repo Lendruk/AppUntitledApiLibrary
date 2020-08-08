@@ -1,4 +1,4 @@
-import { ErrorManager } from "../utils/ErrorManager";
+import { ErrorManager } from "../lib/classes/ErrorManager";
 import { Controller } from "../lib/decorators/controller";
 import { Get, Post, Put, Delete, Patch } from "../lib/decorators/verbs";
 import { BaseController } from "../lib/classes/BaseController";

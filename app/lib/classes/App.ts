@@ -8,16 +8,20 @@ import { Injector } from "./Injector";
 import { ControllerExtractor } from "./ControllerExtractor";
 import { RouteAggregator } from "./RouteAggregator";
 import { SocketServer } from "./SocketServer";
-import { ErrorManager } from "../../utils/ErrorManager";
+import { ErrorManager } from "./ErrorManager";
 import { MiddyFunction } from "../decorators/routeType";
-import { ErrorFormat } from "../types/ErrorFormat";
 import { Request } from "../types/Request";
 import { Response } from "../types/Response";
 
 export default class App {
     app: e.Express;
 
-    constructor(options?: { plugins?: Array<MiddyFunction>; debug?: boolean; errorType?: {} }) {
+    constructor(options?: {
+        plugins?: Array<MiddyFunction>;
+        errorHandler?: (errorFormat: any, req: Request, res: Response, next: NextFunction) => void;
+        debug?: boolean;
+        errorType?: {};
+    }) {
         this.app = express();
         this.app.use(cors());
         this.app.use(bodyParser.json());
@@ -36,8 +40,6 @@ export default class App {
         const aggregator = new RouteAggregator(this.app, options?.debug);
         controllerExtractor.addTask(aggregator.aggregateRoutes);
 
-        // const http = app.listen(4000, () => console.log("Server Listening on port 4000 "));
-
         injector.registerService(SocketServer, httpServer);
         const socketServer = Injector.instance.retrieveService(SocketServer)?.service as SocketServer;
 
@@ -46,7 +48,7 @@ export default class App {
         controllerExtractor.executeTasks();
 
         //Error Handler
-        this.app.use(ErrorManager.handleError);
+        this.app.use(options?.errorHandler ? options.errorHandler : ErrorManager.handleError);
 
         httpServer.listen(4000);
         console.log("server listening on port 4000");
@@ -56,9 +58,5 @@ export default class App {
         for (const plugin of plugins) {
             this.app.use(plugin);
         }
-    }
-
-    private defaultErrorHandler(err: ErrorFormat, req: Request, res: Response): void {
-        
     }
 }

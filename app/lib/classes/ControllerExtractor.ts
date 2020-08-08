@@ -9,7 +9,7 @@ export class ControllerExtractor {
         this.tasks = [];
     }
 
-    addTask(task: (controllers: Array<Constructable<BaseController>>) => any) {
+    addTask(task: (controllers: Array<Constructable<BaseController>>) => any): void {
         this.tasks.push(task);
     }
 

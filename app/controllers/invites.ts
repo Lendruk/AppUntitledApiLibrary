@@ -3,7 +3,7 @@ import { Controller } from "../lib/decorators/controller";
 import { Get, Post, Delete } from "../lib/decorators/verbs";
 import { Request } from "../lib/types/Request";
 import Invite from "../models/Invite";
-import { ErrorManager } from "../utils/ErrorManager";
+import { ErrorManager } from "../lib/classes/ErrorManager";
 import Project from "../models/Project";
 import Workspace from "../models/Workspace";
 import ObjectId from "../lib/ObjectId";
