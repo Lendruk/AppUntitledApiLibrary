@@ -10,9 +10,6 @@ import { Request } from "../types/Request";
 import { Constructable } from "../interfaces/Constructable";
 import { Response } from "../types/Response";
 
-/**
- * Refactor this class completely
- */
 export class RouteAggregator {
     private app: e.Express;
     private debug: boolean;
@@ -36,37 +33,48 @@ export class RouteAggregator {
             // This is the route prefix ex. "/users"
             const prefix = Reflect.getMetadata("prefix", controller);
             const routes: Array<RouteType> = Reflect.getMetadata("routes", controller);
-
             const middlewares: Array<MiddyPair> = Reflect.getMetadata("middleware", controller);
+
             for (const route of routes) {
                 const routeMiddleware = middlewares && middlewares.find((middy) => middy.method === route.methodName);
-                let functions = new Array<MiddyFunction>();
-                if (routeMiddleware != null) {
-                    functions = routeMiddleware.functions;
-                }
-
-                if (route.routeOptions) functions = functions.concat(this.mapRequiredFields(route.routeOptions));
-
-                if (route.routeOptions?.requireToken) {
-                    functions = functions.concat(checkToken);
-                }
 
                 this.app[route.requestMethod](
                     (process.env.API_URL || "") + prefix + route.path,
-                    ...functions,
-                    (req: Request, res: Response, next: NextFunction) => {
-                        const result = instance[route.methodName as string](req, res);
-                        if (result instanceof Promise) {
-                            result
-                                .then((promiseValues) => this.formatResponse(promiseValues, res))
-                                .catch((err) => next(err));
-                        } else {
-                            this.formatResponse(result, res);
-                        }
-                    }
+                    ...this.applyMiddleware(
+                        routeMiddleware,
+                        route.routeOptions,
+                        Boolean(route.routeOptions?.requireToken)
+                    ),
+                    this.createEndpointHandler(instance, route.methodName as string)
                 );
             }
         }
+    }
+
+    private applyMiddleware(
+        middleware: MiddyPair | undefined,
+        routeOptions: RouteOptions | undefined,
+        requireToken: boolean
+    ): Array<MiddyFunction> {
+        let functions = new Array<MiddyFunction>();
+        if (middleware != null) {
+            functions = middleware.functions;
+        }
+
+        if (routeOptions && this.hasRequiredFields(routeOptions))
+            functions = functions.concat(this.mapRequiredFields(routeOptions));
+
+        if (requireToken) {
+            functions = functions.concat(checkToken);
+        }
+
+        return functions;
+    }
+
+    private hasRequiredFields(routeOptions?: RouteOptions): boolean {
+        return routeOptions
+            ? Boolean(routeOptions.body?.required || routeOptions.headers?.required || routeOptions.params?.required)
+            : false;
     }
 
     private mapRequiredFields(options: RouteOptions): MiddyFunction[] {
@@ -92,6 +100,20 @@ export class RouteAggregator {
         }
 
         return functions;
+    }
+
+    private createEndpointHandler(
+        controllerInstance: BaseController,
+        methodName: string
+    ): (req: Request, res: Response, next: NextFunction) => void {
+        return (req: Request, res: Response, next: NextFunction): void => {
+            const result = controllerInstance[methodName](req, res);
+            if (result instanceof Promise) {
+                result.then((promiseValues) => this.formatResponse(promiseValues, res)).catch((err) => next(err));
+            } else {
+                this.formatResponse(result, res);
+            }
+        };
     }
 
     private formatResponse(data: any, res: Response): void {
