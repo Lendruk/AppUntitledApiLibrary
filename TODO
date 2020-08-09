@@ -1,0 +1,18 @@
+-> API Structure
+- default prop on model not working correctly
+- model.ts file needs to be refactored
+- server side rendering endpoints
+- review sockets
+- Either remove BaseController or find a reason for it to exist
+- look into refactoring the way required fields work in endpoints (big if)
+- look into code generation from models (generating CRUD's)
+
+-> Munchello's specific
+- Remake Permission system
+- Login QR code
+- Get new database
+
+-> Both:
+- Remove dotenv dependecy (replace with JSON conf & secrets file)
+- Increase unit test coverage
+- Create CI pipeline

@@ -1,0 +1,35 @@
+import fs from "fs";
+import { BaseController } from "./BaseController";
+import { Constructable } from "../interfaces/Constructable";
+
+export class ControllerExtractor {
+    private tasks: Array<(controllers: Array<Constructable<BaseController>>) => any>;
+
+    constructor() {
+        this.tasks = [];
+    }
+
+    addTask(task: (controllers: Array<Constructable<BaseController>>) => any): void {
+        this.tasks.push(task);
+    }
+
+    executeTasks() {
+        const files = fs.readdirSync(`${__dirname}/../../controllers`);
+        const controllers = this.extractControllers(files);
+        for (const task of this.tasks) {
+            task(controllers);
+        }
+    }
+
+    private extractControllers(files: string[]): Array<Constructable<BaseController>> {
+        const controllers: Array<Constructable<BaseController>> = [];
+        for (const file of files) {
+            if (!file.includes("index") && !file.includes("BaseController")) {
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                const controller = require(`../../controllers/${file}`);
+                controllers.push(Object.values(controller)[0] as Constructable<BaseController>);
+            }
+        }
+        return controllers;
+    }
+}
