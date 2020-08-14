@@ -5,6 +5,7 @@ import { BaseController } from "../lib/classes/BaseController";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
 import { Request } from "../lib/types/Request";
+import TemplateEngine from "../lib/viewengine/TemplateEngine";
 
 @Controller("/users")
 export class UserController extends BaseController {
@@ -13,6 +14,13 @@ export class UserController extends BaseController {
         console.log("body", req.body);
         const t = new User({ name: "test", role: "test" });
         return { good: "Boost" };
+    }
+
+    @Get("/test")
+    public async testTemplate() {
+        const engine = new TemplateEngine("views");
+
+        return { view: engine.render("Home") };
     }
 
     @Get("/:id", { requireToken: true })
