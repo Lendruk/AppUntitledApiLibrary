@@ -20,7 +20,7 @@ export class UserController extends BaseController {
     public async testTemplate() {
         const engine = new TemplateEngine("views");
 
-        return { view: engine.render("Home") };
+        return { view: engine.render("Home", { test: 23, city: "Setubal", user: { name: "James", address: { street: "Rua da laranja" } } }) };
     }
 
     @Get("/:id", { requireToken: true })

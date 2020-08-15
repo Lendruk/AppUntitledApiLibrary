@@ -1,7 +1,7 @@
 <div>
-
+lorem ipsum dolor sit amet
+{user.address.street}
 </div>
-for user in users
-{
-    efeafe
-}
+{{for user in users 
+    <div>{user.name}</div>
+}}
