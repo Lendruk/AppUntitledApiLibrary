@@ -1,4 +1,5 @@
 import fs from "fs";
+import Parser from "./Parser";
 
 type IndexableObject = { [index: string]: any };
 
@@ -10,7 +11,14 @@ export default class TemplateEngine {
     }
 
     render(viewComp: string, options?: IndexableObject): string {
+        const stream = fs.createReadStream(`${process.cwd()}/app/${this.viewDirectory}/${viewComp}/index.munch`);
+
+        stream.on("data", (chunk) => console.log("ch", chunk.toString()));
         const view = fs.readFileSync(`${process.cwd()}/app/${this.viewDirectory}/${viewComp}/index.munch`);
+
+        const parser = new Parser(["{{", "{"]);
+
+        parser.parse(stream);
 
         if (!view) throw new Error("View not found");
 
@@ -19,12 +27,9 @@ export default class TemplateEngine {
 
     private extractTokens(view: string, options?: IndexableObject): string {
         const tokenRe = /(?<!({{2}(.|\n|\r)*)|{){([^{}]+)?}/gm;
-        const actionRegex = /{{2}([^{}]+)?}{2}/g;
 
         let line = tokenRe.exec(view);
         while (line) {
-            console.log("MATCH", view.match(tokenRe));
-            console.log("line", line);
             const rawValue = line?.values().next()!.value as string;
 
             if (line)
@@ -33,8 +38,6 @@ export default class TemplateEngine {
                     this.extractVariable(rawValue.replace(/[{}]/g, ""), options) +
                     view.slice(line.index + rawValue.length);
 
-            console.log("view\n", view);
-            console.log("===================");
             line = tokenRe.exec(view);
         }
 
