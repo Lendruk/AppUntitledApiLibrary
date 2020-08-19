@@ -1,7 +1,5 @@
-<div>
-lorem ipsum dolor sit amet
-{user.address.street}
+0123456789{user.address.street}
 </div>
-{{for user in users 
+    {{for user in users 
     <div>{user.name}</div>
 }}
