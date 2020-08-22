@@ -20,7 +20,6 @@ export default class TemplateEngine {
             const matches = parser.parse(chunk);
             output += this.extractTokens(chunk.toString(), matches, options);
         }
-        console.log("output", output);
         return output;
     }
 
@@ -42,18 +41,12 @@ export default class TemplateEngine {
                         .replace(/[{}]/g, ""),
                     options
                 );
-
-                console.log("index change", indexChange);
-                console.log("match", match);
-                console.log("variable", variable);
-                console.log("begin", view.slice(0, match.chunkIndex + indexChange));
-                console.log("end", view.substr(match.chunkIndexEnd + indexChange));
                 if (variable) {
                     view =
                         view.slice(0, match.chunkIndex + indexChange) +
                         variable +
-                        view.substr(match.chunkIndexEnd + indexChange);
-                    indexChange += variable.length - (match.chunkIndexEnd - match.chunkIndex);
+                        view.substr(match.chunkIndexEnd + 1 + indexChange);
+                    indexChange += variable.length - (match.chunkIndexEnd - match.chunkIndex + 1);
                 }
             }
         }
@@ -63,7 +56,6 @@ export default class TemplateEngine {
 
     private extractVariable(variable: string, options?: IndexableObject): string {
         if (!options) return "";
-        console.log("variable input", variable);
         const variableParts = variable.split(".");
         const baseVariable = variableParts.shift();
         return variableParts.length > 0
