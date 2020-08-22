@@ -19,47 +19,51 @@ export default class TemplateEngine {
         for await (const chunk of stream) {
             const matches = parser.parse(chunk);
             output += this.extractTokens(chunk.toString(), matches, options);
-            console.log("MATCHES", matches);
         }
         console.log("output", output);
-        // const view = fs.readFileSync(`${process.cwd()}/app/${this.viewDirectory}/${viewComp}/index.munch`);
-
-        // if (!view) throw new Error("View not found");
-
         return output;
     }
 
+    /**
+     * TODO Implement the index change in another way
+     * @param view
+     * @param matches
+     * @param options
+     */
     private extractTokens(view: string, matches: Array<Match>, options?: IndexableObject): string {
-        const tokenRe = /(?<!({{2}(.|\n|\r)*)|{){([^{}]+)?}/gm;
+        // const tokenRe = /(?<!({{2}(.|\n|\r)*)|{){([^{}]+)?}/gm;
+        let indexChange = 0;
         for (const match of matches) {
-            const variable = this.extractVariable(
-                view.slice(match.chunkIndex, match.chunkIndexEnd).replace(/[{}]/g, ""),
-                options
-            );
+            //TODO - Make this generic for token types
             if (match.expressionStart === "{") {
-                view = view.slice(0, match.chunkIndex) + view.slice(match.chunkIndexEnd);
-                view = view.slice(0, match.chunkIndex) + variable + view.slice(match.chunkIndex + variable.length - 4);
+                const variable = this.extractVariable(
+                    view
+                        .substring(match.chunkIndex + indexChange, match.chunkIndexEnd + indexChange)
+                        .replace(/[{}]/g, ""),
+                    options
+                );
+
+                console.log("index change", indexChange);
+                console.log("match", match);
+                console.log("variable", variable);
+                console.log("begin", view.slice(0, match.chunkIndex + indexChange));
+                console.log("end", view.substr(match.chunkIndexEnd + indexChange));
+                if (variable) {
+                    view =
+                        view.slice(0, match.chunkIndex + indexChange) +
+                        variable +
+                        view.substr(match.chunkIndexEnd + indexChange);
+                    indexChange += variable.length - (match.chunkIndexEnd - match.chunkIndex);
+                }
             }
         }
-
-        // let line = tokenRe.exec(view);
-        // while (line) {
-        //     const rawValue = line?.values().next()!.value as string;
-
-        //     if (line)
-        //         view =
-        //             view.slice(0, line.index) +
-        //             this.extractVariable(rawValue.replace(/[{}]/g, ""), options) +
-        //             view.slice(line.index + rawValue.length);
-
-        //     line = tokenRe.exec(view);
-        // }
 
         return view;
     }
 
     private extractVariable(variable: string, options?: IndexableObject): string {
         if (!options) return "";
+        console.log("variable input", variable);
         const variableParts = variable.split(".");
         const baseVariable = variableParts.shift();
         return variableParts.length > 0

@@ -28,16 +28,12 @@ export default class Parser {
     ): Array<Match> {
         let searchIndex = 0;
         data += "\n";
-        console.log(this.tokens);
         let matches = new Array<Match>();
         for (let i = 0; i < data.length; i++) {
             const endLineIndex = data.indexOf("\n", searchIndex);
-            console.log(endLineIndex);
-            console.log(searchIndex);
             const curLine = data.slice(i, endLineIndex).toString();
             const t = this.matchToken(curLine, globalIndex + i, currentMatches);
             matches = matches.concat(t);
-            console.log("--->", t);
 
             if (endLineIndex === -1) break;
             searchIndex = endLineIndex + 1;
@@ -48,8 +44,6 @@ export default class Parser {
 
     private matchToken(line: string, globalIndex: number, currentMatches: Map<string, number>): Array<Match> {
         let lineMatches = new Array<Match>();
-        console.log(line);
-        console.log("currentMatches", currentMatches);
         for (const token of this.tokens) {
             if (currentMatches.has(token.expressionStart)) {
                 const regex = this.buildTokenRegex(token.expressionEnd);
@@ -64,7 +58,6 @@ export default class Parser {
                         expressionEnd: token.expressionEnd,
                     };
                     currentMatches.delete(token.expressionStart);
-                    console.log("KDKDK", match);
                     lineMatches.push(match);
                 }
             } else {
@@ -72,7 +65,6 @@ export default class Parser {
                 const x = regex.exec(line);
                 const index = x?.index;
                 if (index != null && index !== -1 && !this.hasEnclosers(currentMatches, token.enclosers)) {
-                    console.log("DKDK", x);
                     currentMatches.set(token.expressionStart, index + globalIndex);
                     lineMatches = lineMatches.concat(this.matchToken(line, globalIndex, currentMatches));
                 }
