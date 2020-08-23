@@ -4,11 +4,31 @@ import { Match } from "./Match";
 
 type IndexableObject = { [index: string]: any };
 
+type ActionFunction = (input: string, match: Match, options?: IndexableObject) => string;
+
+export type Action = {
+    function: ActionFunction;
+    handler: string;
+    token: { start: string; end: string };
+};
+
 export default class TemplateEngine {
     viewDirectory: string;
+    actions: Array<Action>;
+
+    private indexChange = 0;
 
     constructor(viewDirectory: string) {
+        this.variableTokenAction = this.variableTokenAction.bind(this);
         this.viewDirectory = viewDirectory;
+        this.actions = [{ function: this.variableTokenAction, token: { start: "{", end: "}" }, handler: "" }];
+    }
+
+    registerAction(action: ActionFunction, handler: string): void {
+        if (this.actions.find((act) => act.handler === handler))
+            throw new Error("Cannot have more than one action with the same handler");
+
+        this.actions.push({ function: action, handler, token: { start: "{{", end: "}}" } });
     }
 
     async render(viewComp: string, options?: IndexableObject): Promise<string> {
@@ -31,27 +51,32 @@ export default class TemplateEngine {
      */
     private extractTokens(view: string, matches: Array<Match>, options?: IndexableObject): string {
         // const tokenRe = /(?<!({{2}(.|\n|\r)*)|{){([^{}]+)?}/gm;
-        let indexChange = 0;
+        this.indexChange = 0;
         for (const match of matches) {
-            //TODO - Make this generic for token types
-            if (match.expressionStart === "{") {
-                const variable = this.extractVariable(
-                    view
-                        .substring(match.chunkIndex + indexChange, match.chunkIndexEnd + indexChange)
-                        .replace(/[{}]/g, ""),
-                    options
-                );
-                if (variable) {
-                    view =
-                        view.slice(0, match.chunkIndex + indexChange) +
-                        variable +
-                        view.substr(match.chunkIndexEnd + 1 + indexChange);
-                    indexChange += variable.length - (match.chunkIndexEnd - match.chunkIndex + 1);
-                }
+            const action = this.actions.find((act) => act.token.start === match.expressionStart);
+            if (action) {
+                view = action.function(view, match, options);
             }
         }
 
         return view;
+    }
+
+    private variableTokenAction(input: string, match: Match, options?: IndexableObject): string {
+        const variable = this.extractVariable(
+            input
+                .substring(match.chunkIndex + this.indexChange, match.chunkIndexEnd + this.indexChange)
+                .replace(/[{}]/g, ""),
+            options
+        );
+        if (variable) {
+            input =
+                input.slice(0, match.chunkIndex + this.indexChange) +
+                variable +
+                input.substr(match.chunkIndexEnd + 1 + this.indexChange);
+            this.indexChange += variable.length - (match.chunkIndexEnd - match.chunkIndex + 1);
+        }
+        return input;
     }
 
     private extractVariable(variable: string, options?: IndexableObject): string {

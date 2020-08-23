@@ -20,7 +20,17 @@ export class UserController extends BaseController {
     public async testTemplate() {
         const engine = new TemplateEngine("views");
 
-        return { view: await engine.render("Home", { test: 23, city: "Sofia", user: { name: "James", address: { street: "Rua da laranja" } } }) };
+        let content = "";
+        try {
+            content = await engine.render("Home", {
+                test: 23,
+                city: "Sofia",
+                user: { name: "James", address: { street: "Rua da laranja" } },
+            });
+        } catch (e) {
+            console.log("error", e);
+        }
+        return { view: content };
     }
 
     @Get("/:id", { requireToken: true })
