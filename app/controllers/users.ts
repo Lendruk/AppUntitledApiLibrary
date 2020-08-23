@@ -5,36 +5,31 @@ import { BaseController } from "../lib/classes/BaseController";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
 import { Request } from "../lib/types/Request";
-import TemplateEngine from "../lib/viewengine/TemplateEngine";
+import { Response } from "express";
+import { View } from "../lib/decorators/ViewHandler";
 
 @Controller("/users")
 export class UserController extends BaseController {
     @Get("/")
-    public async getUsers(req: Request) {
+    public async getUsers(req: Request): Promise<object> {
         console.log("body", req.body);
         const t = new User({ name: "test", role: "test" });
         return { good: "Boost" };
     }
 
+    @View("Home")
     @Get("/test")
-    public async testTemplate() {
-        const engine = new TemplateEngine("views");
+    public testTemplate(req: Request, res: Response): object {
 
-        let content = "";
-        try {
-            content = await engine.render("Home", {
-                test: 23,
-                city: "Sofia",
-                user: { name: "James", address: { street: "Rua da laranja" } },
-            });
-        } catch (e) {
-            console.log("error", e);
-        }
-        return { view: content };
+        return {
+            test: 23,
+            city: "Berlin",
+            user: { name: "James", address: { street: "Rua da laranja" } },
+        };
     }
 
     @Get("/:id", { requireToken: true })
-    public async getUser(req: Request) {
+    public async getUser(req: Request): Promise<object> {
         const {
             params: { id },
         } = req;

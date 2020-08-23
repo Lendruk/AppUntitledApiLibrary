@@ -34,7 +34,14 @@ export default class TemplateEngine {
     async render(viewComp: string, options?: IndexableObject): Promise<string> {
         const stream = fs.createReadStream(`${process.cwd()}/app/${this.viewDirectory}/${viewComp}/index.munch`);
         const token1 = { expressionStart: "{{", expressionEnd: "}}" };
-        const parser = new Parser([token1, { expressionStart: "{", expressionEnd: "}", enclosers: [token1] }]);
+        const parser = new Parser([
+            token1,
+            {
+                expressionStart: "{",
+                expressionEnd: "}",
+                enclosers: [token1, { expressionEnd: "</style>", expressionStart: "<style>" }],
+            },
+        ]);
         let output = "";
         for await (const chunk of stream) {
             const matches = parser.parse(chunk);
