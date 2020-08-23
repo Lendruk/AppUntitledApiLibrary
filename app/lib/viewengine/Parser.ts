@@ -44,6 +44,8 @@ export default class Parser {
 
     private matchToken(line: string, globalIndex: number, currentMatches: Map<string, number>): Array<Match> {
         let lineMatches = new Array<Match>();
+        if (line.length === 0) return [];
+
         for (const token of this.tokens) {
             if (currentMatches.has(token.expressionStart)) {
                 const regex = this.buildTokenRegex(token.expressionEnd);
@@ -59,6 +61,9 @@ export default class Parser {
                     };
                     currentMatches.delete(token.expressionStart);
                     lineMatches.push(match);
+                    lineMatches = lineMatches.concat(
+                        this.matchToken(line.substr(index + 1), globalIndex + index + 1, currentMatches)
+                    );
                 }
             } else {
                 const regex = this.buildTokenRegex(token.expressionStart);
