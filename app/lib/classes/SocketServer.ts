@@ -1,4 +1,4 @@
-import io, { Server, Socket } from "socket.io";
+import io, { Server, Socket, listen } from "socket.io";
 import e from "express";
 import http from "http";
 import { Constructable } from "../interfaces/Constructable";
@@ -6,24 +6,26 @@ import { BaseController } from "./BaseController";
 
 export class SocketServer {
     socketServer: Server;
+    socketEvents: Array<EventType>;
 
     constructor(httpServer: http.Server) {
         this.socketServer = io(httpServer);
+        this.socketEvents = [];
         this.registerSockets = this.registerSockets.bind(this);
     }
 
-    registerSockets(controllers: Array<Constructable<BaseController>>) {
-        let socketEvents: Array<EventType> = [];
-        for (const controller of controllers) {
-            if (Reflect.hasMetadata("socketEvents", controller)) {
-                const events = Reflect.getMetadata("socketEvents", controller) as Array<EventType>;
-                socketEvents = socketEvents.concat(events);
-            }
+    registerSockets(instance: BaseController, controller: Constructable<BaseController>): void {
+        if (Reflect.hasMetadata("socketEvents", controller)) {
+            const events = Reflect.getMetadata("socketEvents", controller) as Array<EventType>;
+            this.socketEvents = this.socketEvents.concat(events);
         }
+    }
+
+    listen(): void {
         this.socketServer.on("connection", (socket) => {
             console.log("user has connected");
 
-            for (const event of socketEvents) {
+            for (const event of this.socketEvents) {
                 socket.on(event.eventName, (data) => event.method(this.socketServer, socket, data));
             }
         });
