@@ -20,7 +20,6 @@ export class UserController extends BaseController {
     @View("Home")
     @Get("/test")
     public testTemplate(req: Request, res: Response): object {
-
         return {
             test: 23,
             city: "Berlin",

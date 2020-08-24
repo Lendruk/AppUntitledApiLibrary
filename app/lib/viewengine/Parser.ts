@@ -1,9 +1,8 @@
-import { ReadStream } from "fs";
 import { Match } from "./Match";
 
-type Token = {
-    expressionStart: string;
-    expressionEnd: string;
+export type Token = {
+    expStart: string;
+    expEnd: string;
     enclosers?: Array<Token>;
 };
 
@@ -47,30 +46,30 @@ export default class Parser {
         if (line.length === 0) return [];
 
         for (const token of this.tokens) {
-            if (currentMatches.has(token.expressionStart)) {
-                const regex = this.buildTokenRegex(token.expressionEnd);
+            if (currentMatches.has(token.expStart)) {
+                const regex = this.buildTokenRegex(token.expEnd);
                 const x = regex.exec(line);
                 const index = x?.index;
                 if (index != null && index !== -1) {
                     const match: Match = {
-                        chunkIndex: currentMatches.get(token.expressionStart)!,
+                        chunkIndex: currentMatches.get(token.expStart)!,
                         chunkIndexEnd: globalIndex + index,
                         globalIndex,
-                        expressionStart: token.expressionStart,
-                        expressionEnd: token.expressionEnd,
+                        expStart: token.expStart,
+                        expEnd: token.expEnd,
                     };
-                    currentMatches.delete(token.expressionStart);
+                    currentMatches.delete(token.expStart);
                     lineMatches.push(match);
                     lineMatches = lineMatches.concat(
                         this.matchToken(line.substr(index + 1), globalIndex + index + 1, currentMatches)
                     );
                 }
             } else {
-                const regex = this.buildTokenRegex(token.expressionStart);
+                const regex = this.buildTokenRegex(token.expStart);
                 const x = regex.exec(line);
                 const index = x?.index;
                 if (index != null && index !== -1 && !this.hasEnclosers(currentMatches, token.enclosers)) {
-                    currentMatches.set(token.expressionStart, index + globalIndex);
+                    currentMatches.set(token.expStart, index + globalIndex);
                     lineMatches = lineMatches.concat(this.matchToken(line, globalIndex, currentMatches));
                 }
             }
@@ -82,7 +81,7 @@ export default class Parser {
     private hasEnclosers(map: Map<string, number>, enclosers?: Array<Token>): boolean {
         if (!enclosers) return false;
 
-        for (const enclosure of enclosers.map((encloser) => encloser.expressionStart)) {
+        for (const enclosure of enclosers.map((encloser) => encloser.expStart)) {
             if (map.has(enclosure)) return true;
         }
 

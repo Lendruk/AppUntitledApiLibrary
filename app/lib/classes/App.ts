@@ -29,6 +29,14 @@ export default class App {
     }) {
         App.instance = this;
         this.engine = new TemplateEngine("views");
+        this.engine.registerToken(this.engine.variableTokenAction, {
+            expStart: "{",
+            expEnd: "}",
+            enclosers: [
+                { expStart: "{{", expEnd: "}}" },
+                { expStart: "<style>", expEnd: "</style>" },
+            ],
+        });
         this.app = express();
         this.app.use(cors());
         this.app.use(bodyParser.json());
