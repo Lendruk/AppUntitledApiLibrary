@@ -1,10 +1,9 @@
 import fs from "fs";
 import Parser, { Token } from "./Parser";
-import { Match } from "./Match";
 
 export type IndexableObject = { [index: string]: any };
 
-type ActionFunction = (input: string, match: Match, options?: IndexableObject) => string;
+type ActionFunction = (tokenValue: string, options?: IndexableObject) => string;
 
 export type Action = {
     function: ActionFunction;
@@ -16,10 +15,8 @@ export default class TemplateEngine {
     viewDirectory: string;
     actions: Array<Action>;
 
-    private indexChange = 0;
-
     constructor(viewDirectory: string) {
-        this.variableTokenAction = this.variableTokenAction.bind(this);
+        this.variableAction = this.variableAction.bind(this);
         this.viewDirectory = viewDirectory;
         this.actions = [];
     }
@@ -40,36 +37,14 @@ export default class TemplateEngine {
      * @param viewComp The name of the view component. (Refers to the name of the folder)
      * @param options Object containing properties that will be used by the template
      */
-    async render(viewComp: string, options?: IndexableObject): Promise<string> {
+    async render(viewComp: string, options?: object): Promise<string> {
         const stream = fs.createReadStream(`${process.cwd()}/app/${this.viewDirectory}/${viewComp}/index.munch`);
-        const tokens = this.actions.map((act) => act.token);
-        const token1 = { expStart: "{{", expEnd: "}}" };
-        const parser = new Parser(tokens.concat(token1));
+        const parser = new Parser(this.actions, options);
         let output = "";
         for await (const chunk of stream) {
-            const matches = parser.parse(chunk);
-            output += this.extractTokens(chunk.toString(), matches, options);
+            output += parser.parse(chunk);
         }
         return output;
-    }
-
-    /**
-     * TODO Implement the index change in another way
-     * @param view
-     * @param matches
-     * @param options
-     */
-    private extractTokens(view: string, matches: Array<Match>, options?: IndexableObject): string {
-        // const tokenRe = /(?<!({{2}(.|\n|\r)*)|{){([^{}]+)?}/gm;
-        this.indexChange = 0;
-        for (const match of matches) {
-            const action = this.actions.find((act) => act.token.expStart === match.expStart);
-            if (action) {
-                view = action.function(view, match, options);
-            }
-        }
-
-        return view;
     }
 
     /**
@@ -91,26 +66,7 @@ export default class TemplateEngine {
         return typeof obj === "object" ? JSON.stringify(obj) : obj;
     }
 
-    /**
-     * TEMPORALLY made public until indexchange issue is resolved
-     * @param input 
-     * @param match 
-     * @param options 
-     */
-    variableTokenAction(input: string, match: Match, options?: IndexableObject): string {
-        const variable = this.extractVariable(
-            input
-                .substring(match.chunkIndex + this.indexChange, match.chunkIndexEnd + this.indexChange)
-                .replace(/[{}]/g, ""),
-            options
-        );
-        if (variable) {
-            input =
-                input.slice(0, match.chunkIndex + this.indexChange) +
-                variable +
-                input.substr(match.chunkIndexEnd + 1 + this.indexChange);
-            this.indexChange += variable.length - (match.chunkIndexEnd - match.chunkIndex + 1);
-        }
-        return input;
+    variableAction(tokenValue: string, options?: object): string {
+        return this.extractVariable(tokenValue.replace(/[{}]/g, ""), options);
     }
 }

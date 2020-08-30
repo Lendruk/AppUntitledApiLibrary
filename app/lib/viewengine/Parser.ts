@@ -1,4 +1,5 @@
 import { Match } from "./Match";
+import { Action } from "./TemplateEngine";
 
 export type Token = {
     expStart: string;
@@ -7,75 +8,68 @@ export type Token = {
 };
 
 export default class Parser {
-    tokens: Array<Token>;
+    actions: Array<Action>;
+    options: object;
 
-    constructor(tokens: Array<Token>) {
-        this.tokens = tokens;
+    constructor(actions: Array<Action>, options?: object) {
+        this.actions = actions;
+        this.options = options || {};
     }
 
-    parse(chunk: string): Array<Match> {
+    parse(chunk: string): string {
         const currentMatches = new Map<string, number>();
-        const globalIndex = 0;
-
-        return this.extractChunkData(chunk, globalIndex, currentMatches);
+        return this.parseChunkData(chunk, currentMatches);
     }
 
-    private extractChunkData(
-        data: string | Buffer,
-        globalIndex: number,
-        currentMatches: Map<string, number>
-    ): Array<Match> {
+    parseChunkData(chunk: string, currentMatches: Map<string, number>): string {
         let searchIndex = 0;
-        data += "\n";
-        let matches = new Array<Match>();
-        for (let i = 0; i < data.length; i++) {
-            const endLineIndex = data.indexOf("\n", searchIndex);
-            const curLine = data.slice(i, endLineIndex).toString();
-            const t = this.matchToken(curLine, globalIndex + i, currentMatches);
-            matches = matches.concat(t);
+        let output = "";
+        for (let i = 0; i < chunk.length; i++) {
+            const endLineIndex = chunk.indexOf("\n", searchIndex);
+            const curLine = (endLineIndex !== -1 ? chunk.slice(i, endLineIndex) : chunk.slice(i)).toString();
+            output = this.parseLine(curLine, output, currentMatches);
 
             if (endLineIndex === -1) break;
             searchIndex = endLineIndex + 1;
             i = i + (endLineIndex - i);
         }
-        return matches;
+
+        return output;
     }
 
-    private matchToken(line: string, globalIndex: number, currentMatches: Map<string, number>): Array<Match> {
-        let lineMatches = new Array<Match>();
-        if (line.length === 0) return [];
-
-        for (const token of this.tokens) {
+    parseLine(line: string, chunkOutput: string, currentMatches: Map<string, number>): string {
+        let res = chunkOutput + line;
+        for (const action of this.actions) {
+            const { token } = action;
+            // There's an open expression
             if (currentMatches.has(token.expStart)) {
                 const regex = this.buildTokenRegex(token.expEnd);
-                const x = regex.exec(line);
-                const index = x?.index;
+                const index = regex.exec(line)?.index;
                 if (index != null && index !== -1) {
                     const match: Match = {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         chunkIndex: currentMatches.get(token.expStart)!,
-                        chunkIndexEnd: globalIndex + index,
-                        globalIndex,
+                        chunkIndexEnd: chunkOutput.length + index,
+                        globalIndex: chunkOutput.length,
                         expStart: token.expStart,
                         expEnd: token.expEnd,
                     };
                     currentMatches.delete(token.expStart);
-                    lineMatches.push(match);
-                    lineMatches = lineMatches.concat(
-                        this.matchToken(line.substr(index + 1), globalIndex + index + 1, currentMatches)
-                    );
+                    const value = action.function(res.slice(match.chunkIndex, match.chunkIndexEnd + 1), this.options);
+                    res = res.slice(0, match.chunkIndex) + value;
+                    res = this.parseLine(line.slice(index + 1), res, currentMatches);
                 }
             } else {
                 const regex = this.buildTokenRegex(token.expStart);
-                const x = regex.exec(line);
-                const index = x?.index;
+                const index = regex.exec(line)?.index;
                 if (index != null && index !== -1 && !this.hasEnclosers(currentMatches, token.enclosers)) {
-                    currentMatches.set(token.expStart, index + globalIndex);
-                    lineMatches = lineMatches.concat(this.matchToken(line, globalIndex, currentMatches));
+                    currentMatches.set(token.expStart, index + chunkOutput.length);
+                    res = this.parseLine(line, chunkOutput, currentMatches);
                 }
             }
         }
 
-        return lineMatches;
+        return res;
     }
 
     private hasEnclosers(map: Map<string, number>, enclosers?: Array<Token>): boolean {

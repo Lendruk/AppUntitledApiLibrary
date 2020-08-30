@@ -29,7 +29,7 @@ export default class App {
     }) {
         App.instance = this;
         this.engine = new TemplateEngine("views");
-        this.engine.registerToken(this.engine.variableTokenAction, {
+        this.engine.registerToken(this.engine.variableAction, {
             expStart: "{",
             expEnd: "}",
             enclosers: [
