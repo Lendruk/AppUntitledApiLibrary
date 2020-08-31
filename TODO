@@ -7,6 +7,7 @@
 - look into refactoring the way required fields work in endpoints (big if)
 - look into code generation from models (generating CRUD's)
 - look into possibility of making endpoint multi threaded.
+- look into automatic tests.
 
 -> Munchello's specific
 - Remake Permission system

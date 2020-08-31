@@ -14,11 +14,12 @@ import { Request } from "../types/Request";
 import { Response } from "../types/Response";
 import TemplateEngine from "../viewengine/TemplateEngine";
 import { BaseController } from "./BaseController";
+import { variableAction } from "../viewengine/Actions";
 
 export default class App {
     app: e.Express;
     static instance: App;
-    engine: TemplateEngine;
+    engine!: TemplateEngine;
     static controllers: Set<BaseController> = new Set();
 
     constructor(options?: {
@@ -28,15 +29,7 @@ export default class App {
         errorType?: {};
     }) {
         App.instance = this;
-        this.engine = new TemplateEngine("views");
-        this.engine.registerToken(this.engine.variableAction, {
-            expStart: "{",
-            expEnd: "}",
-            enclosers: [
-                { expStart: "{{", expEnd: "}}" },
-                { expStart: "<style>", expEnd: "</style>" },
-            ],
-        });
+        this.initViewengine();
         this.app = express();
         this.app.use(cors());
         this.app.use(bodyParser.json());
@@ -83,6 +76,18 @@ export default class App {
 
         httpServer.listen(4000);
         console.log("server listening on port 4000");
+    }
+
+    private initViewengine(): void {
+        this.engine = new TemplateEngine("views");
+        this.engine.registerToken(variableAction, {
+            expStart: "{",
+            expEnd: "}",
+            enclosers: [
+                { expStart: "{{", expEnd: "}}" },
+                { expStart: "<style>", expEnd: "</style>" },
+            ],
+        });
     }
 
     static getControllers(): Set<BaseController> {

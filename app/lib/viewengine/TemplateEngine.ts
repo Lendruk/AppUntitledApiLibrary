@@ -16,7 +16,6 @@ export default class TemplateEngine {
     actions: Array<Action>;
 
     constructor(viewDirectory: string) {
-        this.variableAction = this.variableAction.bind(this);
         this.viewDirectory = viewDirectory;
         this.actions = [];
     }
@@ -53,20 +52,20 @@ export default class TemplateEngine {
      * @param variable the name of the variable
      * @param options the object which contains variables to be used on the view
      */
-    extractVariable(variable: string, options?: IndexableObject): string {
+    static extractVariable(variable: string, options?: IndexableObject): string {
         if (!options) return "";
         const variableParts = variable.split(".");
         const baseVariable = variableParts.shift();
         return variableParts.length > 0
             ? this.extractVariable(variableParts.join("."), baseVariable && options[baseVariable])
-            : this.convertVariable(options[variable]);
+            : this.stringifyAnyObject(options[variable]);
     }
 
-    private convertVariable(obj: any): string {
+    /**
+     * Turns any kind of object into a string
+     * @param obj object what will be stringified
+     */
+    static stringifyAnyObject(obj: any): string {
         return typeof obj === "object" ? JSON.stringify(obj) : obj;
-    }
-
-    variableAction(tokenValue: string, options?: object): string {
-        return this.extractVariable(tokenValue.replace(/[{}]/g, ""), options);
     }
 }
