@@ -5,18 +5,30 @@ import { BaseController } from "../lib/classes/BaseController";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
 import { Request } from "../lib/types/Request";
+import { Response } from "express";
+import { View } from "../lib/decorators/ViewHandler";
 
 @Controller("/users")
 export class UserController extends BaseController {
     @Get("/")
-    public async getUsers(req: Request) {
+    public async getUsers(req: Request): Promise<object> {
         console.log("body", req.body);
         const t = new User({ name: "test", role: "test" });
         return { good: "Boost" };
     }
 
+    @View("Home")
+    @Get("/test")
+    public testTemplate(req: Request, res: Response): object {
+        return {
+            test: 23,
+            city: "Berlin",
+            user: { name: "James", address: { street: "Rua da laranja" } },
+        };
+    }
+
     @Get("/:id", { requireToken: true })
-    public async getUser(req: Request) {
+    public async getUser(req: Request): Promise<object> {
         const {
             params: { id },
         } = req;

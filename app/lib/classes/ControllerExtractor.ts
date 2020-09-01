@@ -1,23 +1,32 @@
 import fs from "fs";
 import { BaseController } from "./BaseController";
 import { Constructable } from "../interfaces/Constructable";
+import App from "./App";
+
+export type ExtractorTask = (instance: BaseController, controller: Constructable<BaseController>) => any;
 
 export class ControllerExtractor {
-    private tasks: Array<(controllers: Array<Constructable<BaseController>>) => any>;
+    private tasks: Array<ExtractorTask>;
 
     constructor() {
         this.tasks = [];
     }
 
-    addTask(task: (controllers: Array<Constructable<BaseController>>) => any): void {
+    addTask(task: ExtractorTask): void {
         this.tasks.push(task);
     }
 
     executeTasks() {
         const files = fs.readdirSync(`${__dirname}/../../controllers`);
         const controllers = this.extractControllers(files);
-        for (const task of this.tasks) {
-            task(controllers);
+
+        for (const controller of controllers) {
+            const instance = new controller();
+            App.addController(instance);
+
+            for (const task of this.tasks) {
+                task(instance, controller);
+            }
         }
     }
 

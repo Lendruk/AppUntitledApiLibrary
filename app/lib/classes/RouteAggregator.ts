@@ -9,6 +9,8 @@ import { checkToken } from "../../utils/checkToken";
 import { Request } from "../types/Request";
 import { Constructable } from "../interfaces/Constructable";
 import { Response } from "../types/Response";
+import App from "./App";
+import { View } from "../decorators/ViewHandler";
 
 export class RouteAggregator {
     private app: e.Express;
@@ -24,30 +26,51 @@ export class RouteAggregator {
         this.debug = Boolean(debug);
         // Binding the correct prototype
         this.aggregateRoutes = this.aggregateRoutes.bind(this);
+        this.registerView = this.registerView.bind(this);
     }
 
-    aggregateRoutes(controllers: Array<Constructable<BaseController>>): void {
-        for (const controller of controllers) {
-            const instance = new controller();
+    aggregateRoutes(instance: BaseController, controller: Constructable<BaseController>): void {
+        // This is the route prefix ex. "/users"
+        const prefix = Reflect.getMetadata("prefix", controller);
+        const routes: Array<RouteType> = Reflect.getMetadata("routes", controller);
+        const middlewares: Array<MiddyPair> = Reflect.getMetadata("middleware", controller);
+        for (const route of routes) {
+            const routeMiddleware = middlewares && middlewares.find((middy) => middy.method === route.methodName);
 
-            // This is the route prefix ex. "/users"
-            const prefix = Reflect.getMetadata("prefix", controller);
-            const routes: Array<RouteType> = Reflect.getMetadata("routes", controller);
-            const middlewares: Array<MiddyPair> = Reflect.getMetadata("middleware", controller);
+            this.app[route.requestMethod](
+                (process.env.API_URL || "") + prefix + route.path,
+                ...this.applyMiddleware(routeMiddleware, route.routeOptions, Boolean(route.routeOptions?.requireToken)),
+                this.createEndpointHandler(instance, route.methodName as string)
+            );
+        }
+    }
 
-            for (const route of routes) {
-                const routeMiddleware = middlewares && middlewares.find((middy) => middy.method === route.methodName);
+    registerView(instance: BaseController, controller: Constructable<BaseController>): void {
+        const views: Array<View> = Reflect.getMetadata("views", controller);
+        const routes: Array<RouteType> = Reflect.getMetadata("routes", controller);
+        const prefix = Reflect.getMetadata("prefix", controller);
 
-                this.app[route.requestMethod](
-                    (process.env.API_URL || "") + prefix + route.path,
-                    ...this.applyMiddleware(
-                        routeMiddleware,
-                        route.routeOptions,
-                        Boolean(route.routeOptions?.requireToken)
-                    ),
-                    this.createEndpointHandler(instance, route.methodName as string)
-                );
-            }
+        if (!views) return;
+
+        for (const view of views) {
+            const routeIndex = routes.findIndex((rt) => rt.methodName === view.method);
+            if (routeIndex === -1) throw new Error("A view needs to have a method handler associated to it");
+
+            const route = routes.splice(routeIndex, 1)[0];
+            Reflect.defineMetadata("routes", routes, controller);
+            this.app[route.requestMethod](
+                (process.env.API_URL || "") + prefix + route.path,
+                (req: Request, res: Response): void => {
+                    const result = instance[route.methodName as string](req, res);
+                    if (result instanceof Promise) {
+                        result.then((methodResult) => res.render(view.view, methodResult));
+                    } else {
+                        App.instance.engine
+                            .render(view.view, result)
+                            .then((rendered) => res.type("html").send(rendered));
+                    }
+                }
+            );
         }
     }
 
@@ -107,11 +130,15 @@ export class RouteAggregator {
         methodName: string
     ): (req: Request, res: Response, next: NextFunction) => void {
         return (req: Request, res: Response, next: NextFunction): void => {
-            const result = controllerInstance[methodName](req, res);
-            if (result instanceof Promise) {
-                result.then((promiseValues) => this.formatResponse(promiseValues, res)).catch((err) => next(err));
-            } else {
-                this.formatResponse(result, res);
+            try {
+                const result = controllerInstance[methodName](req, res);
+                if (result instanceof Promise) {
+                    result.then((promiseValues) => this.formatResponse(promiseValues, res)).catch((err) => next(err));
+                } else {
+                    this.formatResponse(result, res);
+                }
+            } catch (error) {
+                console.error(error);
             }
         };
     }

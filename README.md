@@ -71,7 +71,16 @@ This will register all methods in this controller on the route localhost:4000/ap
 Note:
 The view part of the MVC is not present in this API, the view can be a react or angular app for example.
 ### Middleware Functions (WIP)
-TODO description
+```typescript
+    @Get("/")
+    @Middleware((req: Request, res: Response, next: NextFunction) => {
+        // Code here
+        next();
+    })
+    public async getUsers(req: Request) {
+        return "string";
+    }
+```
 ### Method Options (WIP)
 TODO description
 ### Socket Decorators (WIP)
