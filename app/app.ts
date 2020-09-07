@@ -2,8 +2,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import "reflect-metadata";
 import connectToDb from "./utils/database";
-import { ErrorManager } from "./lib/classes/ErrorManager";
-import App from "./lib/classes/App";
+import { ErrorManager } from "../../MunchiJS/src/ErrorManager";
+import App from "../../MunchiJS/src/App";
 import { PermissionChecker } from "./middleware/PermissionChecker";
 
 const plugins = [PermissionChecker.verifyPermission];
