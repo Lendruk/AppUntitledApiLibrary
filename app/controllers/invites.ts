@@ -1,12 +1,12 @@
-import { BaseController } from "../lib/classes/BaseController";
-import { Controller } from "../lib/decorators/controller";
-import { Get, Post, Delete } from "../lib/decorators/verbs";
-import { Request } from "../lib/types/Request";
+import { BaseController } from "../../../MunchiJS/src/BaseController";
+import { Controller } from "../../../MunchiJS/src/decorators/controller";
+import { Get, Post, Delete } from "../../../MunchiJS/src/decorators/verbs";
+import { Request } from "../../../MunchiJS/src/types/Request";
 import Invite from "../models/Invite";
-import { ErrorManager } from "../lib/classes/ErrorManager";
+import { ErrorManager } from "../../../MunchiJS/src/ErrorManager";
 import Project from "../models/Project";
 import Workspace from "../models/Workspace";
-import ObjectId from "../lib/ObjectId";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
 
 @Controller("/invites")
 export class InviteController extends BaseController {
@@ -22,7 +22,7 @@ export class InviteController extends BaseController {
     }
 
     @Get("/", { requireToken: true })
-    public async getInvites(req: Request) {
+    public async getInvites(req: Request): Promise<object> {
         const { user } = req;
 
         const invites = await Invite.find({ invitee: user });
@@ -31,7 +31,7 @@ export class InviteController extends BaseController {
     }
 
     @Post("/", { requireToken: true, body: { required: ["invitee", "entityId", "entityType", "role"] } })
-    public async postInvite(req: Request) {
+    public async postInvite(req: Request): Promise<object> {
         const {
             user,
             body: { invitee, entityId, entityType, role },
@@ -45,7 +45,7 @@ export class InviteController extends BaseController {
     }
 
     @Post("/:id", { requireToken: true, params: { required: ["id"] } })
-    public async acceptInvite(req: Request) {
+    public async acceptInvite(req: Request): Promise<void> {
         const {
             params: { id },
             user,
@@ -65,7 +65,7 @@ export class InviteController extends BaseController {
     }
 
     @Delete("/:id", { params: { required: ["id"] } })
-    public async deleteInvite(req: Request) {
+    public async deleteInvite(req: Request): Promise<void> {
         const {
             params: { id },
         } = req;

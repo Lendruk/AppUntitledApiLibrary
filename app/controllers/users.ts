@@ -1,22 +1,22 @@
-import { ErrorManager } from "../lib/classes/ErrorManager";
-import { Controller } from "../lib/decorators/controller";
-import { Get, Post, Put } from "../lib/decorators/verbs";
-import { BaseController } from "../lib/classes/BaseController";
+import { ErrorManager } from "../../../MunchiJS/src/ErrorManager";
+import { Controller } from "../../../MunchiJS/src/decorators/controller";
+import { Get, Post, Put } from "../../../MunchiJS/src/decorators/verbs";
+import { BaseController } from "../../../MunchiJS/src/BaseController";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
-import { Request } from "../lib/types/Request";
+import { Request } from "../../../MunchiJS/src/types/Request";
 
 @Controller("/users")
 export class UserController extends BaseController {
     @Get("/")
-    public async getUsers(req: Request) {
+    public async getUsers(req: Request): Promise<object> {
         console.log("body", req.body);
         const t = new User({ name: "test", role: "test" });
         return { good: "Boost" };
     }
 
     @Get("/:id", { requireToken: true })
-    public async getUser(req: Request) {
+    public async getUser(req: Request): Promise<object> {
         const {
             params: { id },
         } = req;
@@ -30,7 +30,7 @@ export class UserController extends BaseController {
     }
 
     @Put("/:id", { requireToken: true })
-    public async putUser(req: Request) {
+    public async putUser(req: Request): Promise<object> {
         const {
             body,
             params: { id },
@@ -45,7 +45,7 @@ export class UserController extends BaseController {
     }
 
     @Post("/register", { body: { required: ["password", "email", "name"] } })
-    public async registerUser(req: Request) {
+    public async registerUser(req: Request): Promise<object> {
         const {
             body: { name, password, email },
             headers,

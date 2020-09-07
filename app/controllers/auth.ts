@@ -1,10 +1,10 @@
-import { BaseController } from "../lib/classes/BaseController";
-import { Controller } from "../lib/decorators/controller";
-import { Post } from "../lib/decorators/verbs";
+import { BaseController } from "../../../MunchiJS/src/BaseController";
+import { Controller } from "../../../MunchiJS/src/decorators/controller";
+import { Post } from "../../../MunchiJS/src/decorators/verbs";
 import { Request, Response } from "express";
-import { ErrorManager } from "../lib/classes/ErrorManager";
+import { ErrorManager } from "../../../MunchiJS/src/ErrorManager";
 import { LoginService } from "../services/LoginService";
-import { Inject } from "../lib/decorators/Inject";
+import { Inject } from "../../../MunchiJS/src/dependecyInjection/Inject";
 import Token from "../models/token";
 
 @Controller("/auth")
@@ -13,7 +13,7 @@ export class AuthController extends BaseController {
     _loginService!: LoginService;
 
     @Post("/login")
-    public async loginUser(req: Request, res: Response) {
+    public async loginUser(req: Request, res: Response): Promise<object> {
         const {
             body: { email, password },
         } = req;
@@ -27,7 +27,7 @@ export class AuthController extends BaseController {
     }
 
     @Post("/logout", { requireToken: true })
-    public async logout(req: Request) {
+    public async logout(req: Request): Promise<object> {
         const { authorization } = req.headers;
         console.log("Auth ", authorization);
         if (!authorization) throw ErrorManager.errors.NO_TOKEN;

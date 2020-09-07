@@ -1,6 +1,6 @@
-import { Activatable } from "../lib/interfaces/Activatable";
-import { Property, getModelFromClass } from "../lib/decorators/model";
-import { BaseModel } from "../lib/classes/BaseModel";
+import { Activatable } from "../../../MunchiJS/src/interfaces/Activatable";
+import { Property, getModelFromClass } from "../../../MunchiJS/src/decorators/model";
+import { BaseModel } from "../../../MunchiJS/src/BaseModel";
 
 export class PermissionModel extends BaseModel implements Activatable {
     @Property({ default: true })

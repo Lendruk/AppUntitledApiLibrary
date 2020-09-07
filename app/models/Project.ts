@@ -1,9 +1,9 @@
-import { Activatable } from "../lib/interfaces/Activatable";
-import { Property, getModelFromClass } from "../lib/decorators/model";
+import { Activatable } from "../../../MunchiJS/src/interfaces/Activatable";
+import { Property, getModelFromClass } from "../../../MunchiJS/src/decorators/model";
 import Role, { RoleModel } from "./Role";
-import ObjectId from "../lib/ObjectId";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
 import Task, { TaskModel } from "./Task";
-import { BaseModel } from "../lib/classes/BaseModel";
+import { BaseModel } from "../../../MunchiJS/src/BaseModel";
 
 class ProjectUser {
     @Property({ items: Role })

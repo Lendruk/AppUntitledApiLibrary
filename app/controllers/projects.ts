@@ -1,16 +1,16 @@
-import { BaseController } from "../lib/classes/BaseController";
-import { Controller } from "../lib/decorators/controller";
-import { Get, Post, Put, Delete } from "../lib/decorators/verbs";
-import { Request } from "../lib/types/Request";
+import { BaseController } from "../../../MunchiJS/src/BaseController";
+import { Controller } from "../../../MunchiJS/src/decorators/controller";
+import { Get, Post, Put, Delete } from "../../../MunchiJS/src/decorators/verbs";
+import { Request } from "../../../MunchiJS/src/types/Request";
 import Project, { Tag } from "../models/Project";
 import Workspace from "../models/Workspace";
-import { ErrorManager } from "../lib/classes/ErrorManager";
-import ObjectId from "../lib/ObjectId";
+import { ErrorManager } from "../../../MunchiJS/src/ErrorManager";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
 
 @Controller("/projects")
 export class ProjectController extends BaseController {
     @Get("/", { requireToken: true, headers: { required: ["workspace"] } })
-    public async getProjects(req: Request) {
+    public async getProjects(req: Request): Promise<object> {
         const {
             headers: { workspace },
         } = req;
@@ -30,7 +30,7 @@ export class ProjectController extends BaseController {
     }
 
     @Get("/:id", { requireToken: true, params: { required: ["id"] } })
-    public async getProject(req: Request) {
+    public async getProject(req: Request): Promise<object> {
         const {
             params: { id },
         } = req;
@@ -56,7 +56,7 @@ export class ProjectController extends BaseController {
     }
 
     @Get("/:id/tags", { requireToken: true, params: { required: ["id"] } })
-    public async getProjectTags(req: Request) {
+    public async getProjectTags(req: Request): Promise<object> {
         const {
             params: { id },
         } = req;
@@ -74,7 +74,7 @@ export class ProjectController extends BaseController {
         requireToken: true,
         params: { required: ["id"] },
     })
-    public async postProjectTags(req: Request) {
+    public async postProjectTags(req: Request): Promise<object> {
         const {
             params: { id },
             body: { name, colour },
@@ -98,7 +98,7 @@ export class ProjectController extends BaseController {
         headers: { required: ["workspace"] },
         body: { required: ["title"] },
     })
-    public async postProject(req: Request) {
+    public async postProject(req: Request): Promise<object> {
         const {
             headers: { workspace },
             body: { title },
@@ -121,7 +121,7 @@ export class ProjectController extends BaseController {
         requireToken: true,
         params: { required: ["id"] },
     })
-    public async putProjectTags(req: Request) {
+    public async putProjectTags(req: Request): Promise<object> {
         const {
             params: { id },
             body: { tagId },
@@ -154,7 +154,7 @@ export class ProjectController extends BaseController {
         requireToken: true,
         params: { required: ["id"] },
     })
-    public async editProject(req: Request) {
+    public async editProject(req: Request): Promise<object> {
         const {
             params: { id },
             body,
@@ -173,7 +173,7 @@ export class ProjectController extends BaseController {
         requireToken: true,
         params: { required: ["id"] },
     })
-    public async postdeleteTag(req: Request) {
+    public async postdeleteTag(req: Request): Promise<object> {
         const {
             params: { id },
             body: { tagId },
@@ -193,7 +193,7 @@ export class ProjectController extends BaseController {
     }
 
     @Delete("/:id", { requireToken: true, headers: { required: ["workspace"] } })
-    public async deleteProject(req: Request) {
+    public async deleteProject(req: Request): Promise<void> {
         const {
             headers: { workspace },
             params: { id },

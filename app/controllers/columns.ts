@@ -1,11 +1,11 @@
-import { BaseController } from "../lib/classes/BaseController";
-import { Controller } from "../lib/decorators/controller";
-import { Post, Delete, Put } from "../lib/decorators/verbs";
+import { BaseController } from "../../../MunchiJS/src/BaseController";
+import { Controller } from "../../../MunchiJS/src/decorators/controller";
+import { Post, Delete, Put } from "../../../MunchiJS/src/decorators/verbs";
 import { Column } from "../models/Project";
 import { Request } from "express";
-import { ErrorManager } from "../lib/classes/ErrorManager";
+import { ErrorManager } from "../../../MunchiJS/src/ErrorManager";
 import Project from "../models/Project";
-import ObjectId from "../lib/ObjectId";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
 
 @Controller("/projects/columns")
 export class ColumnController extends BaseController {
@@ -13,7 +13,7 @@ export class ColumnController extends BaseController {
         requireToken: true,
         body: { required: ["name", "projectId"] },
     })
-    public async postColumn(req: Request) {
+    public async postColumn(req: Request): Promise<object> {
         const {
             body: { name, projectId },
         } = req;
@@ -37,7 +37,7 @@ export class ColumnController extends BaseController {
         body: { required: ["name", "projectId"] },
         params: { required: ["id"] },
     })
-    public async putColumn(req: Request) {
+    public async putColumn(req: Request): Promise<object> {
         const {
             params: { id },
             body: { name, projectId },
@@ -58,7 +58,7 @@ export class ColumnController extends BaseController {
     }
 
     @Delete("/:id", { requireToken: true, params: { required: ["id"] } })
-    public async deleteColumn(req: Request) {
+    public async deleteColumn(req: Request): Promise<void> {
         const {
             params: { id },
             query: { projectId },
