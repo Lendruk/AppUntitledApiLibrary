@@ -1,0 +1,13 @@
+<style>
+    .test {
+        background: red;
+    }
+</style>
+
+0123456789{user.address.street}
+<div class="test">
+    {{for user in users 
+    <div>{user.name}</div>
+</div>
+}}
+{city}-{city}

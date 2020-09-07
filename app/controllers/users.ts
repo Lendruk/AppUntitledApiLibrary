@@ -5,6 +5,7 @@ import { BaseController } from "../../../MunchiJS/src/BaseController";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
 import { Request } from "../../../MunchiJS/src/types/Request";
+import { View } from "../../../MunchiJS/src/decorators/ViewHandler";
 
 @Controller("/users")
 export class UserController extends BaseController {
@@ -13,6 +14,12 @@ export class UserController extends BaseController {
         console.log("body", req.body);
         const t = new User({ name: "test", role: "test" });
         return { good: "Boost" };
+    }
+
+    @View("Home")
+    @Get("/test")
+    public async testView(req: Request): Promise<object> {
+        return { good: "Boost", user: { name: "bob", address: { street: "test street" } } };
     }
 
     @Get("/:id", { requireToken: true })

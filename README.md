@@ -1,5 +1,5 @@
-# Munchellos
-Backend Repo
+# AppUntitledApiLibrary
+This repo implements the library being created in https://github.com/Lendruk/UntitledApiLibrary
 
 ### Note:
 1. This description is still a work in progress, a lot of the information present here can be wrong or out of date.
