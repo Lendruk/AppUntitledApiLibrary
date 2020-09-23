@@ -19,7 +19,7 @@ export class UserController extends BaseController {
     @View("Home")
     @Get("/test")
     public async testView(req: Request): Promise<object> {
-        return { good: "Boost", user: { name: "bob", address: { street: "test street" } } };
+        return { good: "Boost", city: "city", user: { name: "bob", address: { street: "test street" } } };
     }
 
     @Get("/:id", { requireToken: true })

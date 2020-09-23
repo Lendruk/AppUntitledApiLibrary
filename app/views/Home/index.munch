@@ -1,13 +1,9 @@
-<style>
-    .test {
-        background: red;
-    }
-</style>
-
-0123456789{user.address.street}
+wadw
+{city}
 <div class="test">
-    {{for user in users 
-    <div>{user.name}</div>
+    {{for user in users if user.age > 18 =>
+     <div>{user.name}user</div>
+    }}
 </div>
-}}
-{city}-{city}
+
+{city}

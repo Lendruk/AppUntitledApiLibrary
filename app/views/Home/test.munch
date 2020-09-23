@@ -1,0 +1,50 @@
+<div class="test">
+    {{for user in users 
+     <div>{user.name}user</div>
+    }}
+</div>
+
+{city}
+
+{{for user of users if user.age >= 18 render UserProfile}}
+
+{{for user of users if user.age >= 18 render UserProfile with user.age, user.name, randomVariable }}
+
+{{for user of users if user.age >= 18 render UserProfile with user.age, user.name, randomVariable =>
+    // What will happen is
+    <UserProfile />
+    <div>kdkdkdk</div>
+ }}
+
+{{for user of users => <div>....</div> }}
+
+// IFs 
+{{if city => 
+    <div>something</div>
+}}
+
+{{if city => ... }}
+{{else => ... }}
+
+{{func => {
+    const i = 0;
+    blah blah
+    return i;
+}
+}}
+
+{{switch user
+    <div>test</div>
+    {case user.name: 
+        JS expression
+    }
+}}
+
+{{switch variable <-html->{case x}<-html->}}
+
+// single render
+{{render Footer}} | {{render Footer with options }}
+
+// multi-render
+{{render Header and Footer and Profile with options }}
+{{render Header,Footer,Profile with options }}
