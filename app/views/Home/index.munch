@@ -1,4 +1,9 @@
-0123456789{user.address.street} - {city}
-<div>
-test
-</div>{city}
+wadw
+{city}
+<div class="test">
+    {{for user in users if user.age > 18 =>
+     <div>{user.name}user</div>
+    }}
+</div>
+
+{city}

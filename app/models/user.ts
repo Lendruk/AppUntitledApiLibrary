@@ -1,9 +1,9 @@
-import { Property, getModelFromClass } from "../lib/decorators/model";
+import { Property, getModelFromClass } from "../../../MunchiJS/src/decorators/model";
 import bycrypt from "bcryptjs";
-import { Activatable } from "../lib/interfaces/Activatable";
+import { Activatable } from "../../../MunchiJS/src/interfaces/Activatable";
 import Role from "./Role";
 import bcrypt from "bcryptjs";
-import { BaseModel } from "../lib/classes/BaseModel";
+import { BaseModel } from "../../../MunchiJS/src/BaseModel";
 
 // Application Model
 export class UserModel extends BaseModel implements Activatable {

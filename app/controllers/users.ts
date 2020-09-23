@@ -1,12 +1,11 @@
-import { ErrorManager } from "../lib/classes/ErrorManager";
-import { Controller } from "../lib/decorators/controller";
-import { Get, Post, Put } from "../lib/decorators/verbs";
-import { BaseController } from "../lib/classes/BaseController";
+import { ErrorManager } from "../../../MunchiJS/src/ErrorManager";
+import { Controller } from "../../../MunchiJS/src/decorators/controller";
+import { Get, Post, Put } from "../../../MunchiJS/src/decorators/verbs";
+import { BaseController } from "../../../MunchiJS/src/BaseController";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
-import { Request } from "../lib/types/Request";
-import { Response } from "express";
-import { View } from "../lib/decorators/ViewHandler";
+import { Request } from "../../../MunchiJS/src/types/Request";
+import { View } from "../../../MunchiJS/src/decorators/ViewHandler";
 
 @Controller("/users")
 export class UserController extends BaseController {
@@ -19,12 +18,8 @@ export class UserController extends BaseController {
 
     @View("Home")
     @Get("/test")
-    public testTemplate(req: Request, res: Response): object {
-        return {
-            test: 23,
-            city: "Berlin",
-            user: { name: "James", address: { street: "Rua da laranja" } },
-        };
+    public async testView(req: Request): Promise<object> {
+        return { good: "Boost", city: "city", user: { name: "bob", address: { street: "test street" } } };
     }
 
     @Get("/:id", { requireToken: true })
@@ -42,7 +37,7 @@ export class UserController extends BaseController {
     }
 
     @Put("/:id", { requireToken: true })
-    public async putUser(req: Request) {
+    public async putUser(req: Request): Promise<object> {
         const {
             body,
             params: { id },
@@ -57,7 +52,7 @@ export class UserController extends BaseController {
     }
 
     @Post("/register", { body: { required: ["password", "email", "name"] } })
-    public async registerUser(req: Request) {
+    public async registerUser(req: Request): Promise<object> {
         const {
             body: { name, password, email },
             headers,

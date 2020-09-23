@@ -1,6 +1,6 @@
-import ObjectId from "../lib/ObjectId";
-import { Property, getModelFromClass } from "../lib/decorators/model";
-import { BaseModel } from "../lib/classes/BaseModel";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
+import { Property, getModelFromClass } from "../../../MunchiJS/src/decorators/model";
+import { BaseModel } from "../../../MunchiJS/src/BaseModel";
 
 export class InviteModel extends BaseModel {
     @Property({ ref: "User", required: true })

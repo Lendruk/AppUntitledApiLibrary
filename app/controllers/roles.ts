@@ -1,15 +1,15 @@
-import { Controller } from "../lib/decorators/controller";
-import { BaseController } from "../lib/classes/BaseController";
-import { Get, Post, Delete, Put, Patch } from "../lib/decorators/verbs";
+import { Controller } from "../../../MunchiJS/src/decorators/controller";
+import { BaseController } from "../../../MunchiJS/src/BaseController";
+import { Get, Post, Delete, Put, Patch } from "../../../MunchiJS/src/decorators/verbs";
 import { Request, Response } from "express";
 import Role from "../models/Role";
-import ObjectId from "../lib/ObjectId";
-import { ErrorManager } from "../lib/classes/ErrorManager";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
+import { ErrorManager } from "../../../MunchiJS/src/ErrorManager";
 
 @Controller("/roles")
 export class RoleController extends BaseController {
     @Get("/", { requireToken: true, headers: { required: ["workspace"] } })
-    public async getRoles(req: Request, res: Response) {
+    public async getRoles(req: Request, res: Response): Promise<object> {
         const {
             headers: { workspace },
         } = req;
@@ -24,7 +24,7 @@ export class RoleController extends BaseController {
         body: { required: ["name", "permissions"] },
         // headers: { required: ["workspace"] }
     })
-    public async postRole(req: Request, res: Response) {
+    public async postRole(req: Request, res: Response): Promise<object> {
         const {
             headers: { workspace },
             body,
@@ -37,7 +37,7 @@ export class RoleController extends BaseController {
     }
 
     @Put("/:id", { params: { required: ["id"] } })
-    public async putRole(req: Request, res: Response) {
+    public async putRole(req: Request, res: Response): Promise<object> {
         const {
             params: { id },
             body,
@@ -55,7 +55,7 @@ export class RoleController extends BaseController {
     }
 
     @Patch("/:id", { body: { required: ["_active"] }, params: { required: ["id"] } })
-    public async patchRole(req: Request, res: Response) {
+    public async patchRole(req: Request, res: Response): Promise<object> {
         const {
             params: { id },
             body: { _active },
@@ -71,7 +71,7 @@ export class RoleController extends BaseController {
     }
 
     @Delete("/:id", { params: { required: ["id"] } })
-    public async deleteRole(req: Request, res: Response) {
+    public async deleteRole(req: Request, res: Response): Promise<object> {
         const {
             params: { id },
         } = req;

@@ -1,5 +1,5 @@
-import { Injectable } from "../lib/decorators/Injectable";
-import { ErrorManager } from "../lib/classes/ErrorManager";
+import { Injectable } from "../../../MunchiJS/src/dependecyInjection/Injectable";
+import { ErrorManager } from "../../../MunchiJS/src/ErrorManager";
 import User from "../models/user";
 import { buildToken } from "../utils/TokenBuilder";
 

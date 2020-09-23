@@ -1,20 +1,20 @@
-import { BaseController } from "../lib/classes/BaseController";
-import { Controller } from "../lib/decorators/controller";
-import { Get, Post, Delete, Put } from "../lib/decorators/verbs";
+import { BaseController } from "../../../MunchiJS/src/BaseController";
+import { Controller } from "../../../MunchiJS/src/decorators/controller";
+import { Get, Post, Delete, Put } from "../../../MunchiJS/src/decorators/verbs";
 import { Request, Response } from "express";
 import Permission from "../models/Permission";
-import { ErrorManager } from "../lib/classes/ErrorManager";
-import ObjectId from "../lib/ObjectId";
+import { ErrorManager } from "../../../MunchiJS/src/ErrorManager";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
 
 @Controller("/permissions")
 export class PermissionController extends BaseController {
     @Get("/")
-    public async getPermissions(req: Request, res: Response) {
+    public async getPermissions(req: Request, res: Response): Promise<object> {
         return { permissions: await Permission.find({}) };
     }
 
     @Post("/", { body: { required: ["name", "_active", "endpoint", "controller"] } })
-    public async postPermission(req: Request, res: Response) {
+    public async postPermission(req: Request, res: Response): Promise<object> {
         const {
             body: { name, _active, endpoint, controller },
         } = req;
@@ -30,7 +30,7 @@ export class PermissionController extends BaseController {
     }
 
     @Put("/:id", { params: { required: ["id"] } })
-    public async putPermission(req: Request, res: Response) {
+    public async putPermission(req: Request, res: Response): Promise<object> {
         const {
             body,
             params: { id },
@@ -47,7 +47,7 @@ export class PermissionController extends BaseController {
     }
 
     @Delete("/:id", { params: { required: ["id"] } })
-    public async deletePermission(req: Request, res: Response) {
+    public async deletePermission(req: Request, res: Response): Promise<void> {
         const {
             params: { id },
         } = req;

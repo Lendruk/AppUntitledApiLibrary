@@ -1,7 +1,7 @@
-import ObjectId from "../lib/ObjectId";
-import { Property, ModelOptions, getModelFromClass } from "../lib/decorators/model";
-import Expiry from "../lib/classes/Expiry";
-import { BaseModel } from "../lib/classes/BaseModel";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
+import { Property, ModelOptions, getModelFromClass } from "../../../MunchiJS/src/decorators/model";
+import Expiry from "../../../MunchiJS/src/Expiry";
+import { BaseModel } from "../../../MunchiJS/src/BaseModel";
 
 @ModelOptions({ expireAfter: new Expiry({ days: 90 }) })
 export class TokenModel extends BaseModel {

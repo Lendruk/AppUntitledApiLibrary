@@ -1,16 +1,16 @@
-import { ErrorManager } from "../lib/classes/ErrorManager";
-import { Controller } from "../lib/decorators/controller";
-import { Get, Post, Put, Delete, Patch } from "../lib/decorators/verbs";
-import { BaseController } from "../lib/classes/BaseController";
+import { ErrorManager } from "../../../MunchiJS/src/ErrorManager";
+import { Controller } from "../../../MunchiJS/src/decorators/controller";
+import { Get, Post, Put, Delete, Patch } from "../../../MunchiJS/src/decorators/verbs";
+import { BaseController } from "../../../MunchiJS/src/BaseController";
 import Task from "../models/Task";
 import Project from "../models/Project";
 import mongoose from "mongoose";
 import Comment from "../models/Comment";
-import { Request } from "../lib/types/Request";
-import ObjectId from "../lib/ObjectId";
-import { SocketEvent, SocketServer } from "../lib/classes/SocketServer";
+import { Request } from "../../../MunchiJS/src/types/Request";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
+import { SocketEvent, SocketServer } from "../../../MunchiJS/src/SocketServer";
 import { Server, Socket } from "socket.io";
-import { Inject } from "../lib/decorators/Inject";
+import { Inject } from "../../../MunchiJS/src/dependecyInjection/Inject";
 
 @Controller("/tasks")
 export class TaskController extends BaseController {
@@ -23,7 +23,7 @@ export class TaskController extends BaseController {
             required: ["workspace"],
         },
     })
-    public async getTasks(req: Request) {
+    public async getTasks(req: Request): Promise<object> {
         let tasks = null;
         try {
             tasks = await Task.find().lean();
@@ -37,7 +37,7 @@ export class TaskController extends BaseController {
         requireToken: true,
         params: { required: ["id"] },
     })
-    public async getTaskById(req: Request) {
+    public async getTaskById(req: Request): Promise<object> {
         const {
             params: { id },
         } = req;
@@ -56,7 +56,7 @@ export class TaskController extends BaseController {
         params: { required: ["projectId"] },
         body: { required: ["columnId"] },
     })
-    public async getTasksFromColumn(req: Request) {
+    public async getTasksFromColumn(req: Request): Promise<object> {
         const {
             params: { projectId },
             body: { columnId },
@@ -92,7 +92,7 @@ export class TaskController extends BaseController {
     }
 
     @Patch("/project/:projectId/:taskId")
-    public async moveTask(req: Request) {
+    public async moveTask(req: Request): Promise<void> {
         const {
             params: { projectId, taskId },
             body: { newColumnId, oldColumnId },
@@ -129,7 +129,7 @@ export class TaskController extends BaseController {
         requireToken: true,
         params: { required: ["projectId"] },
     })
-    public async postTasks(req: Request) {
+    public async postTasks(req: Request): Promise<object> {
         const {
             params: { projectId },
             body: { columnId },
@@ -163,7 +163,7 @@ export class TaskController extends BaseController {
         requireToken: true,
         params: { required: ["id"] },
     })
-    public async putTasks(req: Request) {
+    public async putTasks(req: Request): Promise<object> {
         const {
             params: { id },
             body,
@@ -182,7 +182,7 @@ export class TaskController extends BaseController {
         requireToken: true,
         params: { required: ["projectId"] },
     })
-    public async deleteTasks(req: Request) {
+    public async deleteTasks(req: Request): Promise<void> {
         const {
             params: { projectId, columnId, taskId },
         } = req;
@@ -208,7 +208,7 @@ export class TaskController extends BaseController {
     }
 
     @Get("/:id/comments")
-    public async getComments(req: Request) {
+    public async getComments(req: Request): Promise<object> {
         const {
             params: { id },
         } = req;
@@ -219,7 +219,7 @@ export class TaskController extends BaseController {
     }
 
     @Post("/:id/comments", { body: { required: ["content"] } })
-    public async createComment(req: Request) {
+    public async createComment(req: Request): Promise<object> {
         const {
             body: { content },
             user,
@@ -232,7 +232,7 @@ export class TaskController extends BaseController {
     }
 
     @Delete("/:taskId/comments/:commentId")
-    public async deleteComment(req: Request) {
+    public async deleteComment(req: Request): Promise<void> {
         const {
             params: { taskId, commentId },
         } = req;
@@ -241,7 +241,7 @@ export class TaskController extends BaseController {
     }
 
     @SocketEvent("broadcast_task")
-    public async broadcastTask(socketServer: Server, socket: Socket, data?: any) {
+    public async broadcastTask(socketServer: Server, socket: Socket, data?: any): Promise<void> {
         socket.emit("test", { test: true });
         console.log("test broadcast");
     }

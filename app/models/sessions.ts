@@ -1,6 +1,6 @@
 import { mongoose } from "../utils/database";
-import ObjectId from "../lib/ObjectId";
-import { Property, getModelFromClass } from "../lib/decorators/model";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
+import { Property, getModelFromClass } from "../../../MunchiJS/src/decorators/model";
 
 type Session = {
     date: string;

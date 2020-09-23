@@ -1,6 +1,6 @@
-import { BaseModel } from "../lib/classes/BaseModel";
-import { getModelFromClass, Property } from "../lib/decorators/model";
-import ObjectId from "../lib/ObjectId";
+import { BaseModel } from "../../../MunchiJS/src/BaseModel";
+import { getModelFromClass, Property } from "../../../MunchiJS/src/decorators/model";
+import ObjectId from "../../../MunchiJS/src/database/mongo/ObjectId";
 
 export class CommentModel extends BaseModel {
     @Property({ required: true })
